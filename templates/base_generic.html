@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block title %}
+      <title>Base Html</title>
+    {% endblock %}
+    {% load static tailwind_tags %}
+    {% load static %}
+    {% tailwind_preload_css %}
+    {% tailwind_css %}
+  </head>
+  <body>
+    <div class="container">
+      {% block content %}
+      <!-- goes here -->
+      {% endblock %}
+    </div> 
+  </body>
+</html>

@@ -1,0 +1,31 @@
+[project]
+name = "school-management-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "cookiecutter>=2.6.0",
+    "django>=5.2.6",
+    "django-environ>=0.12.0",
+    "django-tailwind[reload]>=4.2.0",
+    "mysqlclient>=2.2.7",
+    "pip>=25.3",
+]
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.31.4",
+    "ruff>=0.13.1",
+]
+
+[tool.ruff]
+exclude = [
+    "**/migrations/*.py"
+]
+
+[tool.ruff.lint]
+select = ["RUF", "F"]
+
+[tool.ruff.format]
+quote-style = "single"
