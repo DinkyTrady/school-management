@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     # Plugin apps
     'tailwind',
     'tailwindcss_theme',
+    'django_extensions',
+    'widget_tweaks',
 
     # Local apps
     'apps.core',
@@ -121,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Jakarta'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -147,3 +149,5 @@ if DEBUG:
 TAILWIND_APP_NAME = 'tailwindcss_theme'
 
 AUTH_USER_MODEL = 'users.akun'
+
+LOGIN_REDIRECT_URL = '/'

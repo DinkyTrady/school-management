@@ -8,7 +8,9 @@ dependencies = [
     "cookiecutter>=2.6.0",
     "django>=5.2.6",
     "django-environ>=0.12.0",
+    "django-extensions>=4.1",
     "django-tailwind[reload]>=4.2.0",
+    "django-widget-tweaks>=1.5.0",
     "mysqlclient>=2.2.7",
     "pip>=25.3",
 ]
@@ -16,6 +18,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "basedpyright>=1.31.4",
+    "pydot>=4.0.1",
+    "pyparsing>=3.2.5",
     "ruff>=0.13.1",
 ]
 
@@ -25,7 +29,7 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["RUF", "F"]
+select = ["E", "F", "B", "F"]
 
 [tool.ruff.format]
 quote-style = "single"
