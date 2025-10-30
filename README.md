@@ -1,4 +1,3 @@
-# School Management
 # 🏫 School Management Project
 
 A modern web-based **School Management System** built with **Django 5**, **Tailwind CSS**, and **HTMX** to provide a fast, responsive, and dynamic user experience.  
