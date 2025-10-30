@@ -25,67 +25,79 @@
             <h2 class="text-2xl font-bold mb-5 text-primary-content">Ringkasan Sistem</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <!-- Kartu Total Akun -->
-                <div class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                <!-- Kartu Total Akun (Interaktif) -->
+                <a href="{% url 'users:akun_list' %}" class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group" title="Kelola Akun Pengguna">
                     <div class="card-body flex-row items-center p-5">
                         <div class="mr-4 text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.124-1.28-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.124-1.28.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                            <i class="fa-solid fa-users fa-2x w-10 h-10"></i>
                         </div>
                         <div>
-                            <h2 class="card-title text-base-content/60">Total Akun</h2>
+                            <h2 class="card-title text-base-content/60 group-hover:text-primary">Total Akun</h2>
                             <p class="text-3xl font-extrabold text-base-content">{{ total_akun }}</p>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <!-- Kartu Total Peran -->
-                <div class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                <!-- Kartu Total Peran (Interaktif) -->
+                <a href="{% url 'users:peran_list' %}" class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group" title="Kelola Peran Pengguna">
                     <div class="card-body flex-row items-center p-5">
                         <div class="mr-4 text-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                            <i class="fa-solid fa-user-shield fa-2x w-10 h-10"></i>
                         </div>
                         <div>
-                            <h2 class="card-title text-base-content/60">Total Peran</h2>
+                            <h2 class="card-title text-base-content/60 group-hover:text-secondary">Total Peran</h2>
                             <p class="text-3xl font-extrabold text-base-content">{{ total_peran }}</p>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <!-- Kartu Total Kelas -->
-                <div class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                <!-- Kartu Total Kelas (Interaktif) -->
+                <a href="#" class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group" title="Kelola Kelas (segera hadir)">
                     <div class="card-body flex-row items-center p-5">
                         <div class="mr-4 text-accent">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                            <i class="fa-solid fa-school fa-2x w-10 h-10"></i>
                         </div>
                         <div>
-                            <h2 class="card-title text-base-content/60">Total Kelas</h2>
+                            <h2 class="card-title text-base-content/60 group-hover:text-accent">Total Kelas</h2>
                             <p class="text-3xl font-extrabold text-base-content">{{ total_kelas }}</p>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <!-- Kartu Total Mapel -->
-                <div class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                <!-- Kartu Total Mapel (Interaktif) -->
+                <a href="#" class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group" title="Kelola Mata Pelajaran (segera hadir)">
                     <div class="card-body flex-row items-center p-5">
                         <div class="mr-4 text-info">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18" /></svg>
+                            <i class="fa-solid fa-book fa-2x w-10 h-10"></i>
                         </div>
                         <div>
-                            <h2 class="card-title text-base-content/60">Total Mapel</h2>
+                            <h2 class="card-title text-base-content/60 group-hover:text-info">Total Mapel</h2>
                             <p class="text-3xl font-extrabold text-base-content">{{ total_mapel }}</p>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Aksi Cepat untuk Admin -->
             <div class="mt-12">
                 <h2 class="text-2xl font-bold mb-5 text-primary-content">Akses Cepat</h2>
-                <div class="flex flex-wrap gap-4">
-                    <a href="{% url 'users:akun_list' %}" class="btn btn-primary btn-lg">Manajemen Akun</a>
-                    <a href="{% url 'users:peran_list' %}" class="btn btn-secondary btn-lg">Manajemen Peran</a>
-                    <a href="#" class="btn btn-accent btn-lg">Manajemen Akademik</a>
-                    <a href="#" class="btn btn-info btn-lg">Manajemen Nilai</a>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="{% url 'users:akun_list' %}" class="btn btn-primary btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen akun">
+                        <i class="fa-solid fa-users-cog fa-xl"></i>
+                        <span>Manajemen Akun</span>
+                    </a>
+                    <a href="{% url 'users:peran_list' %}" class="btn btn-secondary btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen peran">
+                        <i class="fa-solid fa-shield-halved fa-xl"></i>
+                        <span>Manajemen Peran</span>
+                    </a>
+                    <a href="#" class="btn btn-accent btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen akademik">
+                        <i class="fa-solid fa-graduation-cap fa-xl"></i>
+                        <span>Manajemen Akademik</span>
+                    </a>
+                    <a href="#" class="btn btn-info btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen nilai">
+                        <i class="fa-solid fa-clipboard-check fa-xl"></i>
+                        <span>Manajemen Nilai</span>
+                    </a>
                 </div>
             </div>
 
@@ -103,6 +115,11 @@
 
     </div>
 </div>
+
+{% block extra_head %}
+    <!-- Font Awesome untuk ikon yang lebih kaya -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock extra_head %}
 
 <script>
     function updateClock() {
