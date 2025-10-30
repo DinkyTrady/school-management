@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'tailwindcss_theme',
     'django_extensions',
     'widget_tweaks',
+    'django_htmx',
 
     # Local apps
     'apps.core',
@@ -63,6 +64,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
+    # plugin
+    'django_htmx.middleware.HtmxMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -150,4 +155,5 @@ TAILWIND_APP_NAME = 'tailwindcss_theme'
 
 AUTH_USER_MODEL = 'users.akun'
 
+LOGIN_URL = '/users/auth/login/'
 LOGIN_REDIRECT_URL = '/'
