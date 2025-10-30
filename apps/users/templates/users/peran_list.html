@@ -1,0 +1,41 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Manajemen Peran
+{% endblock title %}
+
+{% block content %}
+<div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title text-2xl">Daftar Peran Pengguna</h2>
+            <a href="{% url 'users:peran_add' %}" class="btn btn-primary">Tambah Peran Baru</a>
+        </div>
+
+        <div class="mb-4">
+            <input type="text" name="q" placeholder="Cari berdasarkan nama peran..."
+                   class="input input-bordered w-full"
+                   hx-get="{% url 'users:peran_list' %}"
+                   hx-trigger="keyup changed delay:500ms"
+                   hx-target="#peran-table-body"
+                   hx-swap="innerHTML">
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <!-- head -->
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nama Peran</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="peran-table-body">
+                    {% include 'users/partials/peran_table_body.html' %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

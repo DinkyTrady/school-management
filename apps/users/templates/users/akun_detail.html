@@ -1,0 +1,79 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Detail Akun: {{ akun.email }}
+{% endblock title %}
+
+{% block content %}
+<div class="card w-full max-w-2xl bg-base-100 shadow-xl mx-auto">
+    <div class="card-body">
+        <h2 class="card-title text-2xl justify-center mb-4">Detail Akun</h2>
+
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <tbody>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ akun.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Peran</th>
+                        <td>
+                            {% if akun.peran %}
+                                <span class="badge badge-info">{{ akun.peran.nama }}</span>
+                            {% else %}
+                                <span class="badge">Tidak Ada</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Aktif</th>
+                        <td>
+                            {% if akun.is_active %}
+                                <span class="badge badge-success">Ya</span>
+                            {% else %}
+                                <span class="badge badge-error">Tidak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Staff</th>
+                        <td>
+                            {% if akun.is_staff %}
+                                <span class="badge badge-success">Ya</span>
+                            {% else %}
+                                <span class="badge badge-error">Tidak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Superuser</th>
+                        <td>
+                            {% if akun.is_superuser %}
+                                <span class="badge badge-success">Ya</span>
+                            {% else %}
+                                <span class="badge badge-error">Tidak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Terakhir Login</th>
+                        <td>{{ akun.last_login|default:"Belum pernah" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Tanggal Bergabung</th>
+                        <td>{{ akun.date_joined }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-actions justify-end mt-6">
+            <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'users:akun_permissions' pk=akun.pk %}" class="btn btn-secondary">Izin</a>
+            <a href="{% url 'users:akun_delete' pk=akun.pk %}" class="btn btn-error">Hapus</a>
+            <a href="{% url 'users:akun_list' %}" class="btn btn-ghost">Kembali ke Daftar</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

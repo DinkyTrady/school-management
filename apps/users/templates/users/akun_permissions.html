@@ -1,0 +1,86 @@
+{% extends 'base_generic.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Kelola Izin Akun: {{ akun.email }}
+{% endblock title %}
+
+{% block content %}
+<div class="card w-full max-w-4xl bg-base-100 shadow-xl mx-auto">
+    <div class="card-body">
+        <h2 class="card-title text-2xl justify-center mb-4">Kelola Izin Akun: {{ akun.email }}</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">{{ form.is_active.label }}</span>
+                        {% render_field form.is_active %}
+                    </label>
+                </div>
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">{{ form.is_staff.label }}</span>
+                        {% render_field form.is_staff %}
+                    </label>
+                </div>
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">{{ form.is_superuser.label }}</span>
+                        {% render_field form.is_superuser %}
+                    </label>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="form-control mt-4">
+                <label class="label">
+                    <span class="label-text">{{ form.groups.label }}</span>
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    {% for checkbox in form.groups %}
+                        <div class="form-control">
+                            <label class="label cursor-pointer justify-start gap-2">
+                                {% render_field checkbox %}
+                                <span class="label-text">{{ checkbox.choice_label }}</span>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="form-control mt-4">
+                <label class="label">
+                    <span class="label-text">{{ form.user_permissions.label }}</span>
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-2">
+                    {% for checkbox in form.user_permissions %}
+                        <div class="form-control">
+                            <label class="label cursor-pointer justify-start gap-2">
+                                {% render_field checkbox %}
+                                <span class="label-text text-sm break-words">{{ checkbox.choice_label }}</span>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-error mt-4">
+                    <span>{{ error }}</span>
+                </div>
+            {% endfor %}
+
+            <div class="form-control mt-6">
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                <a href="{% url 'users:akun_list' %}" class="btn btn-ghost mt-2">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

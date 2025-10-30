@@ -1,0 +1,24 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Hapus Akun: {{ object.email }}
+{% endblock title %}
+
+{% block content %}
+<div class="card w-full max-w-md bg-base-100 shadow-xl mx-auto">
+    <div class="card-body">
+        <h2 class="card-title text-2xl justify-center mb-4">Konfirmasi Hapus Akun</h2>
+
+        <p class="text-center mb-6">Apakah Anda yakin ingin menghapus akun <strong>{{ object.email }}</strong>?</p>
+        <p class="text-center text-error text-sm mb-6">Tindakan ini tidak dapat dibatalkan.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-control mt-6 flex flex-col gap-2">
+                <button type="submit" class="btn btn-error">Ya, Hapus Akun Ini</button>
+                <a href="{% url 'users:akun_list' %}" class="btn btn-ghost">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
