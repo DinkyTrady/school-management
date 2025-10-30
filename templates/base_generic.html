@@ -11,7 +11,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {% block extra_head %} {% endblock extra_head %}
   </head>
-  <body class="bg-base-200">
+  <body class="bg-base-300">
     <div class="drawer">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col">
@@ -22,7 +22,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </label>
                 </div>
-                <div class="flex-1 px-2 mx-2 font-bold text-primary">SIGMA</div>
+                <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 font-bold text-primary text-xl transition-transform duration-300 hover:scale-105">SIGMA</a>
                 <div class="flex-none hidden lg:flex items-center">
                     <ul class="menu menu-horizontal">
                         {% include 'partials/_nav_links.html' %}
@@ -52,9 +52,22 @@
                 </div>
             </div>
             <!-- Page content here -->
-            <main>
-                {% block content %}
-                {% endblock content %}
+            <main class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
+                <div class="p-6 md:p-10 max-w-7xl mx-auto">
+                    {% if request.resolver_match.view_name != 'core:dashboard' %}
+                    <div class="mb-6">
+                        <button onclick="window.history.back()" class="btn btn-sm btn-outline gap-2 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Kembali
+                        </button>
+                    </div>
+                    {% endif %}
+                    
+                    {% block content %}
+                    {% endblock content %}
+                </div>
             </main>
         </div>
         <div class="drawer-side">
