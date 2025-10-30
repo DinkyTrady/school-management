@@ -5,17 +5,42 @@
 {% endblock title %}
 
 {% block content %}
-<div class="bg-gradient-to-br from-primary to-secondary min-h-screen">
+<div class="bg-gradient-to-br from-primary via-white to-secondary min-h-full p-4 md:p-8">
     <div class="p-6 md:p-10 max-w-7xl mx-auto">
 
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
             <div>
-                <h1 class="text-3xl font-bold text-primary-content">Selamat Datang, {{ user.get_full_name|default:user.email }}!</h1>
+                <h1 class="text-3xl font-bold text-primary-content"
+                    x-data="{
+                        greeting: '',
+                        updateGreeting() {
+                            const hour = new Date().getHours();
+                            if (hour >= 4 && hour < 11) this.greeting = 'Selamat Pagi';
+                            else if (hour >= 11 && hour < 15) this.greeting = 'Selamat Siang';
+                            else if (hour >= 15 && hour < 19) this.greeting = 'Selamat Sore';
+                            else this.greeting = 'Selamat Malam';
+                        },
+                        init() {
+                            this.updateGreeting();
+                            setInterval(() => this.updateGreeting(), 60000); // Update setiap menit
+                        }
+                    }"
+                    x-init="init()"
+                >
+                    <span x-text="greeting"></span>, {{ user.get_full_name|default:user.email }}!
+                </h1>
                 <p class="text-primary-content/80 mt-1">Ringkasan dan akses cepat untuk sistem Anda.</p>
             </div>
-            <div class="text-lg font-semibold text-primary-content bg-black/20 backdrop-blur-sm shadow-inner px-4 py-2 rounded-lg mt-4 md:mt-0">
-                <span id="realtime-clock"></span>
+            <div x-data="{
+                    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+                    init() {
+                        setInterval(() => {
+                            this.time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                        }, 1000);
+                    }
+                }" x-init="init()" class="text-lg font-semibold text-primary-content bg-black/20 backdrop-blur-sm shadow-inner px-4 py-2 rounded-lg mt-4 md:mt-0">
+                <span x-text="time"></span>
             </div>
         </div>
 
@@ -83,20 +108,20 @@
                 <h2 class="text-2xl font-bold mb-5 text-primary-content">Akses Cepat</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <a href="{% url 'users:akun_list' %}" class="btn btn-primary btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen akun">
-                        <i class="fa-solid fa-users-cog fa-xl"></i>
-                        <span>Manajemen Akun</span>
+                        <i class="fa-solid fa-users-cog fa-xl text-black"></i>
+                        <span class="text-black">Manajemen Akun</span>
                     </a>
                     <a href="{% url 'users:peran_list' %}" class="btn btn-secondary btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen peran">
-                        <i class="fa-solid fa-shield-halved fa-xl"></i>
-                        <span>Manajemen Peran</span>
+                        <i class="fa-solid fa-shield-halved fa-xl text-black"></i>
+                        <span class="text-black">Manajemen Peran</span>
                     </a>
                     <a href="#" class="btn btn-accent btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen akademik">
-                        <i class="fa-solid fa-graduation-cap fa-xl"></i>
-                        <span>Manajemen Akademik</span>
+                        <i class="fa-solid fa-graduation-cap fa-xl text-black"></i>
+                        <span class="text-black">Manajemen Akademik</span>
                     </a>
                     <a href="#" class="btn btn-info btn-lg h-auto py-4 flex-col gap-2" title="Buka halaman manajemen nilai">
-                        <i class="fa-solid fa-clipboard-check fa-xl"></i>
-                        <span>Manajemen Nilai</span>
+                        <i class="fa-solid fa-clipboard-check fa-xl text-black"></i>
+                        <span class="text-black">Manajemen Nilai</span>
                     </a>
                 </div>
             </div>
@@ -116,21 +141,10 @@
     </div>
 </div>
 
-{% block extra_head %}
-    <!-- Font Awesome untuk ikon yang lebih kaya -->
+{% block extra_head %} {# Memindahkan semua aset ke sini agar lebih rapi #}
+    {% load static %}
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-{% endblock extra_head %}
-
-<script>
-    function updateClock() {
-        const clockElement = document.getElementById('realtime-clock');
-        if (clockElement) {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-            clockElement.textContent = timeString;
-        }
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-</script>
+    
+{% endblock %}
 {% endblock content %}

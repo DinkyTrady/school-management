@@ -2,6 +2,12 @@
 @plugin "daisyui" {
   themes: emerald --default, night --prefersDark;
 };
+@plugin "daisyui/theme" {
+    name: "emerald";
+    default: true;
+    --color-primary: #86efac;
+    --color-secondary: #98c5fd;
+}
 
 /**
   * A catch-all path to Django template files, JavaScript, and Python files

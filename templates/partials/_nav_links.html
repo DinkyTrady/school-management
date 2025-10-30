@@ -1,0 +1,7 @@
+<li class="{% if request.resolver_match.url_name == 'dashboard' %}font-bold{% endif %}"><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
+{% if user.is_authenticated %}
+    <li class="{% if 'akun' in request.path %}font-bold{% endif %}"><a href="{% url 'users:akun_list' %}">Manajemen Akun</a></li>
+    <li class="{% if 'peran' in request.path %}font-bold{% endif %}"><a href="{% url 'users:peran_list' %}">Manajemen Peran</a></li>
+{% else %}
+    <li><a href="{% url 'users:login' %}">Login</a></li>
+{% endif %}

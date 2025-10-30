@@ -9,64 +9,95 @@
     {% tailwind_css %}
     <script src="https://unpkg.com/htmx.org@2.0.8" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    {% block head %} {% endblock %}
+    {% block extra_head %} {% endblock extra_head %}
   </head>
   <body class="bg-base-200">
     <div class="drawer">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col">
             <!-- Navbar -->
-            <div class="w-full navbar bg-base-300">
+            <div class="w-full navbar sticky top-0 z-30 bg-base-100/80 backdrop-blur-sm shadow-md">
                 <div class="flex-none lg:hidden">
                     <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </label>
                 </div>
-                <div class="flex-1 px-2 mx-2 font-bold">Manajemen Sekolah</div>
-                <div class="flex-none hidden lg:block">
+                <div class="flex-1 px-2 mx-2 font-bold text-primary">SIGMA</div>
+                <div class="flex-none hidden lg:flex items-center">
                     <ul class="menu menu-horizontal">
-                        <!-- Navbar menu content here -->
-                        <li><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
-                        {% if user.is_authenticated %}
-                            <li><a href="{% url 'users:akun_list' %}">Manajemen Akun</a></li>
-                            <li><a href="{% url 'users:peran_list' %}">Manajemen Peran</a></li>
-                            <li>
-                                <form method="post" action="{% url 'users:logout' %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-ghost">Logout</button>
-                                </form>
-                            </li>
-                        {% else %}
-                            <li><a href="{% url 'users:login' %}">Login</a></li>
-                        {% endif %}
+                        {% include 'partials/_nav_links.html' %}
                     </ul>
+                    {% if user.is_authenticated %}
+                    <!-- Dropdown Profil Pengguna -->
+                    <div class="dropdown dropdown-end ml-4">
+                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                            <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
+                                <span>{{ user.email|slice:":1"|upper }}</span>
+                            </div>
+                        </div>
+                        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                            <li class="p-2 font-semibold text-sm truncate">{{ user.email }}</li>
+                            <div class="divider my-0"></div>
+                            <li>
+                                <a href="#">
+                                    <i class="fa-solid fa-user-cog w-4"></i> Setting Akun
+                                </a>
+                            </li>
+                            <li><a href="#"><i class="fa-solid fa-key w-4"></i> Ubah Password</a></li>
+                            <div class="divider my-0"></div>
+                            <li><button onclick="logout_modal.showModal()" class="text-error"><i class="fa-solid fa-right-from-bracket w-4"></i> Logout</button></li>
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <!-- Page content here -->
-            <main class="p-4 md:p-8">
+            <main>
                 {% block content %}
                 {% endblock content %}
             </main>
         </div>
         <div class="drawer-side">
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
-            <ul class="menu p-4 w-80 min-h-full bg-base-200">
+            <ul class="menu p-4 w-80 min-h-full bg-base-200 gap-1">
                 <!-- Sidebar content here -->
-                <li><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
+                {% include 'partials/_nav_links.html' %}
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'users:akun_list' %}">Manajemen Akun</a></li>
-                    <li><a href="{% url 'users:peran_list' %}">Manajemen Peran</a></li>
-                     <li>
-                        <form method="post" action="{% url 'users:logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-ghost">Logout</button>
-                        </form>
+                    <div class="divider"></div>
+                    <li>
+                        <button onclick="logout_modal.showModal()" class="w-full text-left">Logout</button>
                     </li>
-                {% else %}
-                    <li><a href="{% url 'users:login' %}">Login</a></li>
                 {% endif %}
             </ul>
         </div>
     </div>
   </body>
 </html>
+
+{% if user.is_authenticated %}
+<!-- Form Logout Tersembunyi -->
+<form id="logout-form" method="post" action="{% url 'users:logout' %}" class="hidden">
+    {% csrf_token %}
+</form>
+
+<!-- Modal Konfirmasi Logout -->
+<dialog id="logout_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-md">
+    <div class="flex items-start gap-4">
+        <div>
+            <i class="fa-solid fa-triangle-exclamation text-warning text-4xl"></i>
+        </div>
+        <div>
+            <h3 class="font-bold text-lg">Anda Yakin Ingin Keluar?</h3>
+            <p class="py-2 text-sm text-base-content/70">
+                Sesi Anda akan diakhiri. Pastikan semua pekerjaan yang belum disimpan telah aman.
+            </p>
+        </div>
+    </div>
+    <div class="modal-action mt-6">
+      <button class="btn btn-ghost" onclick="logout_modal.close()">Batal</button>
+      <button class="btn btn-error" onclick="document.getElementById('logout-form').submit();"><i class="fa-solid fa-right-from-bracket"></i>Ya, Keluar Sekarang</button>
+    </div>
+  </div>
+</dialog>
+{% endif %}

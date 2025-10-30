@@ -1,6 +1,7 @@
 from typing import override
 
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from apps.core.models import Person
@@ -23,6 +24,7 @@ class Akun(AbstractBaseUser, PermissionsMixin):
     peran = models.ForeignKey(Peran, on_delete=models.PROTECT, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now=True, auto_created=True, editable=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -43,7 +45,7 @@ class Akun(AbstractBaseUser, PermissionsMixin):
     def is_guru(self):
         if not self.peran:
             return False
-        return self.peran == 'Guru'
+        return self.peran.nama == 'Guru'
 
     @property
     def is_siswa(self):
