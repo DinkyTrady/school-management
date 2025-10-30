@@ -1,10 +1,4 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
+from datetime import date
 from django.db import models
 
 
@@ -27,7 +21,21 @@ class Person(models.Model):
 
     class Meta:
         abstract = True
+        indexes = [
+            models.Index(fields=['first_name', 'last_name', 'nomor_handphone'])
+        ]
 
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
+
+    def get_age(self):
+        today= date.today()
+        birth_date = self.tanggal_lahir.date()
+        age = (
+            today.year
+            - birth_date.year
+            - ((today.month, today.day) < (birth_date.month, birth_date.year))
+        )
+
+        return age

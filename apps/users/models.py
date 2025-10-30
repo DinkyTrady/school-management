@@ -1,47 +1,119 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
-from typing import ClassVar
+from typing import override
+
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from apps.core.models import Person
 
+from .managers import AkunManager
+
 
 class Peran(models.Model):
-    nama = models.CharField(max_length=255)
+    nama = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.nama
+
+    class Meta:
+        verbose_name_plural = 'Peran Akun'
 
 
-class Akun(AbstractUser):
+class Akun(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    peran = models.ForeignKey(Peran, on_delete=models.CASCADE)
+    peran = models.ForeignKey(Peran, on_delete=models.PROTECT, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['password']
+    REQUIRED_FIELDS = []
+
+    objects = AkunManager()
+
+    @override
+    def __str__(self):
+        return self.email
+
+    @property
+    def get_user_peran(self):
+        if not self.peran:
+            return ''
+        return self.peran.nama
+
+    @property
+    def is_guru(self):
+        if not self.peran:
+            return False
+        return self.peran == 'Guru'
+
+    @property
+    def is_siswa(self):
+        if not self.peran:
+            return False
+        return self.peran.nama == 'Siswa'
+
+    @property
+    def is_tata_usaha(self):
+        if not self.peran:
+            return False
+        return self.peran.nama == 'Tata Usaha'
+
+    @property
+    def is_kepala_sekolah(self):
+        if not self.peran:
+            return False
+        return self.peran.nama == 'Kepala Sekolah'
+
+    @property
+    def is_admin(self):
+        if not self.peran:
+            return False
+        return self.peran.nama == 'Admin'
+
+    class Meta:
+        verbose_name_plural = 'Akun'
 
 
 class Siswa(Person):
     nis = models.CharField(max_length=255, unique=True)
-    akun = models.ForeignKey(Akun, on_delete=models.CASCADE)
+    akun = models.OneToOneField(
+        Akun, on_delete=models.CASCADE, primary_key=True, related_name='siswa_profile'
+    )
+
+    @override
+    def __str__(self):
+        return self.get_full_name()
+
+    class Meta:
+        verbose_name_plural = 'Siswa'
 
 
 class Guru(Person):
-    nip = models.CharField(max_length=255)
+    nip = models.CharField(max_length=255, unique=True)
     jabatan = models.CharField(max_length=100)
-    akun = models.ForeignKey(Akun, on_delete=models.CASCADE)
+    akun = models.OneToOneField(
+        Akun, on_delete=models.CASCADE, primary_key=True, related_name='guru_profile'
+    )
+
+    @override
+    def __str__(self):
+        return self.get_full_name()
+
+    class Meta:
+        verbose_name_plural = 'Guru'
+        indexes = [models.Index(fields=['jabatan'])]
 
 
 class Wali(Person):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    @override
+    def __str__(self):
+        return self.get_full_name()
+
+    class Meta:
+        verbose_name_plural = 'Wali Murid'
 
 
 class SiswaWali(models.Model):
-    HUBUNGAN_CHOICES: ClassVar[list[tuple[str, str]]] = [
+    HUBUNGAN_CHOICES = [
         ('Ayah', 'Ayah'),
         ('Ibu', 'Ibu'),
         ('Wali', 'Wali'),
@@ -49,3 +121,8 @@ class SiswaWali(models.Model):
     siswa = models.ForeignKey(Siswa, on_delete=models.CASCADE)
     wali = models.ForeignKey(Wali, on_delete=models.CASCADE)
     hubungan = models.CharField(max_length=10, choices=HUBUNGAN_CHOICES)
+
+    class Meta:
+        unique_together = ('siswa', 'wali')
+        indexes = [models.Index(fields=['wali', 'siswa'])]
+        verbose_name_plural = 'Hubungan Siswa-Wali'
