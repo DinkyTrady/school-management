@@ -1,0 +1,18 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Dashboard
+{% endblock title %}
+
+{% block content %}
+<div class="hero min-h-screen bg-base-200">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <h1 class="text-5xl font-bold text-center">Selamat Datang, {{ user.email }}!</h1>
+            <p class="py-6">Ini adalah halaman dashboard Anda. Anda bisa mulai mengelola data dari sini.</p>
+            <a href="{% url 'users:akun_list' %}" class="btn btn-primary">Manajemen Akun</a>
+            <a href="{% url 'users:peran_list' %}" class="btn btn-secondary ml-4">Manajemen Peran</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
