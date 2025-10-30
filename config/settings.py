@@ -14,6 +14,7 @@ from pathlib import Path
 from os import path
 from environ import Env
 from pymysql import install_as_MySQLdb
+import platform
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -154,6 +155,13 @@ if DEBUG:
     ]
 
 TAILWIND_APP_NAME = 'tailwindcss_theme'
+
+system_name = platform.system()
+
+if system_name == 'Windows':
+    NPM_BIN_PATH = 'C:/Program Files/nodejs/npm.cmd'
+elif system_name == 'Darwin':  # macOS
+    NPM_BIN_PATH = '/opt/homebrew/bin/npm'
 
 AUTH_USER_MODEL = 'users.akun'
 
