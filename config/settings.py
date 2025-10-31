@@ -15,6 +15,7 @@ from os import path
 from environ import Env
 from pymysql import install_as_MySQLdb
 import platform
+import shutil
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -156,12 +157,38 @@ if DEBUG:
 
 TAILWIND_APP_NAME = 'tailwindcss_theme'
 
-system_name = platform.system()
+# --- More robust NPM path detection ---
+# Try to find npm automatically in the system's PATH first.
+# This is the standard and preferred way.
+NPM_BIN_PATH = shutil.which('npm')
 
-if system_name == 'Windows':
-    NPM_BIN_PATH = 'C:/Program Files/nodejs/npm.cmd'
-elif system_name == 'Darwin':  # macOS
-    NPM_BIN_PATH = '/opt/homebrew/bin/npm'
+if not NPM_BIN_PATH:
+    # If shutil.which can't find npm (which can happen in isolated environments
+    # like the one `uv run` might create), we'll search common installation
+    # locations as a fallback.
+    system = platform.system()
+    possible_paths = []
+
+    if system == 'Windows':
+        possible_paths = [
+            'C:/Program Files/nodejs/npm.cmd',
+            path.expanduser('~/AppData/Roaming/npm/npm.cmd')
+        ]
+    elif system == 'Darwin':  # macOS
+        possible_paths = [
+            '/opt/homebrew/bin/npm',
+            '/usr/local/bin/npm'
+        ]
+    else:  # Linux, etc.
+        possible_paths = ['/usr/bin/npm', '/usr/local/bin/npm']
+
+    for p in possible_paths:
+        if path.exists(p):
+            NPM_BIN_PATH = p
+            break
+
+# If NPM_BIN_PATH is still not set after all this, django-tailwind will
+# raise a descriptive error, which is the desired behavior.
 
 AUTH_USER_MODEL = 'users.akun'
 
