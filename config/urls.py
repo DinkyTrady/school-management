@@ -22,7 +22,8 @@ from config import settings
 urlpatterns = [
     path('', include('apps.core.urls')),
     path('admin/', admin.site.urls),
-    path('users/', include('apps.users.urls', namespace='users'))
+    path('users/', include('apps.users.urls', namespace='users')),
+    path('academics/', include('apps.academics.urls', namespace='academics'))
 ]
 
 if settings.DEBUG:

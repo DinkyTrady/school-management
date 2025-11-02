@@ -1,0 +1,18 @@
+<a href="{{ card_url }}"
+   class="
+     {% if color == 'primary' %}border-primary bg-primary/10
+     {% elif color == 'secondary' %}border-secondary bg-secondary/10
+     {% elif color == 'accent' %}border-accent bg-accent/10
+     {% elif color == 'info' %}border-info bg-info/10
+     {% else %}border-gray-200 bg-gray-50
+     {% endif %}
+     rounded-lg border-2 flex items-center p-4 hover:bg-base-100 transition-colors duration-200 group">
+    <div class="p-3 rounded-lg mr-4 {% if color == 'primary' %}bg-primary/10{% elif color == 'secondary' %}bg-secondary/10{% elif color == 'accent' %}bg-accent/10{% elif color == 'info' %}bg-info/10{% else %}bg-gray-50{% endif %}">
+        <i class="{{ icon }} text-2xl {% if color == 'primary' %}text-primary{% elif color == 'secondary' %}text-secondary{% elif color == 'accent' %}text-accent{% elif color == 'info' %}text-info{% endif %} transition-transform duration-300 group-hover:scale-110"></i>
+    </div>
+    <div class="flex-grow">
+        <h3 class="font-bold text-base-content">{{ title }}</h3>
+        <p class="text-sm text-base-content/70">{{ description }}</p>
+    </div>
+    <i class="fa-solid fa-chevron-right text-sm text-base-content/50 transform transition-transform duration-300 group-hover:translate-x-1"></i>
+</a>

@@ -21,14 +21,18 @@
     <!-- Tampilan untuk Admin -->
     <h2 class="text-2xl font-bold mb-5 text-base-content">Ringkasan Sistem</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Kartu Total Akun (Bisa Diklik) -->
-        {% include 'core/components/card.html' with card_url=card_akun_url icon='fa-solid fa-users' title='Total Akun' value=total_akun color='primary' %}
-        <!-- Kartu Total Peran (Bisa Diklik) -->
-        {% include 'core/components/card.html' with card_url=card_peran_url icon='fa-solid fa-user-shield' title='Total Peran' value=total_peran color='secondary' %}
-        <!-- Kartu Total Kelas (Tidak Bisa Diklik) -->
-        {% include 'core/components/card.html' with card_url=None icon='fa-solid fa-chalkboard' title='Total Kelas' value=total_kelas color='accent' %}
-        <!-- Kartu Total Mapel (Tidak Bisa Diklik) -->
-        {% include 'core/components/card.html' with card_url=None icon='fa-solid fa-book' title='Total Mapel' value=total_mapel color='info' %}
+            {% with card_color='primary' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-users' title='Total Akun' value=total_akun color=card_color %}
+            {% endwith %}
+            {% with card_color='secondary' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-user-shield' title='Total Peran' value=total_peran color=card_color %}
+            {% endwith %}
+            {% with card_color='accent' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-chalkboard' title='Total Kelas' value=total_kelas color=card_color %}
+            {% endwith %}
+            {% with card_color='info' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-book' title='Total Mapel' value=total_mapel color=card_color %}
+            {% endwith %}
     </div>
 
     <!-- Aksi Cepat untuk Admin (Solid List Style) -->
@@ -36,10 +40,18 @@
       <div class="p-4 bg-base-100 rounded-box ">
         <h2 class="text-2xl font-bold mb-5 text-base-content">Akses Cepat</h2>
         <div class="flex gap-4 justify-between overflow-hidden">
-            {% include 'core/components/card-anchor.html' with card_url=card_akun_url icon='fa-solid fa-users' color='primary' title='Manajemen Akun' description='Kelola data pengguna dan staf' %}
-            {% include 'core/components/card-anchor.html' with card_url=card_peran_url icon='fa-solid fa-user-shield' color='secondary' title='Manajemen Peran' description='Atur hak akses untuk setiap pengguna' %}
-            {% include 'core/components/card-anchor.html' with card_url='#' icon='fa-solid fa-chalkboard' color='accent' title='Manajemen Akademik' description='Kelola kelas dan mata pelajaran' %}
-            {% include 'core/components/card-anchor.html' with card_url='#' icon='fa-solid fa-book' color='info' title='Manajemen Nilai' description='Input dan rekapitulasi nilai siswa' %}
+            {% with card_color='primary' %}
+                {% include 'core/partials/_card_anchor.html' with card_url=card_akun_url icon='fa-solid fa-users' color=card_color title='Manajemen Akun' description='Kelola data pengguna dan staf' %}
+            {% endwith %}
+            {% with card_color='secondary' %}
+                {% include 'core/partials/_card_anchor.html' with card_url=card_peran_url icon='fa-solid fa-user-shield' color=card_color title='Manajemen Peran' description='Atur hak akses untuk setiap pengguna' %}
+            {% endwith %}
+            {% with card_color='accent' %}
+                {% include 'core/partials/_card_anchor.html' with card_url=card_kelas_url icon='fa-solid fa-chalkboard' color=card_color title='Manajemen Akademik' description='Kelola kelas dan mata pelajaran' %}
+            {% endwith %}
+            {% with card_color='info' %}
+                {% include 'core/partials/_card_anchor.html' with card_url='#' icon='fa-solid fa-book' color=card_color title='Manajemen Nilai' description='Input dan rekapitulasi nilai siswa' %}
+            {% endwith %}
         </div>
       </div>
     </div>
