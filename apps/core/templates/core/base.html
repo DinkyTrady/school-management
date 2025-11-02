@@ -1,3 +1,5 @@
+{% load static %}
+{% load django_htmx %}
 <!DOCTYPE html>
 <html lang="en" data-theme="cupcake">
   <head>
@@ -7,11 +9,13 @@
     {% load static tailwind_tags %}
     {% tailwind_preload_css %}
     {% tailwind_css %}
-    <script src="https://unpkg.com/htmx.org@2.0.8" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    {% htmx_script %}
+    <link rel="stylesheet" href="{% static "css/styles.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {% block extra_head %} {% endblock extra_head %}
   </head>
-  <body class="bg-base-300">
+  <body class="bg-base-300" hx-headers='{ "x-csrftoken": "{{ csrf_token }}"}'>
     <div class="drawer">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col">
@@ -25,7 +29,7 @@
                 <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 font-bold text-primary text-xl transition-transform duration-300 hover:scale-105">SIGMA</a>
                 <div class="flex-none hidden lg:flex items-center">
                     <ul class="menu menu-horizontal">
-                        {% include 'partials/_nav_links.html' %}
+                        {% include 'core/partials/_nav_links.html' %}
                     </ul>
                     {% if user.is_authenticated %}
                     <!-- Dropdown Profil Pengguna -->
@@ -54,19 +58,10 @@
             <!-- Page content here -->
             <main class="bg-gradient-to-br from-primary via-white to-secondary min-h-screen">
                 <div class="p-6 md:p-10 max-w-7xl mx-auto">
-                    {% if request.resolver_match.view_name != 'core:dashboard' %}
-                    <div class="mb-6">
-                        <button onclick="window.history.back()" class="btn btn-sm btn-outline gap-2 rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                            Kembali
-                        </button>
-                    </div>
-                    {% endif %}
-                    
+                  <div id="main-content">
                     {% block content %}
                     {% endblock content %}
+                  </div>
                 </div>
             </main>
         </div>
@@ -74,7 +69,7 @@
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu p-4 w-80 min-h-full bg-base-200 gap-1">
                 <!-- Sidebar content here -->
-                {% include 'partials/_nav_links.html' %}
+                {% include 'core/partials/_nav_links.html' %}
                 {% if user.is_authenticated %}
                     <div class="divider"></div>
                     <li>

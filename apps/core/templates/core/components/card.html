@@ -1,0 +1,25 @@
+<div class="card bg-base-100 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+  {% if card_url %}
+    <a href="{{ card_url }}">
+      <div class="card-body flex-row items-center p-5">
+        <div class="mr-4 text-{{ color }}">
+          <i class="{{ icon }} text-2xl text-{{ color }} transition-transform duration-300 group-hover:scale-110"></i>
+        </div>
+        <div>
+          <h2 class="card-title text-base-content/60">{{ title }}</h2>
+          <p class="text-3xl font-extrabold text-base-content">{{ value }}</p>
+        </div>
+      </div>
+    </a>
+  {% else %}
+    <div class="card-body flex-row items-center p-5">
+      <div class="mr-4 text-{{ color }}">
+        <i class="{{ icon }} text-2xl text-{{ color }} transition-transform duration-300 group-hover:scale-110"></i>
+      </div>
+      <div>
+        <h2 class="card-title text-base-content/60">{{ title }}</h2>
+        <p class="text-3xl font-extrabold text-base-content">{{ value }}</p>
+      </div>
+    </div>
+  {% endif %}
+</div>
