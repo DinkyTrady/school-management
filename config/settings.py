@@ -171,7 +171,7 @@ if not NPM_BIN_PATH:
 
     if system == 'Windows':
         possible_paths = [
-            'C:/Program Files/nodejs/npm.cmd',
+            r'C:/Program Files/nodejs/npm.cmd',
             path.expanduser('~/AppData/Roaming/npm/npm.cmd')
         ]
     elif system == 'Darwin':  # macOS
@@ -194,3 +194,4 @@ AUTH_USER_MODEL = 'users.akun'
 
 LOGIN_URL = '/users/auth/login/'
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/users/auth/login/'
