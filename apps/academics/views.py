@@ -8,13 +8,13 @@ from django.views.generic import ListView
 from .models import Kelas
 
 
-class KelasListView(LoginRequiredMixin,  ListView):
+class KelasListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Menampilkan halaman penuh daftar kelas.
     Hanya untuk Staf Internal (Admin, Guru, Kepsek, TU).
     """
     model = Kelas
-    # permission_required = ['academics.view_kelas']
+    permission_required = ['academics.view_kelas']
     template_name = 'academics/kelas_list.html'
     context_object_name = 'daftar_kelas'
 
