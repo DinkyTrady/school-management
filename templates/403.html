@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+403 Forbidden | Sigma
+{% endblock title %}
+
+{% block content %}
+<div class="card flex justify-center items-center min-h-screen">
+  <h1 class="text-black font-extrabold text-8xl">403 Forbidden</h1>
+  <p class="text-black text-xl">You can't access this page</p>
+  {% include "core/partials/_history_button.html" %}
+</div>
+{% endblock content %}
