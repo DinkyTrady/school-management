@@ -70,7 +70,6 @@
 
         <div class="card-actions justify-end mt-6">
             <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-warning">Edit</a>
-            <a href="{% url 'users:akun_permissions' pk=akun.pk %}" class="btn btn-secondary">Izin</a>
             <a href="{% url 'users:akun_delete' pk=akun.pk %}" class="btn btn-error">Hapus</a>
             <a href="{% url 'users:akun_list' %}" class="btn btn-ghost">Kembali ke Daftar</a>
         </div>

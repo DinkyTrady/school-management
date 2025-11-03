@@ -1,0 +1,6 @@
+{% for checkbox in field %}
+    <div class="flex items-center space-x-2">
+        {% render_field checkbox class='checkbox' %}
+        <label for="{{ checkbox.id_for_label }}" class="label-text">{{ checkbox.choice_label }}</label>
+    </div>
+{% endfor %}

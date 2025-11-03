@@ -1,0 +1,34 @@
+{% load query_params %}
+<div class="flex justify-center">
+  <div class="join pt-2">
+  {% if page_obj.has_previous %}
+    <a
+      hx-get="?{% query_params request page=page_obj.previous_page_number %}"
+      hx-target="#{{ table_body_id }}"
+      hx-push-url="true"
+      hx-swap="innerHTML"
+      class="join-item btn"
+      href="?{% query_params request page=page_obj.previous_page_number %}"
+    >
+      prev
+    </a>
+  {% else %}
+    <span class="join-item btn disabled">prev</span>
+  {% endif %}
+  <span class="join-item btn">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a
+      hx-get="?{% query_params request page=page_obj.next_page_number %}"
+      hx-target="#{{ table_body_id }}"
+      hx-push-url="true"
+      hx-swap="innerHTML"
+      class="join-item btn"
+      href="?{% query_params request page=page_obj.next_page_number %}"
+    >
+      next
+    </a>
+  {% else %}
+    <span class="join-item btn disabled">next</span>
+  {% endif %}
+  </div>
+</div>

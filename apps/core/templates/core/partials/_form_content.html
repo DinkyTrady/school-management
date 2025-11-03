@@ -1,0 +1,95 @@
+{% load widget_tweaks %}
+
+{% if success_message %}
+<div class="alert alert-success mb-4">
+    <span>{{ success_message }}</span>
+</div>
+{% endif %}
+<form hx-post="{{ request.path }}" hx-target="this" hx-swap="outerHTML">
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+  <div class="alert alert-error mb-4">
+    {% for error in form.non_field_errors %}
+    <span>{{ error }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="bg-base-100 p-4 rounded-lg">
+    {% for field in form %}
+    <div class="form-control w-full mb-4">
+      <label for="{{ field.id_for_label }}">
+        <span class="label-text">{{ field.label }}</span>
+      </label>
+
+      {% if field.widget_type == 'select' %}
+      {% render_field field class='select select-bordered w-full' %}
+      {% elif field.field.widget.template_name == 'django/forms/widgets/checkbox_select.html' %}
+        <div class="border border-base-300 rounded-lg p-4">
+            {% if field.name == 'user_permissions' %}
+                <input type="text"
+                       class="input input-bordered w-full mb-2"
+                       placeholder="Search permissions..."
+                       hx-get="{% url 'users:search_permissions' %}"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-target="#permissions-grid"
+                       hx-swap="innerHTML">
+            {% endif %}
+            <div class="mb-2 flex space-x-2">
+                <button type="button" class="btn btn-xs" onclick="toggleCheckboxes(this, true)">Select All</button>
+                <button type="button" class="btn btn-xs" onclick="toggleCheckboxes(this, false)">Deselect All</button>
+            </div>
+            <div id="{% if field.name == 'user_permissions' %}permissions-grid{% endif %}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {% for checkbox in field %}
+                    <div class="flex items-center space-x-2">
+                        {{ checkbox.tag }}
+                        <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+      {% elif field.widget_type == 'checkbox' %}
+      {% render_field field class='toggle toggle-primary' %}
+      <label for="{{ field.id_for_label }}"> </label>
+      {% else %}
+      {% render_field field class='input input-bordered w-full' %}
+      {% endif %}
+
+      {% if field.help_text %}
+      <div class="label">
+        <span class="label-text-alt">{{ field.help_text|safe }}</span>
+      </div>
+      {% endif %}
+
+      {% for error in field.errors %}
+      <div class="label">
+        <span class="label-text-alt">{{ error }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    {% for error in form.non_field_errors %}
+    <div class="alert alert-error mt-4">
+      <span>{{ error }}</span>
+    </div>
+    {% endfor %}
+
+    <div class="form-control mt-6">
+      <button type="submit" class="btn btn-primary">Simpan</button>
+      {% include "core/partials/_history_button.html" %}
+    </div>
+  </div>
+</form>
+
+<script>
+function toggleCheckboxes(button, shouldBeChecked) {
+    const container = button.closest('.border');
+    if (container) {
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = shouldBeChecked;
+        });
+    }
+}
+</script>

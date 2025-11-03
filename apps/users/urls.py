@@ -13,15 +13,11 @@ urlpatterns = [
     path('<int:pk>/detail/', views.AkunDetailView.as_view(), name='akun_detail'),
     path('<int:pk>/edit/', views.AkunUpdateView.as_view(), name='akun_edit'),
     path('<int:pk>/delete/', views.AkunDeleteView.as_view(), name='akun_delete'),
-    path(
-        '<int:pk>/permissions/',
-        views.AkunPermissionView.as_view(),
-        name='akun_permissions',
-    ),
     # CRUD untuk Peran (Roles)
     path('roles/', views.PeranListView.as_view(), name='peran_list'),
     path('roles/add/', views.PeranCreateView.as_view(), name='peran_add'),
     path('roles/<int:pk>/edit/', views.PeranUpdateView.as_view(), name='peran_edit'),
+    path('search-permissions/', views.search_permissions, name='search_permissions'),
     path(
         'roles/<int:pk>/delete/', views.PeranDeleteView.as_view(), name='peran_delete'
     ),

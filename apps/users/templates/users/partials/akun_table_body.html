@@ -20,7 +20,6 @@
         <div class="flex gap-2">
             <a href="{% url 'users:akun_detail' pk=akun.pk %}" class="btn btn-sm btn-info">Detail</a>
             <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-sm btn-warning">Edit</a>
-            <a href="{% url 'users:akun_permissions' pk=akun.pk %}" class="btn btn-sm btn-secondary">Izin</a>
             <button hx-get="{% url 'users:akun_delete' pk=akun.pk %}" hx-target="body" hx-swap="beforeend" class="btn btn-sm btn-error">Hapus</button>
         </div>
     </td>
@@ -30,3 +29,5 @@
     <td colspan="5" class="text-center">Belum ada akun yang terdaftar.</td>
 </tr>
 {% endfor %}
+
+{{ pagination|safe }}

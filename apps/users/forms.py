@@ -10,33 +10,6 @@ from .models import Akun, Peran
 
 
 class AkunCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = Akun
-        fields = ("email", "peran")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['peran'].queryset = Peran.objects.all()
-        self.fields['peran'].widget = Select(
-            attrs={'class': 'select select-bordered w-full'}
-        )
-
-
-class AkunChangeForm(UserChangeForm):
-    class Meta:
-        model = Akun
-        fields = ('email', 'peran', 'is_active', 'is_staff', 'is_superuser')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if 'password' in self.fields:
-            del self.fields['password']
-        self.fields['peran'].queryset = Peran.objects.all()
-        self.fields['peran'].widget = Select(
-            attrs={'class': 'select select-bordered w-full'}
-        )
-
-class AkunPermissionForm(ModelForm):
     groups = ModelMultipleChoiceField(
         queryset=Group.objects.all(),
         widget=CheckboxSelectMultiple,
@@ -50,12 +23,66 @@ class AkunPermissionForm(ModelForm):
         label='Izin Spesifik'
     )
 
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = Akun
-        fields = ['is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions']
+        fields = (
+            'email',
+            'password',
+            'password2',
+            'peran',
+            'groups',
+            'user_permissions',
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Tambahkan class DaisyUI untuk checkbox
+        for field_name in ['groups', 'user_permissions']:
+            if field_name in self.fields:
+                self.fields[field_name].widget.attrs.update({'class': 'checkbox'})
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+
+            if 'groups' in self.cleaned_data:
+                user.groups.set(self.cleaned_data['groups'])
+            if 'user_permissions' in self.cleaned_data:
+                user.user_permissions.set(self.cleaned_data['user_permissions'])
+            return user
+
+
+class AkunChangeForm(UserChangeForm):
+    groups = ModelMultipleChoiceField(
+        queryset=Group.objects.all(),
+        widget=CheckboxSelectMultiple,
+        required=False,
+        label='Group'
+    )
+    user_permissions = ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=CheckboxSelectMultiple,
+        required=False,
+        label='Izin Spesifik'
+    )
+    class Meta(UserChangeForm.Meta):
+        model = Akun
+        fields = (
+            'email',
+            'peran',
+            'is_active',
+            'is_staff',
+            'is_superuser',
+            'groups',
+            'user_permissions',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'password' in self.fields:
+            del self.fields['password']
         # Tambahkan class DaisyUI untuk checkbox
         for field_name in ['groups', 'user_permissions']:
             if field_name in self.fields:
@@ -69,11 +96,10 @@ class AkunPermissionForm(ModelForm):
         )
 
     def save(self, commit=True):
-        user = super().save(commit=False)
+        instance = super().save(commit=False)
 
         if commit:
-            user.save()
+            instance.save()
 
-            user.groups.set(self.cleaned_data['groups'])
-            user.user_permissions.set(self.cleaned_data['user_permissions'])
-        return user
+            self.save_m2m()
+        return instance

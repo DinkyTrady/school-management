@@ -21,9 +21,8 @@
                    hx-swap="innerHTML">
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="">
             <table class="table w-full">
-                <!-- head -->
                 <thead>
                     <tr>
                         <th></th>
@@ -34,9 +33,15 @@
                     </tr>
                 </thead>
                 <tbody id="akun-table-body">
-                    {% include 'users/partials/akun_table_body.html' %}
+                  {% include "users/partials/akun_table_body.html" %}
                 </tbody>
             </table>
+        </div>
+
+        <div id="pagination-container">
+        {% if is_paginated %}
+          {% include "core/partials/_paginate.html" %}
+        {% endif %}
         </div>
     </div>
 </div>
