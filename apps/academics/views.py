@@ -1,21 +1,20 @@
 # apps/academics/views.py
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Count
 from django.shortcuts import render
 from django.views.generic import ListView
 
-from apps.users.decorators import staff_internal_required
-from apps.users.mixins import StaffInternalRequiredMixin
-
 from .models import Kelas
 
 
-class KelasListView(LoginRequiredMixin, StaffInternalRequiredMixin, ListView):
+class KelasListView(LoginRequiredMixin,  ListView):
     """
     Menampilkan halaman penuh daftar kelas.
     Hanya untuk Staf Internal (Admin, Guru, Kepsek, TU).
     """
     model = Kelas
+    # permission_required = ['academics.view_kelas']
     template_name = 'academics/kelas_list.html'
     context_object_name = 'daftar_kelas'
 
@@ -43,7 +42,8 @@ class KelasListView(LoginRequiredMixin, StaffInternalRequiredMixin, ListView):
 
 # --- View untuk HTMX ---
 
-@staff_internal_required # Amankan endpoint HTMX Anda
+@login_required
+@permission_required('academics.view_kelas', 'users:login', True)
 def htmx_search_kelas(request):
     """
     View ini HANYA merender partial HTML untuk isi tabel.

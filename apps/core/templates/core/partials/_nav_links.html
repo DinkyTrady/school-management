@@ -2,7 +2,6 @@
 {% if user.is_authenticated %}
     <li class="{% if 'akun' in request.path %}font-bold{% endif %}"><a href="{% url 'users:akun_list' %}">Manajemen Akun</a></li>
     <li class="{% if 'peran' in request.path %}font-bold{% endif %}"><a href="{% url 'users:peran_list' %}">Manajemen Peran</a></li>
-    <li class="{% if 'group' in request.path %}font-bold{% endif %}"><a href="{% url 'users:group_list' %}">Manajemen Group</a></li>
 {% else %}
     <li><a href="{% url 'users:login' %}">Login</a></li>
 {% endif %}
