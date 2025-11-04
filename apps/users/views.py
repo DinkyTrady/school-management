@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Permission
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -12,28 +15,29 @@ from django.views.generic import (
 
 from apps.core.views import BaseCreateView, BaseListView, BaseUpdateView
 
-from django.contrib.auth.models import Permission
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-
 from .forms import AkunChangeForm, AkunCreationForm
 from .models import Akun as AkunType, Peran
 
 Akun: AkunType = get_user_model()
 
+
 def search_permissions(request):
     query = request.GET.get('q', '')
     permissions = Permission.objects.filter(name__icontains=query)
-    
-    form = AkunChangeForm()
-    field = form.fields['user_permissions']
-    
-    field.queryset = permissions
-    
+
+    if 'akun_pk' in request.GET and request.GET.get('akun_pk'):
+        akun = Akun.objects.get(pk=request.GET.get('akun_pk'))
+        form = AkunChangeForm(instance=akun)
+    else:
+        form = AkunCreationForm()
+
+    field = form['user_permissions']
+    field.field.queryset = permissions
+
     return HttpResponse(
         render_to_string(
             'users/partials/_permission_checkboxes.html',
-            {'field': field}
+            {'field': field},
         )
     )
 
