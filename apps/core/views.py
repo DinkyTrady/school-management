@@ -23,6 +23,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         user = self.request.user
 
         context['is_admin'] = user.is_superuser
+        context['is_guru'] = user.is_guru
 
         # Hanya hitung dan tambahkan data ini jika pengguna adalah admin
         if user.is_superuser:

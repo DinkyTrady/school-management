@@ -126,6 +126,8 @@
         </div>
     </div>
 
+{% elif is_guru %}
+    {% include "./guru_dashboard.html" %}
 {% else %}
     <!-- Tampilan untuk Peran Lain -->
     <div class="hero min-h-[60vh] bg-base-100 rounded-box shadow-lg">
