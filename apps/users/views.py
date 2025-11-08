@@ -1,5 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Permission
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -9,39 +13,55 @@ from django.views.generic import (
     UpdateView,
 )
 
-from .forms import AkunChangeForm, AkunCreationForm, AkunPermissionForm
+from apps.core.views import BaseCreateView, BaseListView, BaseUpdateView
+
+from .forms import AkunChangeForm, AkunCreationForm
 from .models import Akun as AkunType, Peran
 
 Akun: AkunType = get_user_model()
 
 
-class AkunListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+def search_permissions(request):
+    query = request.GET.get('q', '')
+    permissions = Permission.objects.filter(name__icontains=query)
+
+    if 'akun_pk' in request.GET and request.GET.get('akun_pk'):
+        akun = Akun.objects.get(pk=request.GET.get('akun_pk'))
+        form = AkunChangeForm(instance=akun)
+    else:
+        form = AkunCreationForm()
+
+    field = form['user_permissions']
+    field.field.queryset = permissions
+
+    return HttpResponse(
+        render_to_string(
+            'users/partials/_permission_checkboxes.html',
+            {'field': field},
+        )
+    )
+
+
+class AkunListView(BaseListView):
     model = Akun
-    template_name = 'users/akun_list.html'
-    context_object_name = 'akun_list'
     permission_required = 'users.view_akun'
+    context_object_name = 'akun_list'
+    full_template_name = 'users/akun_list.html'
+    partial_template_name = 'users/partials/akun_table_body.html'
+    success_url_name = 'users:akun_list'
+    search_fields = ['email', 'peran__nama']
+    table_body_id = 'akun-table-body'
 
     def get_queryset(self):
-        queryset = Akun.objects.select_related('peran').all()
-        query = self.request.GET.get('q')
-        if query:
-            queryset = queryset.filter(email__icontains=query)
-        return queryset
-
-    def get_template_names(self):
-        return ['users/akun_list.html']
+        qs = super().get_queryset()
+        return qs.select_related('peran').all().order_by('id')
 
 
-class AkunCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class AkunCreateView(BaseCreateView):
     model = Akun
     form_class = AkunCreationForm
-    template_name = 'users/akun_form.html'
-    success_url = reverse_lazy('users:akun_list')
+    success_url_name = 'users:akun_list'
     permission_required = 'users.add_akun'
-
-    def form_valid(self, form):
-        response = super().form_valid(form) # Call super to save the object
-        return response
 
 
 class AkunDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
@@ -54,19 +74,17 @@ class AkunDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         return Akun.objects.select_related('peran').all()
 
 
-class AkunUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class AkunUpdateView(BaseUpdateView):
     model = Akun
     form_class = AkunChangeForm
-    template_name = 'users/akun_form.html'
-    success_url = reverse_lazy('users:akun_list')
+    success_url_name = 'users:akun_list'
     permission_required = 'users.change_akun'
 
     def form_valid(self, form):
-        response = super().form_valid(form) # Call super to save the object
-        return response
-
-    def get_queryset(self):
-        return Akun.objects.select_related('peran').all()
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Akun Berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
 
 
 class AkunDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -80,28 +98,6 @@ class AkunDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
             return ['users/partials/akun_delete_modal.html']
         return ['users/akun_confirm_delete.html']
 
-
-class AkunPermissionView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    model = Akun
-    form_class = AkunPermissionForm
-    template_name = 'users/akun_permissions.html'
-    success_url = reverse_lazy('users:akun_list')
-    permission_required = 'auth.change_permission'
-
-    def get_queryset(self):
-        return (
-            Akun.objects.prefetch_related('user_permissions', 'groups')
-            .select_related('peran')
-            .all()
-        )
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        return context
-
-    def form_valid(self, form):
-        return super().form_valid(form)
 
 # -- Views peran
 class PeranListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -122,6 +118,7 @@ class PeranListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             return ['users/partials/peran_table_body.html']
         return ['users/peran_list.html']
 
+
 class PeranCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Peran
     fields = ['nama']
@@ -134,6 +131,7 @@ class PeranCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         # django-htmx middleware will automatically convert HttpResponseRedirect to HX-Redirect
         return response
 
+
 class PeranUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Peran
     fields = ['nama']
@@ -145,6 +143,7 @@ class PeranUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         response = super().form_valid(form)
         # django-htmx middleware will automatically convert HttpResponseRedirect to HX-Redirect
         return response
+
 
 class PeranDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Peran

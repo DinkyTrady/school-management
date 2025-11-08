@@ -1,4 +1,4 @@
-{% extends 'base_generic.html' %}
+{% extends 'core/base.html' %}
 
 {% block title %}
     Dashboard
@@ -21,109 +21,39 @@
     <!-- Tampilan untuk Admin -->
     <h2 class="text-2xl font-bold mb-5 text-base-content">Ringkasan Sistem</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        
-        <!-- Kartu Total Akun (Bisa Diklik) -->
-        <a href="{% url 'users:akun_list' %}" class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <div class="card-body flex-row items-center p-5">
-                <div class="mr-4 text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.124-1.28-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.124-1.28.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                </div>
-                <div>
-                    <h2 class="card-title text-base-content/60">Total Akun</h2>
-                    <p class="text-3xl font-extrabold text-base-content">{{ total_akun }}</p>
-                </div>
-            </div>
-        </a>
-
-        <!-- Kartu Total Peran (Bisa Diklik) -->
-        <a href="{% url 'users:peran_list' %}" class="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <div class="card-body flex-row items-center p-5">
-                <div class="mr-4 text-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.016h-.008v-.016z" /></svg>
-                </div>
-                <div>
-                    <h2 class="card-title text-base-content/60">Total Peran</h2>
-                    <p class="text-3xl font-extrabold text-base-content">{{ total_peran }}</p>
-                </div>
-            </div>
-        </a>
-
-        <!-- Kartu Total Kelas (Tidak Bisa Diklik) -->
-        <div class="card bg-base-100 shadow-lg">
-            <div class="card-body flex-row items-center p-5">
-                <div class="mr-4 text-accent">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.905 59.905 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l-2.176-1.088A53.854 53.854 0 0112 3.493a53.854 53.854 0 0111.918 5.566l-2.176 1.088m-15.482 0A50.697 50.697 0 0112 13.489a50.697 50.697 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5z" /></svg>
-                </div>
-                <div>
-                    <h2 class="card-title text-base-content/60">Total Kelas</h2>
-                    <p class="text-3xl font-extrabold text-base-content">{{ total_kelas }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Kartu Total Mapel (Tidak Bisa Diklik) -->
-        <div class="card bg-base-100 shadow-lg">
-            <div class="card-body flex-row items-center p-5">
-                <div class="mr-4 text-info">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
-                </div>
-                <div>
-                    <h2 class="card-title text-base-content/60">Total Mapel</h2>
-                    <p class="text-3xl font-extrabold text-base-content">{{ total_mapel }}</p>
-                </div>
-            </div>
-        </div>
+            {% with card_color='primary' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-users' title='Total Akun' value=total_akun color=card_color %}
+            {% endwith %}
+            {% with card_color='secondary' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-user-shield' title='Total Peran' value=total_peran color=card_color %}
+            {% endwith %}
+            {% with card_color='accent' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-chalkboard' title='Total Kelas' value=total_kelas color=card_color %}
+            {% endwith %}
+            {% with card_color='info' %}
+                {% include 'core/partials/_card.html' with icon='fa-solid fa-book' title='Total Mapel' value=total_mapel color=card_color %}
+            {% endwith %}
     </div>
 
     <!-- Aksi Cepat untuk Admin (Solid List Style) -->
     <div class="mt-12">
+      <div class="p-4 bg-base-100 rounded-box ">
         <h2 class="text-2xl font-bold mb-5 text-base-content">Akses Cepat</h2>
-        <div class="bg-base-100 rounded-box shadow-lg overflow-hidden">
-            
-            <a href="{% url 'users:akun_list' %}" class="flex items-center p-4 border-b border-base-200 hover:bg-base-200 transition-colors duration-200 group">
-                <div class="bg-primary/10 p-3 rounded-lg mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 013 5.197" /></svg>
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-bold text-base-content">Manajemen Akun</h3>
-                    <p class="text-sm text-base-content/70">Kelola data pengguna dan staf</p>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-base-content/50 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
-
-            <a href="{% url 'users:peran_list' %}" class="flex items-center p-4 border-b border-base-200 hover:bg-base-200 transition-colors duration-200 group">
-                <div class="bg-secondary/10 p-3 rounded-lg mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.016h-.008v-.016z" /></svg>
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-bold text-base-content">Manajemen Peran</h3>
-                    <p class="text-sm text-base-content/70">Atur hak akses untuk setiap pengguna</p>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-base-content/50 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
-
-            <a href="#" class="flex items-center p-4 border-b border-base-200 hover:bg-base-200 transition-colors duration-200 group">
-                <div class="bg-accent/10 p-3 rounded-lg mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.905 59.905 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l-2.176-1.088A53.854 53.854 0 0112 3.493a53.854 53.854 0 0111.918 5.566l-2.176 1.088m-15.482 0A50.697 50.697 0 0112 13.489a50.697 50.697 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5z" /></svg>
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-bold text-base-content">Manajemen Akademik</h3>
-                    <p class="text-sm text-base-content/70">Kelola kelas dan mata pelajaran</p>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-base-content/50 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
-
-            <a href="#" class="flex items-center p-4 hover:bg-base-200 transition-colors duration-200 group">
-                <div class="bg-info/10 p-3 rounded-lg mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-info transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-bold text-base-content">Manajemen Nilai</h3>
-                    <p class="text-sm text-base-content/70">Input dan rekapitulasi nilai siswa</p>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-base-content/50 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+        <div class="flex gap-4 justify-between overflow-hidden">
+            {% with card_color='primary' %}
+                {% include 'core/partials/_card_anchor.html' with card_url=card_akun_url icon='fa-solid fa-users' color=card_color title='Manajemen Akun' description='Kelola data pengguna dan staf' %}
+            {% endwith %}
+            {% with card_color='secondary' %}
+                {% include 'core/partials/_card_anchor.html' with card_url=card_peran_url icon='fa-solid fa-user-shield' color=card_color title='Manajemen Peran' description='Atur hak akses untuk setiap pengguna' %}
+            {% endwith %}
+            {% with card_color='accent' %}
+                {% include 'core/partials/_card_anchor.html' with card_url=card_kelas_url icon='fa-solid fa-chalkboard' color=card_color title='Manajemen Akademik' description='Kelola kelas dan mata pelajaran' %}
+            {% endwith %}
+            {% with card_color='info' %}
+                {% include 'core/partials/_card_anchor.html' with card_url='#' icon='fa-solid fa-book' color=card_color title='Manajemen Nilai' description='Input dan rekapitulasi nilai siswa' %}
+            {% endwith %}
         </div>
+      </div>
     </div>
 
 {% elif is_guru %}

@@ -1,0 +1,20 @@
+{% for kelas in daftar_kelas %}
+<tr>
+    <th>{{ forloop.counter }}</th>
+    <td>{{ kelas.nama }}</td>
+    <td>{{ kelas.jurusan.nama }}</td>
+    <td>{{ kelas.wali_kelas.nama }}</td>
+    <td>
+        <span class="badge badge-ghost">{{ kelas.jumlah_siswa }} Siswa</span>
+    </td>
+    <td>{{ kelas.tahun_ajaran.tahun }} - {{ kelas.tahun_ajaran.semester }}</td>
+    <td>
+        <button class="btn btn-sm btn-info">Detail</button>
+        <button class="btn btn-sm btn-warning">Edit</button>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center">Tidak ada data kelas yang ditemukan.</td>
+</tr>
+{% endfor %}

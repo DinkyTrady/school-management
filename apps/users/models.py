@@ -1,7 +1,6 @@
 from typing import override
 
 from django.db import models
-from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from apps.core.models import Person
@@ -41,35 +40,30 @@ class Akun(AbstractBaseUser, PermissionsMixin):
             return ''
         return self.peran.nama
 
-    @property
-    def is_guru(self):
+    def has_peran(self, role_name):
         if not self.peran:
             return False
-        return self.peran.nama == 'Guru'
+        return self.peran.nama.lower() == role_name.lower()
+
+    @property
+    def is_guru(self):
+        return self.has_peran('Guru')
 
     @property
     def is_siswa(self):
-        if not self.peran:
-            return False
-        return self.peran.nama == 'Siswa'
+        return self.has_peran('Siswa')
 
     @property
     def is_tata_usaha(self):
-        if not self.peran:
-            return False
-        return self.peran.nama == 'Tata Usaha'
+        return self.has_peran('Tata Usaha')
 
     @property
     def is_kepala_sekolah(self):
-        if not self.peran:
-            return False
-        return self.peran.nama == 'Kepala Sekolah'
+        return self.has_peran('Kepala Sekolah')
 
     @property
     def is_admin(self):
-        if not self.peran:
-            return False
-        return self.peran.nama == 'Admin'
+        return self.has_peran('Admin')
 
     class Meta:
         verbose_name_plural = 'Akun'

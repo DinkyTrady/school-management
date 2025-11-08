@@ -63,13 +63,13 @@ class Nilai(models.Model):
         queryset = Nilai.objects.filter(
             siswa = self.siswa,
             jadwal = self.jadwal,
-            tipe_peniliaian=self.tipe_peniliaian
+            tipe_penilaian=self.tipe_penilaian
         )
 
         if self.pk:
             queryset = queryset.exclude(pk=self.pk)
 
-        if self.tipe_peniliaian != 'Tugas':
+        if self.tipe_penilaian != 'Tugas':
             if queryset.exists():
                 raise ValidationError(
                     _(
@@ -113,7 +113,7 @@ class Presensi(models.Model):
     jadwal = models.ForeignKey(Jadwal, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'Presensi {self.siswa.get_full_name} - {self.tanggal} ({self.status})'
+        return f'Presensi {self.siswa.get_full_name()} - {self.tanggal} ({self.status})'
 
     class Meta:
         verbose_name_plural = 'Presensi Siswa'

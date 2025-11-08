@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-3xl font-bold">Manajemen Kelas</h1>
+        
+        <a href="#" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            Tambah Kelas
+        </a>
+    </div>
+
+    <div class="form-control mb-4">
+        <input type="text" 
+               name="q" 
+               class="input input-bordered w-full" 
+               placeholder="Cari nama kelas..."
+               hx-get="{% url 'academics:htmx_search_kelas' %}"
+               hx-trigger="keyup changed delay:300ms, search"
+               hx-target="#kelas-table-body"
+               hx-indicator="#loading-spinner">
+    </div>
+    
+    <span id="loading-spinner" class="htmx-indicator loading loading-spinner"></span>
+
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nama Kelas</th>
+                    <th>Jurusan</th>
+                    <th>Wali Kelas</th>
+                    <th>Jml. Siswa</th>
+                    <th>Tahun Ajaran</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            
+            <tbody id="kelas-table-body">
+                {% include 'academics/partials/academics/_kelas_table_rows.html' %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

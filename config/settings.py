@@ -143,6 +143,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [ path.join(BASE_DIR, 'static') ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -171,7 +172,7 @@ if not NPM_BIN_PATH:
 
     if system == 'Windows':
         possible_paths = [
-            'C:/Program Files/nodejs/npm.cmd',
+            r'C:/Program Files/nodejs/npm.cmd',
             path.expanduser('~/AppData/Roaming/npm/npm.cmd')
         ]
     elif system == 'Darwin':  # macOS
@@ -194,3 +195,4 @@ AUTH_USER_MODEL = 'users.akun'
 
 LOGIN_URL = '/users/auth/login/'
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/users/auth/login/'
