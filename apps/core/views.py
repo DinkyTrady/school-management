@@ -105,6 +105,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         user = self.request.user
 
         context['is_admin'] = user.is_admin
+        context['is_guru'] = user.is_guru
         context['card_akun_url'] = reverse(
             'users:akun_list'
         )  # Change 'users:list' to your actual URL name
