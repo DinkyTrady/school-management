@@ -1,32 +1,66 @@
 {% for akun in akun_list %}
 <tr>
     <th>{{ forloop.counter }}</th>
-    <td>{{ akun.email }}</td>
+    <td>
+        <div class="flex items-center space-x-3">
+            <div class="avatar placeholder">
+                <div class="bg-neutral text-neutral-content rounded-full w-8">
+                    <span class="text-xs"><i class="fa-solid fa-user"></i></span>
+                </div>
+            </div>
+            <div>
+                <div class="font-bold">{{ akun.email }}</div>
+                {% if akun.first_name or akun.last_name %}
+                    <div class="text-sm opacity-50">{{ akun.first_name }} {{ akun.last_name }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </td>
     <td>
         {% if akun.peran %}
-            <span class="badge badge-ghost">{{ akun.peran.nama }}</span>
+            <span class="badge badge-primary">
+                <i class="fa-solid fa-user-tag mr-1"></i>{{ akun.peran.nama }}
+            </span>
         {% else %}
-            <span class="badge">-</span>
+            <span class="badge badge-ghost">
+                <i class="fa-solid fa-user-slash mr-1"></i>Belum ditentukan
+            </span>
         {% endif %}
     </td>
     <td>
         {% if akun.is_active %}
-            <span class="badge badge-success">Aktif</span>
+            <span class="badge badge-success">
+                <i class="fa-solid fa-check mr-1"></i>Aktif
+            </span>
         {% else %}
-            <span class="badge badge-error">Tidak Aktif</span>
+            <span class="badge badge-error">
+                <i class="fa-solid fa-times mr-1"></i>Tidak Aktif
+            </span>
         {% endif %}
     </td>
     <td>
-        <div class="flex gap-2">
-            <a href="{% url 'users:akun_detail' pk=akun.pk %}" class="btn btn-sm btn-info">Detail</a>
-            <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-sm btn-warning">Edit</a>
-            <button hx-get="{% url 'users:akun_delete' pk=akun.pk %}" hx-target="body" hx-swap="beforeend" class="btn btn-sm btn-error">Hapus</button>
+        <div class="flex space-x-1">
+            <a href="{% url 'users:akun_detail' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
+                <i class="fa-solid fa-eye"></i>
+            </a>
+            <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square" title="Edit">
+                <i class="fa-solid fa-edit"></i>
+            </a>
+            <button hx-get="{% url 'users:akun_delete' pk=akun.pk %}" hx-target="body" hx-swap="beforeend" class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+                <i class="fa-solid fa-trash"></i>
+            </button>
         </div>
     </td>
 </tr>
 {% empty %}
 <tr>
-    <td colspan="5" class="text-center">Belum ada akun yang terdaftar.</td>
+    <td colspan="5" class="text-center py-8">
+        <div class="text-gray-500">
+            <i class="fa-solid fa-users text-6xl mb-4 opacity-30"></i>
+            <div class="text-lg font-medium">Belum ada akun yang terdaftar</div>
+            <div class="text-sm">Tambah akun baru untuk memulai</div>
+        </div>
+    </td>
 </tr>
 {% endfor %}
 

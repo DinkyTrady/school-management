@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+{% block title %}Manajemen Siswa{% endblock title %}
+{% block content %}
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="card-title text-2xl">Daftar Siswa</h2>
+      <a href="#" class="btn btn-primary">Tambah Siswa Baru</a>
+    </div>
+    <div class="mb-4">
+      <input type="text" name="q" placeholder="Cari nama / NIS / email..."
+             class="input input-bordered w-full"
+             hx-get="{% url 'users:siswa_list' %}"
+             hx-trigger="keyup changed delay:500ms"
+             hx-target="#siswa-table-body"
+             hx-swap="innerHTML">
+    </div>
+    <div class="overflow-x-auto">
+      <table class="table w-full">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Identitas</th>
+            <th>NIS</th>
+            <th>Email</th>
+            <th>Gender</th>
+            <th>Status Akun</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="siswa-table-body">
+          {% include 'users/partials/siswa_table_body.html' %}
+        </tbody>
+      </table>
+    </div>
+    <div id="pagination-container">
+      {% if is_paginated %}
+        {% include "core/partials/_paginate.html" %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,7 +1,98 @@
-<li class="{% if request.resolver_match.url_name == 'dashboard' %}font-bold{% endif %}"><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
+<!-- Dashboard - Semua Role -->
+<li>
+    <a href="{% url 'core:dashboard' %}" class="rounded-xl transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+        <i class="fa-solid fa-gauge-high w-5 {% if request.resolver_match.url_name == 'dashboard' %}text-white{% else %}text-emerald-600{% endif %}"></i> Dashboard
+    </a>
+</li>
+
 {% if user.is_authenticated %}
-    <li class="{% if 'akun' in request.path %}font-bold{% endif %}"><a href="{% url 'users:akun_list' %}">Manajemen Akun</a></li>
-    <li class="{% if 'peran' in request.path %}font-bold{% endif %}"><a href="{% url 'users:peran_list' %}">Manajemen Peran</a></li>
+    <!-- MANAJEMEN PENGGUNA -->
+    {% if user.is_admin or user.is_tata_usaha or user.is_kepala_sekolah or user.is_superuser %}
+    <li class="menu-title mt-6 px-3 text-xs font-bold text-gray-500 uppercase tracking-wider">
+        <i class="fa-solid fa-users-gear text-emerald-600"></i> Manajemen Pengguna
+    </li>
+    <li>
+        <a href="{% url 'users:akun_list' %}" class="rounded-xl transition-all {% if 'users/akun' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-users w-5 {% if 'users/akun' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Akun
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'users:peran_list' %}" class="rounded-xl transition-all {% if 'users/roles' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-user-shield w-5 {% if 'users/roles' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Peran
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'users:siswa_list' %}" class="rounded-xl transition-all {% if 'users/siswa' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-user-graduate w-5 {% if 'users/siswa' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Siswa
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'users:guru_list' %}" class="rounded-xl transition-all {% if 'users/guru' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-chalkboard-user w-5 {% if 'users/guru' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Guru
+        </a>
+    </li>
+    {% endif %}
+
+    <!-- AKADEMIK -->
+    {% if user.is_admin or user.is_guru or user.is_tata_usaha or user.is_kepala_sekolah or user.is_superuser %}
+    <li class="menu-title mt-6 px-3 text-xs font-bold text-gray-500 uppercase tracking-wider">
+        <i class="fa-solid fa-school text-emerald-600"></i> Akademik
+    </li>
+    <li>
+        <a href="{% url 'academics:tahun_ajaran_list' %}" class="rounded-xl transition-all {% if 'academics/tahun-ajaran' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-calendar-alt w-5 {% if 'academics/tahun-ajaran' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Tahun Ajaran
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'academics:jurusan_list' %}" class="rounded-xl transition-all {% if 'academics/jurusan' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-graduation-cap w-5 {% if 'academics/jurusan' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Jurusan
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'academics:kelas_list' %}" class="rounded-xl transition-all {% if 'academics/kelas' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-door-open w-5 {% if 'academics/kelas' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Kelas
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'academics:mapel_list' %}" class="rounded-xl transition-all {% if 'academics/mapel' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-book-open w-5 {% if 'academics/mapel' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Mata Pelajaran
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'academics:jadwal_list' %}" class="rounded-xl transition-all {% if 'academics/jadwal' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-calendar-days w-5 {% if 'academics/jadwal' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Jadwal Pelajaran
+        </a>
+    </li>
+    {% endif %}
+
+    <!-- NILAI & PRESENSI -->
+    {% if user.is_admin or user.is_guru or user.is_superuser or user.is_siswa %}
+    <li class="menu-title mt-6 px-3 text-xs font-bold text-gray-500 uppercase tracking-wider">
+        <i class="fa-solid fa-chart-line text-emerald-600"></i> Penilaian & Kehadiran
+    </li>
+    {% if not user.is_siswa %}
+        <li>
+            <a href="{% url 'grades:tugas_list' %}" class="rounded-xl transition-all {% if 'grades/tugas' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+                <i class="fa-solid fa-tasks w-5 {% if 'grades/tugas' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Tugas
+            </a>
+        </li>
+    {% endif %}
+    <li>
+        <a href="{% url 'grades:nilai_list' %}" class="rounded-xl transition-all {% if 'grades/nilai' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-award w-5 {% if 'grades/nilai' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Nilai
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'grades:presensi_list' %}" class="rounded-xl transition-all {% if 'grades/presensi' in request.path %}bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold{% else %}hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50{% endif %}">
+            <i class="fa-solid fa-user-check w-5 {% if 'grades/presensi' in request.path %}text-white{% else %}text-emerald-600{% endif %}"></i> Presensi
+        </a>
+    </li>
+    {% endif %}
 {% else %}
-    <li><a href="{% url 'users:login' %}">Login</a></li>
+    <!-- Login untuk Guest -->
+    <li>
+        <a href="{% url 'users:login' %}" class="rounded-xl hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all">
+            <i class="fa-solid fa-sign-in-alt w-5 text-emerald-600"></i> Login
+        </a>
+    </li>
 {% endif %}

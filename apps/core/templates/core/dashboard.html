@@ -8,50 +8,35 @@
 <!-- Header -->
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
     <div>
-        <h1 class="text-3xl font-bold text-base-content">Selamat Datang, {{ user.get_full_name|default:user.email }}!</h1>
-        <p class="text-base-content/70 mt-1">Ringkasan dan akses cepat untuk sistem Anda.</p>
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Selamat Datang, {{ user.get_full_name|default:user.email }}!</h1>
+        <p class="text-gray-500 mt-2 text-lg">Ringkasan dan akses cepat untuk sistem Anda.</p>
     </div>
-    <div class="text-lg font-semibold text-base-content bg-base-100 shadow-inner px-4 py-2 rounded-lg mt-4 md:mt-0">
-        <span id="realtime-clock"></span>
+    <div class="flex items-center gap-3 bg-white shadow-md px-6 py-3 rounded-2xl mt-4 md:mt-0 border border-emerald-100">
+        <i class="fa-solid fa-clock text-emerald-600"></i>
+        <span class="text-lg font-semibold text-gray-700" id="realtime-clock"></span>
     </div>
 </div>
 
 <!-- Konten Berdasarkan Peran -->
 {% if is_admin %}
     <!-- Tampilan untuk Admin -->
-    <h2 class="text-2xl font-bold mb-5 text-base-content">Ringkasan Sistem</h2>
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Ringkasan Sistem</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {% with card_color='primary' %}
-                {% include 'core/partials/_card.html' with icon='fa-solid fa-users' title='Total Akun' value=total_akun color=card_color %}
-            {% endwith %}
-            {% with card_color='secondary' %}
-                {% include 'core/partials/_card.html' with icon='fa-solid fa-user-shield' title='Total Peran' value=total_peran color=card_color %}
-            {% endwith %}
-            {% with card_color='accent' %}
-                {% include 'core/partials/_card.html' with icon='fa-solid fa-chalkboard' title='Total Kelas' value=total_kelas color=card_color %}
-            {% endwith %}
-            {% with card_color='info' %}
-                {% include 'core/partials/_card.html' with icon='fa-solid fa-book' title='Total Mapel' value=total_mapel color=card_color %}
-            {% endwith %}
+            {% include 'core/partials/_card.html' with icon='fa-solid fa-users' title='Total Akun' value=total_akun %}
+            {% include 'core/partials/_card.html' with icon='fa-solid fa-user-shield' title='Total Peran' value=total_peran %}
+            {% include 'core/partials/_card.html' with icon='fa-solid fa-chalkboard' title='Total Kelas' value=total_kelas %}
+            {% include 'core/partials/_card.html' with icon='fa-solid fa-book' title='Total Mapel' value=total_mapel %}
     </div>
 
-    <!-- Aksi Cepat untuk Admin (Solid List Style) -->
+    <!-- Aksi Cepat untuk Admin -->
     <div class="mt-12">
-      <div class="p-4 bg-base-100 rounded-box ">
-        <h2 class="text-2xl font-bold mb-5 text-base-content">Akses Cepat</h2>
-        <div class="flex gap-4 justify-between overflow-hidden">
-            {% with card_color='primary' %}
-                {% include 'core/partials/_card_anchor.html' with card_url=card_akun_url icon='fa-solid fa-users' color=card_color title='Manajemen Akun' description='Kelola data pengguna dan staf' %}
-            {% endwith %}
-            {% with card_color='secondary' %}
-                {% include 'core/partials/_card_anchor.html' with card_url=card_peran_url icon='fa-solid fa-user-shield' color=card_color title='Manajemen Peran' description='Atur hak akses untuk setiap pengguna' %}
-            {% endwith %}
-            {% with card_color='accent' %}
-                {% include 'core/partials/_card_anchor.html' with card_url=card_kelas_url icon='fa-solid fa-chalkboard' color=card_color title='Manajemen Akademik' description='Kelola kelas dan mata pelajaran' %}
-            {% endwith %}
-            {% with card_color='info' %}
-                {% include 'core/partials/_card_anchor.html' with card_url='#' icon='fa-solid fa-book' color=card_color title='Manajemen Nilai' description='Input dan rekapitulasi nilai siswa' %}
-            {% endwith %}
+      <div class="p-6 bg-white rounded-2xl shadow-md border border-emerald-100">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Akses Cepat</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {% include 'core/partials/_card_anchor.html' with card_url=card_akun_url icon='fa-solid fa-users' title='Manajemen Akun' description='Kelola data pengguna dan staf' %}
+            {% include 'core/partials/_card_anchor.html' with card_url=card_peran_url icon='fa-solid fa-user-shield' title='Manajemen Peran' description='Atur hak akses untuk setiap pengguna' %}
+            {% include 'core/partials/_card_anchor.html' with card_url=card_kelas_url icon='fa-solid fa-chalkboard' title='Manajemen Akademik' description='Kelola kelas dan mata pelajaran' %}
+            {% include 'core/partials/_card_anchor.html' with card_url='#' icon='fa-solid fa-book' title='Manajemen Nilai' description='Input dan rekapitulasi nilai siswa' %}
         </div>
       </div>
     </div>
@@ -60,11 +45,16 @@
     {% include "./guru_dashboard.html" %}
 {% else %}
     <!-- Tampilan untuk Peran Lain -->
-    <div class="hero min-h-[60vh] bg-base-100 rounded-box shadow-lg">
+    <div class="hero min-h-[60vh] bg-white rounded-3xl shadow-lg border border-emerald-100">
         <div class="hero-content text-center">
             <div class="max-w-md">
-                <h1 class="text-4xl font-bold text-base-content">Halo, {{ user.get_full_name|default:user.email }}</h1>
-                <p class="py-6 text-base-content/70">Ini adalah halaman dashboard Anda. Fitur untuk peran Anda akan segera ditambahkan.</p>
+                <div class="mb-6">
+                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-user text-4xl bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent"></i>
+                    </div>
+                </div>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Halo, {{ user.get_full_name|default:user.email }}</h1>
+                <p class="py-6 text-gray-600 text-lg">Ini adalah halaman dashboard Anda. Fitur untuk peran Anda akan segera ditambahkan.</p>
             </div>
         </div>
     </div>

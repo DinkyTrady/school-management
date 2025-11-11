@@ -1,20 +1,72 @@
 {% for kelas in daftar_kelas %}
 <tr>
     <th>{{ forloop.counter }}</th>
-    <td>{{ kelas.nama }}</td>
-    <td>{{ kelas.jurusan.nama }}</td>
-    <td>{{ kelas.wali_kelas.nama }}</td>
     <td>
-        <span class="badge badge-ghost">{{ kelas.jumlah_siswa }} Siswa</span>
+        <div class="font-medium">{{ kelas.nama }}</div>
     </td>
-    <td>{{ kelas.tahun_ajaran.tahun }} - {{ kelas.tahun_ajaran.semester }}</td>
     <td>
-        <button class="btn btn-sm btn-info">Detail</button>
-        <button class="btn btn-sm btn-warning">Edit</button>
+        <div class="flex items-center space-x-3">
+            <div>
+                <div class="font-bold">{{ kelas.jurusan.nama|default:"Belum ditentukan" }}</div>
+                {% if kelas.jurusan.deskripsi %}
+                    <div class="text-sm opacity-50">{{ kelas.jurusan.deskripsi|truncatewords:5 }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </td>
+    <td>
+        {% if kelas.wali_kelas %}
+            <div class="flex items-center space-x-3">
+                <div class="avatar placeholder">
+                    <div class="bg-neutral text-neutral-content rounded-full w-8">
+                        <span class="text-xs"><i class="fa-solid fa-user"></i></span>
+                    </div>
+                </div>
+                <div>
+                    <div class="font-bold">{{ kelas.wali_kelas.nama }}</div>
+                    <div class="text-sm opacity-50">{{ kelas.wali_kelas.email|default:"" }}</div>
+                </div>
+            </div>
+        {% else %}
+            <span class="text-gray-500"><i class="fa-solid fa-user-slash"></i> Belum ditentukan</span>
+        {% endif %}
+    </td>
+    <td>
+        <span class="badge badge-primary">
+            <i class="fa-solid fa-users mr-1"></i>{{ kelas.jumlah_siswa }} Siswa
+        </span>
+    </td>
+    <td>
+        <div class="text-sm">
+            <div class="font-medium"><i class="fa-solid fa-calendar-alt mr-1"></i>{{ kelas.tahun_ajaran.tahun }}</div>
+            <div class="badge badge-outline badge-sm mt-1">{{ kelas.tahun_ajaran.semester }}</div>
+            {% if kelas.tahun_ajaran.is_active %}
+                <div class="badge badge-success badge-xs mt-1"><i class="fa-solid fa-check"></i> Aktif</div>
+            {% endif %}
+        </div>
+    </td>
+    <td>
+        <div class="flex space-x-1">
+            <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-ghost btn-square" title="Edit">
+                <i class="fa-solid fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
     </td>
 </tr>
 {% empty %}
 <tr>
-    <td colspan="7" class="text-center">Tidak ada data kelas yang ditemukan.</td>
+    <td colspan="7" class="text-center py-8">
+        <div class="text-gray-500">
+            <i class="fa-solid fa-school text-6xl mb-4 opacity-30"></i>
+            <div class="text-lg font-medium">Tidak ada data kelas yang ditemukan</div>
+            <div class="text-sm">Coba ubah kata kunci pencarian atau tambah kelas baru</div>
+        </div>
+    </td>
 </tr>
 {% endfor %}

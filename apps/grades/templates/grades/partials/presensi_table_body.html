@@ -1,0 +1,43 @@
+{% for presensi in presensi_list %}
+<tr>
+  <th>{{ forloop.counter }}</th>
+  <td>{{ presensi.tanggal }}</td>
+  <td>
+    <div class="font-bold">{{ presensi.siswa.get_full_name }}</div>
+    <div class="text-xs opacity-70">NIS: {{ presensi.siswa.nis }}</div>
+  </td>
+  <td>{{ presensi.jadwal.kelas.nama }}</td>
+  <td>{{ presensi.jadwal.mapel.nama }}</td>
+  <td>
+    {% if presensi.status == 'Hadir' %}
+      <span class="badge badge-success"><i class="fa-solid fa-check mr-1"></i>{{ presensi.status }}</span>
+    {% elif presensi.status == 'Alpha' %}
+      <span class="badge badge-error"><i class="fa-solid fa-xmark mr-1"></i>{{ presensi.status }}</span>
+    {% elif presensi.status == 'Izin' %}
+      <span class="badge badge-warning"><i class="fa-solid fa-file-alt mr-1"></i>{{ presensi.status }}</span>
+    {% else %}
+      <span class="badge badge-info"><i class="fa-solid fa-notes-medical mr-1"></i>{{ presensi.status }}</span>
+    {% endif %}
+  </td>
+  <td class="text-xs">{{ presensi.keterangan|default:"-"|truncatewords:8 }}</td>
+  <td>
+    <div class="flex space-x-1">
+      <button class="btn btn-sm btn-ghost btn-square" title="Detail"><i class="fa-solid fa-eye"></i></button>
+      <button class="btn btn-sm btn-ghost btn-square" title="Edit"><i class="fa-solid fa-edit"></i></button>
+      <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="8" class="text-center py-8">
+    <div class="text-gray-500">
+      <i class="fa-solid fa-user-check text-6xl mb-4 opacity-30"></i>
+      <div class="text-lg font-medium">Belum ada data presensi</div>
+      <div class="text-sm">Tambah presensi untuk memulai</div>
+    </div>
+  </td>
+</tr>
+{% endfor %}
+
+{{ pagination|safe }}

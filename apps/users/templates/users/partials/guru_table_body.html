@@ -1,0 +1,47 @@
+{% for guru in guru_list %}
+<tr>
+  <th>{{ forloop.counter }}</th>
+  <td>
+    <div class="flex items-center space-x-3">
+      <div class="avatar placeholder">
+        <div class="bg-secondary text-secondary-content rounded-full w-8">
+          <span class="text-xs"><i class="fa-solid fa-chalkboard-user"></i></span>
+        </div>
+      </div>
+      <div>
+        <div class="font-bold">{{ guru.get_full_name }}</div>
+        <div class="text-xs opacity-70">{{ guru.nomor_handphone }}</div>
+      </div>
+    </div>
+  </td>
+  <td><span class="badge badge-outline">{{ guru.nip }}</span></td>
+  <td><span class="badge badge-info badge-outline">{{ guru.jabatan }}</span></td>
+  <td class="text-sm">{{ guru.akun.email }}</td>
+  <td>
+    {% if guru.akun.is_active %}
+      <span class="badge badge-success"><i class="fa-solid fa-check mr-1"></i>Aktif</span>
+    {% else %}
+      <span class="badge badge-ghost"><i class="fa-solid fa-times mr-1"></i>Tidak Aktif</span>
+    {% endif %}
+  </td>
+  <td>
+    <div class="flex space-x-1">
+      <button class="btn btn-sm btn-ghost btn-square" title="Detail"><i class="fa-solid fa-eye"></i></button>
+      <button class="btn btn-sm btn-ghost btn-square" title="Edit"><i class="fa-solid fa-edit"></i></button>
+      <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="7" class="text-center py-8">
+    <div class="text-gray-500">
+      <i class="fa-solid fa-chalkboard-user text-6xl mb-4 opacity-30"></i>
+      <div class="text-lg font-medium">Belum ada guru yang terdaftar</div>
+      <div class="text-sm">Tambah guru baru untuk memulai</div>
+    </div>
+  </td>
+</tr>
+{% endfor %}
+
+{{ pagination|safe }}

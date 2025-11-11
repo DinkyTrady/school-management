@@ -1,0 +1,73 @@
+{% for siswa in siswa_list %}
+<tr>
+    <th>{{ forloop.counter }}</th>
+    <td>
+        <div class="flex items-center space-x-3">
+            <div class="avatar placeholder">
+                <div class="bg-info text-info-content rounded-full w-8">
+                    <span class="text-xs">
+                        {% if siswa.gender == 'L' %}
+                            <i class="fa-solid fa-user"></i>
+                        {% else %}
+                            <i class="fa-solid fa-user"></i>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div>
+                <div class="font-bold">{{ siswa.get_full_name }}</div>
+                <div class="text-sm opacity-50">{{ siswa.nomor_handphone }}</div>
+            </div>
+        </div>
+    </td>
+    <td>
+        <span class="badge badge-outline">{{ siswa.nis }}</span>
+    </td>
+    <td>
+        <div class="text-sm">{{ siswa.akun.email }}</div>
+    </td>
+    <td>
+        {% if siswa.gender == 'L' %}
+            <span class="badge badge-info"><i class="fa-solid fa-mars mr-1"></i>Laki-laki</span>
+        {% else %}
+            <span class="badge badge-error"><i class="fa-solid fa-venus mr-1"></i>Perempuan</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if siswa.akun.is_active %}
+            <span class="badge badge-success">
+                <i class="fa-solid fa-check mr-1"></i>Aktif
+            </span>
+        {% else %}
+            <span class="badge badge-ghost">
+                <i class="fa-solid fa-times mr-1"></i>Tidak Aktif
+            </span>
+        {% endif %}
+    </td>
+    <td>
+        <div class="flex space-x-1">
+            <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-ghost btn-square" title="Edit">
+                <i class="fa-solid fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center py-8">
+        <div class="text-gray-500">
+            <i class="fa-solid fa-user-graduate text-6xl mb-4 opacity-30"></i>
+            <div class="text-lg font-medium">Belum ada siswa yang terdaftar</div>
+            <div class="text-sm">Tambah siswa baru untuk memulai</div>
+        </div>
+    </td>
+</tr>
+{% endfor %}
+
+{{ pagination|safe }}

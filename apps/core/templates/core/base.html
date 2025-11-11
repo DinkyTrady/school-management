@@ -1,7 +1,7 @@
 {% load static %}
 {% load django_htmx %}
 <!DOCTYPE html>
-<html lang="en" data-theme="cupcake">
+<html lang="en" data-theme="emerald">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,32 +15,59 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {% block extra_head %} {% endblock extra_head %}
   </head>
-  <body class="bg-base-300" hx-headers='{ "x-csrftoken": "{{ csrf_token }}"}'>
-    <div class="drawer">
+  <body class="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50" hx-headers='{ "x-csrftoken": "{{ csrf_token }}"}'>
+    <div class="drawer lg:drawer-open">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col">
             <!-- Navbar -->
-            <div class="w-full navbar sticky top-0 z-30 bg-base-100/80 backdrop-blur-sm shadow-md">
+            <div class="w-full navbar sticky top-0 z-30 bg-white/90 backdrop-blur-md shadow-sm border-b border-emerald-100">
                 <div class="flex-none lg:hidden">
-                    <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
+                    <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost text-emerald-600 hover:bg-emerald-50">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </label>
                 </div>
-                <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 font-bold text-primary text-xl transition-transform duration-300 hover:scale-105">SIGMA</a>
-                <div class="flex-none hidden lg:flex items-center">
-                    <ul class="menu menu-horizontal">
-                        {% include 'core/partials/_nav_links.html' %}
-                    </ul>
+                <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent text-2xl transition-all duration-300 hover:scale-105">SIGMA</a>
+                <div class="flex-none flex items-center gap-4">
                     {% if user.is_authenticated %}
+                    <!-- Welcome Message -->
+                    <div class="hidden md:flex flex-col items-end">
+                        <span class="text-xs text-base-content/70">Selamat Datang,</span>
+                        <span class="font-semibold text-sm">
+                            {% if user.is_siswa and user.siswa_profile %}
+                                {{ user.siswa_profile.get_full_name }}
+                            {% elif user.is_guru and user.guru_profile %}
+                                {{ user.guru_profile.get_full_name }}
+                            {% else %}
+                                {{ user.email }}
+                            {% endif %}
+                        </span>
+                    </div>
                     <!-- Dropdown Profil Pengguna -->
-                    <div class="dropdown dropdown-end ml-4">
-                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-                            <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
-                                <span>{{ user.email|slice:":1"|upper }}</span>
+                    <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover:bg-emerald-50">
+                            <div class="w-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-md">
+                                <span>
+                                    {% if user.is_siswa and user.siswa_profile %}
+                                        {{ user.siswa_profile.nama_depan|slice:":1"|upper }}
+                                    {% elif user.is_guru and user.guru_profile %}
+                                        {{ user.guru_profile.nama_depan|slice:":1"|upper }}
+                                    {% else %}
+                                        {{ user.email|slice:":1"|upper }}
+                                    {% endif %}
+                                </span>
                             </div>
                         </div>
-                        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                            <li class="p-2 font-semibold text-sm truncate">{{ user.email }}</li>
+                        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-white rounded-xl w-52 border border-emerald-100">
+                            <li class="p-2 font-semibold text-sm truncate">
+                                {% if user.is_siswa and user.siswa_profile %}
+                                    {{ user.siswa_profile.get_full_name }}
+                                {% elif user.is_guru and user.guru_profile %}
+                                    {{ user.guru_profile.get_full_name }}
+                                {% else %}
+                                    {{ user.email }}
+                                {% endif %}
+                            </li>
+                            <li class="px-2 pb-2 text-xs text-base-content/70">{{ user.email }}</li>
                             <div class="divider my-0"></div>
                             <li>
                                 <a href="#">
@@ -56,7 +83,7 @@
                 </div>
             </div>
             <!-- Page content here -->
-            <main class="bg-gradient-to-br from-primary via-white to-secondary min-h-screen">
+            <main class="min-h-screen">
                 <div class="p-6 md:p-10 max-w-7xl mx-auto">
                   <div id="main-content">
                     {% block content %}
@@ -65,18 +92,25 @@
                 </div>
             </main>
         </div>
-        <div class="drawer-side">
+        <div class="drawer-side z-40">
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
-            <ul class="menu p-4 w-80 min-h-full bg-base-200 gap-1">
+            <div class="w-80 min-h-full bg-white flex flex-col shadow-xl border-r border-emerald-100">
                 <!-- Sidebar content here -->
-                {% include 'core/partials/_nav_links.html' %}
+                <div class="p-6 border-b border-emerald-100">
+                    <h2 class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</h2>
+                    <p class="text-xs text-gray-500 mt-1">School Information & Management</p>
+                </div>
+                <ul class="menu px-3 py-4 gap-2 flex-1 overflow-y-auto w-full">
+                    {% include 'core/partials/_nav_links.html' %}
+                </ul>
                 {% if user.is_authenticated %}
-                    <div class="divider"></div>
-                    <li>
-                        <button onclick="logout_modal.showModal()" class="w-full text-left">Logout</button>
-                    </li>
+                <div class="p-4 border-t border-emerald-100">
+                    <button onclick="logout_modal.showModal()" class="btn bg-gradient-to-r from-red-500 to-red-600 text-white border-0 hover:from-red-600 hover:to-red-700 btn-block shadow-md">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </div>
                 {% endif %}
-            </ul>
+            </div>
         </div>
     </div>
   </body>
@@ -90,21 +124,23 @@
 
 <!-- Modal Konfirmasi Logout -->
 <dialog id="logout_modal" class="modal">
-  <div class="modal-box w-11/12 max-w-md">
+  <div class="modal-box w-11/12 max-w-md bg-white rounded-2xl shadow-2xl border border-emerald-100">
     <div class="flex items-start gap-4">
         <div>
-            <i class="fa-solid fa-triangle-exclamation text-warning text-4xl"></i>
+            <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-2xl"></i>
+            </div>
         </div>
         <div>
-            <h3 class="font-bold text-lg">Anda Yakin Ingin Keluar?</h3>
-            <p class="py-2 text-sm text-base-content/70">
+            <h3 class="font-bold text-xl text-gray-800">Anda Yakin Ingin Keluar?</h3>
+            <p class="py-2 text-sm text-gray-600">
                 Sesi Anda akan diakhiri. Pastikan semua pekerjaan yang belum disimpan telah aman.
             </p>
         </div>
     </div>
-    <div class="modal-action mt-6">
-      <button class="btn btn-ghost" onclick="logout_modal.close()">Batal</button>
-      <button class="btn btn-error" onclick="document.getElementById('logout-form').submit();"><i class="fa-solid fa-right-from-bracket"></i>Ya, Keluar Sekarang</button>
+    <div class="modal-action mt-6 gap-2">
+      <button class="btn btn-ghost hover:bg-gray-100" onclick="logout_modal.close()">Batal</button>
+      <button class="btn bg-gradient-to-r from-red-500 to-red-600 text-white border-0 hover:from-red-600 hover:to-red-700" onclick="document.getElementById('logout-form').submit();"><i class="fa-solid fa-right-from-bracket"></i>Ya, Keluar Sekarang</button>
     </div>
   </div>
 </dialog>

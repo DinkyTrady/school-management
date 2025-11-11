@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Manajemen Jadwal{% endblock title %}
+
+{% block content %}
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="card-title text-2xl">Daftar Jadwal Pelajaran</h2>
+      <a href="#" class="btn btn-primary">Tambah Jadwal Baru</a>
+    </div>
+
+    <div class="mb-4">
+      <input type="text" name="q" placeholder="Cari kelas / mapel / guru..."
+             class="input input-bordered w-full"
+             hx-get="{% url 'academics:jadwal_list' %}"
+             hx-trigger="keyup changed delay:500ms"
+             hx-target="#jadwal-table-body"
+             hx-swap="innerHTML">
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="table w-full">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Hari & Waktu</th>
+            <th>Kelas</th>
+            <th>Mata Pelajaran</th>
+            <th>Guru</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="jadwal-table-body">
+          {% include 'academics/partials/jadwal_table_body.html' %}
+        </tbody>
+      </table>
+    </div>
+
+    <div id="pagination-container">
+      {% if is_paginated %}
+        {% include "core/partials/_paginate.html" %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

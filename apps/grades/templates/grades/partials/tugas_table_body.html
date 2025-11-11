@@ -1,0 +1,33 @@
+{% for tugas in tugas_list %}
+<tr>
+  <th>{{ forloop.counter }}</th>
+  <td>
+    <div class="font-bold">{{ tugas.nama }}</div>
+    <div class="text-xs opacity-70">{{ tugas.mulai }} → {{ tugas.tenggat }}</div>
+  </td>
+  <td>{{ tugas.jadwal.kelas.nama }}</td>
+  <td>{{ tugas.jadwal.mapel.nama }}</td>
+  <td>
+    <span class="badge badge-outline"><i class="fa-regular fa-clock mr-1"></i>{{ tugas.tenggat }}</span>
+  </td>
+  <td>
+    <div class="flex space-x-1">
+      <button class="btn btn-sm btn-ghost btn-square" title="Detail"><i class="fa-solid fa-eye"></i></button>
+      <button class="btn btn-sm btn-ghost btn-square" title="Edit"><i class="fa-solid fa-edit"></i></button>
+      <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="6" class="text-center py-8">
+    <div class="text-gray-500">
+      <i class="fa-solid fa-tasks text-6xl mb-4 opacity-30"></i>
+      <div class="text-lg font-medium">Belum ada tugas terdaftar</div>
+      <div class="text-sm">Tambah tugas baru untuk memulai</div>
+    </div>
+  </td>
+</tr>
+{% endfor %}
+
+{{ pagination|safe }}
