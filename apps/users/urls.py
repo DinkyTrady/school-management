@@ -8,11 +8,11 @@ urlpatterns = [
     # URL untuk otentikasi Django (login, logout, dll.)
     path('auth/', include('django.contrib.auth.urls')),
     # CRUD untuk Akun
-    path('', views.AkunListView.as_view(), name='akun_list'),
-    path('add/', views.AkunCreateView.as_view(), name='akun_add'),
-    path('<int:pk>/detail/', views.AkunDetailView.as_view(), name='akun_detail'),
-    path('<int:pk>/edit/', views.AkunUpdateView.as_view(), name='akun_edit'),
-    path('<int:pk>/delete/', views.AkunDeleteView.as_view(), name='akun_delete'),
+    path('akun/', views.AkunListView.as_view(), name='akun_list'),
+    path('akun/add/', views.AkunCreateView.as_view(), name='akun_add'),
+    path('akun/<int:pk>/', views.AkunDetailView.as_view(), name='akun_detail'),
+    path('akun/<int:pk>/edit/', views.AkunUpdateView.as_view(), name='akun_edit'),
+    path('akun/<int:pk>/delete/', views.AkunDeleteView.as_view(), name='akun_delete'),
     # CRUD untuk Peran (Roles)
     path('roles/', views.PeranListView.as_view(), name='peran_list'),
     path('roles/add/', views.PeranCreateView.as_view(), name='peran_add'),
@@ -21,6 +21,11 @@ urlpatterns = [
     path(
         'roles/<int:pk>/delete/', views.PeranDeleteView.as_view(), name='peran_delete'
     ),
+    # Siswa Management
+    path('siswa/', views.SiswaListView.as_view(), name='siswa_list'),
+    
+    # Guru Management
+    path('guru/', views.GuruListView.as_view(), name='guru_list'),
 ]
 
 htmx_urlpatterns = [

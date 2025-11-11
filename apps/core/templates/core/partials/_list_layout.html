@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-2xl shadow-lg border border-emerald-100">
+    <div class="p-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <h2 class="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">{{ page_title }}</h2>
+            {% if add_url %}
+                <a href="{{ add_url }}" class="btn bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 hover:from-emerald-600 hover:to-teal-700 shadow-md">
+                    <i class="fa-solid fa-plus mr-2"></i>{{ add_button_text|default:"Tambah Baru" }}
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="mb-6">
+            <div class="relative">
+                <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="text" name="q" placeholder="{{ search_placeholder|default:"Cari..." }}"
+                       class="input w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                       hx-get="{{ list_url }}"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-target="#{{ table_body_id }}"
+                       hx-swap="innerHTML">
+            </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-emerald-100">
+            <table class="table w-full">
+                <thead class="bg-gradient-to-r from-emerald-50 to-teal-50">
+                    <tr>
+                        {% block table_headers %}
+                        {% endblock table_headers %}
+                    </tr>
+                </thead>
+                <tbody id="{{ table_body_id }}" class="bg-white">
+                    {% block table_body %}
+                    {% endblock table_body %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="pagination-container">
+            {% if is_paginated %}
+                {% include "core/partials/_paginate.html" %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,34 +1,38 @@
 {% load query_params %}
-<div class="flex justify-center">
-  <div class="join pt-2">
+<div class="flex justify-center mt-6">
+  <div class="join shadow-md">
   {% if page_obj.has_previous %}
     <a
       hx-get="?{% query_params request page=page_obj.previous_page_number %}"
       hx-target="#{{ table_body_id }}"
       hx-push-url="true"
       hx-swap="innerHTML"
-      class="join-item btn"
+      class="join-item btn bg-white hover:bg-emerald-50 border-emerald-200 text-emerald-600"
       href="?{% query_params request page=page_obj.previous_page_number %}"
     >
-      prev
+      <i class="fa-solid fa-chevron-left mr-1"></i> prev
     </a>
   {% else %}
-    <span class="join-item btn disabled">prev</span>
+    <span class="join-item btn bg-gray-100 text-gray-400 cursor-not-allowed">
+      <i class="fa-solid fa-chevron-left mr-1"></i> prev
+    </span>
   {% endif %}
-  <span class="join-item btn">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  <span class="join-item btn bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 pointer-events-none">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
   {% if page_obj.has_next %}
     <a
       hx-get="?{% query_params request page=page_obj.next_page_number %}"
       hx-target="#{{ table_body_id }}"
       hx-push-url="true"
       hx-swap="innerHTML"
-      class="join-item btn"
+      class="join-item btn bg-white hover:bg-emerald-50 border-emerald-200 text-emerald-600"
       href="?{% query_params request page=page_obj.next_page_number %}"
     >
-      next
+      next <i class="fa-solid fa-chevron-right ml-1"></i>
     </a>
   {% else %}
-    <span class="join-item btn disabled">next</span>
+    <span class="join-item btn bg-gray-100 text-gray-400 cursor-not-allowed">
+      next <i class="fa-solid fa-chevron-right ml-1"></i>
+    </span>
   {% endif %}
   </div>
 </div>

@@ -1,0 +1,44 @@
+{% extends 'core/base.html' %}
+{% block title %}Manajemen Nilai{% endblock title %}
+{% block content %}
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="card-title text-2xl">Daftar Nilai Siswa</h2>
+      <a href="#" class="btn btn-primary">Tambah Nilai Baru</a>
+    </div>
+    <div class="mb-4">
+      <input type="text" name="q" placeholder="Cari siswa / kelas / mapel / tipe..."
+             class="input input-bordered w-full"
+             hx-get="{% url 'grades:nilai_list' %}"
+             hx-trigger="keyup changed delay:500ms"
+             hx-target="#nilai-table-body"
+             hx-swap="innerHTML">
+    </div>
+    <div class="overflow-x-auto">
+      <table class="table w-full">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Siswa</th>
+            <th>Kelas</th>
+            <th>Mapel</th>
+            <th>Tipe</th>
+            <th>Nilai</th>
+            <th>Tanggal</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="nilai-table-body">
+          {% include 'grades/partials/nilai_table_body.html' %}
+        </tbody>
+      </table>
+    </div>
+    <div id="pagination-container">
+      {% if is_paginated %}
+        {% include "core/partials/_paginate.html" %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,23 +1,23 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-    Manajemen Kelas
+    Manajemen Jurusan
 {% endblock title %}
 
 {% block content %}
 <div class="card bg-base-100 shadow-xl">
     <div class="card-body">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="card-title text-2xl">Daftar Kelas</h2>
-            <a href="#" class="btn btn-primary">Tambah Kelas Baru</a>
+            <h2 class="card-title text-2xl">Daftar Jurusan</h2>
+            <a href="#" class="btn btn-primary">Tambah Jurusan Baru</a>
         </div>
 
         <div class="mb-4">
-            <input type="text" name="q" placeholder="Cari berdasarkan nama kelas..."
+            <input type="text" name="q" placeholder="Cari berdasarkan nama atau deskripsi..."
                    class="input input-bordered w-full"
-                   hx-get="{% url 'academics:kelas_list' %}"
+                   hx-get="{% url 'academics:jurusan_list' %}"
                    hx-trigger="keyup changed delay:500ms"
-                   hx-target="#kelas-table-body"
+                   hx-target="#jurusan-table-body"
                    hx-swap="innerHTML">
         </div>
 
@@ -26,16 +26,13 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Nama Kelas</th>
-                        <th>Jurusan</th>
-                        <th>Wali Kelas</th>
-                        <th>Jml. Siswa</th>
-                        <th>Tahun Ajaran</th>
+                        <th>Nama Jurusan</th>
+                        <th>Deskripsi</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="kelas-table-body">
-                    {% include 'academics/partials/academics/_kelas_table_rows.html' %}
+                <tbody id="jurusan-table-body">
+                    {% include 'academics/partials/jurusan_table_body.html' %}
                 </tbody>
             </table>
         </div>

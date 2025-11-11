@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+{% block title %}Manajemen Tugas{% endblock title %}
+{% block content %}
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="card-title text-2xl">Daftar Tugas</h2>
+      <a href="#" class="btn btn-primary">Tambah Tugas Baru</a>
+    </div>
+    <div class="mb-4">
+      <input type="text" name="q" placeholder="Cari nama / kelas / mapel..."
+             class="input input-bordered w-full"
+             hx-get="{% url 'grades:tugas_list' %}"
+             hx-trigger="keyup changed delay:500ms"
+             hx-target="#tugas-table-body"
+             hx-swap="innerHTML">
+    </div>
+    <div class="overflow-x-auto">
+      <table class="table w-full">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Nama</th>
+            <th>Kelas</th>
+            <th>Mapel</th>
+            <th>Tenggat</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tugas-table-body">
+          {% include 'grades/partials/tugas_table_body.html' %}
+        </tbody>
+      </table>
+    </div>
+    <div id="pagination-container">
+      {% if is_paginated %}
+        {% include "core/partials/_paginate.html" %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,55 @@
+{% for tahun_ajaran in tahun_ajaran_list %}
+<tr>
+    <th>{{ forloop.counter }}</th>
+    <td>
+        <div class="font-medium">{{ tahun_ajaran.tahun }}</div>
+    </td>
+    <td>
+        <span class="badge badge-outline">{{ tahun_ajaran.semester }}</span>
+    </td>
+    <td>
+        <div class="text-sm">
+            <div><i class="fa-solid fa-calendar-start mr-1"></i>{{ tahun_ajaran.tanggal_mulai }}</div>
+            <div class="mt-1"><i class="fa-solid fa-calendar-end mr-1"></i>{{ tahun_ajaran.tanggal_selesai }}</div>
+        </div>
+    </td>
+    <td>
+        {% if tahun_ajaran.is_active %}
+            <span class="badge badge-success">
+                <i class="fa-solid fa-check mr-1"></i>Aktif
+            </span>
+        {% else %}
+            <span class="badge badge-ghost">
+                <i class="fa-solid fa-pause mr-1"></i>Tidak Aktif
+            </span>
+        {% endif %}
+    </td>
+    <td>
+        <div class="flex space-x-1">
+            <button class="btn btn-sm btn-ghost btn-square" title="Edit">
+                <i class="fa-solid fa-edit"></i>
+            </button>
+            {% if not tahun_ajaran.is_active %}
+                <button class="btn btn-sm btn-success btn-square" title="Aktifkan">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            {% endif %}
+            <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6" class="text-center py-8">
+        <div class="text-gray-500">
+            <i class="fa-solid fa-calendar-alt text-6xl mb-4 opacity-30"></i>
+            <div class="text-lg font-medium">Belum ada tahun ajaran yang terdaftar</div>
+            <div class="text-sm">Tambah tahun ajaran baru untuk memulai</div>
+        </div>
+    </td>
+</tr>
+{% endfor %}
+
+{{ pagination|safe }}

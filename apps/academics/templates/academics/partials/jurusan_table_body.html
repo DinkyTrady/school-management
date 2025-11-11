@@ -1,0 +1,42 @@
+{% for jurusan in jurusan_list %}
+<tr>
+    <th>{{ forloop.counter }}</th>
+    <td>
+        <div class="flex items-center space-x-3">
+            <div class="avatar placeholder">
+                <div class="bg-accent text-accent-content rounded-full w-8">
+                    <span class="text-xs"><i class="fa-solid fa-graduation-cap"></i></span>
+                </div>
+            </div>
+            <div>
+                <div class="font-bold">{{ jurusan.nama }}</div>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="text-sm opacity-75">{{ jurusan.deskripsi|default:"Tidak ada deskripsi"|truncatewords:10 }}</div>
+    </td>
+    <td>
+        <div class="flex space-x-1">
+            <button class="btn btn-sm btn-ghost btn-square" title="Edit">
+                <i class="fa-solid fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="4" class="text-center py-8">
+        <div class="text-gray-500">
+            <i class="fa-solid fa-graduation-cap text-6xl mb-4 opacity-30"></i>
+            <div class="text-lg font-medium">Belum ada jurusan yang terdaftar</div>
+            <div class="text-sm">Tambah jurusan baru untuk memulai</div>
+        </div>
+    </td>
+</tr>
+{% endfor %}
+
+{{ pagination|safe }}

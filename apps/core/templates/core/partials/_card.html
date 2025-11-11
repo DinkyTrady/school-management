@@ -1,11 +1,11 @@
-<div class="card bg-base-100 shadow-md">
-    <div class="card-body flex-row items-center p-5">
-      <div class="mr-4 text-{{ color }}">
-        <i class="{{ icon }} text-2xl text-{{ color }}"></i>
+<div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100">
+    <div class="card-body flex-row items-center p-6">
+      <div class="mr-4 p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50">
+        <i class="{{ icon }} text-3xl bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent"></i>
       </div>
       <div>
-        <h2 class="card-title text-base-content/60">{{ title }}</h2>
-        <p class="text-3xl font-extrabold text-base-content">{{ value }}</p>
+        <h2 class="card-title text-sm text-gray-500 font-medium">{{ title }}</h2>
+        <p class="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">{{ value }}</p>
       </div>
     </div>
 </div>

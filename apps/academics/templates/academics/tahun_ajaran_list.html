@@ -1,23 +1,23 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-    Manajemen Kelas
+    Manajemen Tahun Ajaran
 {% endblock title %}
 
 {% block content %}
 <div class="card bg-base-100 shadow-xl">
     <div class="card-body">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="card-title text-2xl">Daftar Kelas</h2>
-            <a href="#" class="btn btn-primary">Tambah Kelas Baru</a>
+            <h2 class="card-title text-2xl">Daftar Tahun Ajaran</h2>
+            <a href="#" class="btn btn-primary">Tambah Tahun Ajaran Baru</a>
         </div>
 
         <div class="mb-4">
-            <input type="text" name="q" placeholder="Cari berdasarkan nama kelas..."
+            <input type="text" name="q" placeholder="Cari berdasarkan tahun atau semester..."
                    class="input input-bordered w-full"
-                   hx-get="{% url 'academics:kelas_list' %}"
+                   hx-get="{% url 'academics:tahun_ajaran_list' %}"
                    hx-trigger="keyup changed delay:500ms"
-                   hx-target="#kelas-table-body"
+                   hx-target="#tahun-ajaran-table-body"
                    hx-swap="innerHTML">
         </div>
 
@@ -26,16 +26,15 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Nama Kelas</th>
-                        <th>Jurusan</th>
-                        <th>Wali Kelas</th>
-                        <th>Jml. Siswa</th>
                         <th>Tahun Ajaran</th>
+                        <th>Semester</th>
+                        <th>Periode</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="kelas-table-body">
-                    {% include 'academics/partials/academics/_kelas_table_rows.html' %}
+                <tbody id="tahun-ajaran-table-body">
+                    {% include 'academics/partials/tahun_ajaran_table_body.html' %}
                 </tbody>
             </table>
         </div>
