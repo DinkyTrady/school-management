@@ -16,7 +16,7 @@ from django.views.generic import (
 from apps.core.views import BaseCreateView, BaseListView, BaseUpdateView
 
 from .forms import AkunChangeForm, AkunCreationForm
-from .models import Akun as AkunType, Peran
+from .models import Akun as AkunType, Peran, Siswa, Guru
 
 Akun: AkunType = get_user_model()
 
@@ -100,49 +100,29 @@ class AkunDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 # -- Views peran
-class PeranListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class PeranListView(BaseListView):
     model = Peran
-    template_name = 'users/peran_list.html'
-    context_object_name = 'peran_list'
     permission_required = 'users.view_peran'
-
-    def get_queryset(self):
-        queryset = Peran.objects.all()
-        query = self.request.GET.get('q')
-        if query:
-            queryset = queryset.filter(nama__icontains=query)
-        return queryset
-
-    def get_template_names(self):
-        if self.request.htmx:
-            return ['users/partials/peran_table_body.html']
-        return ['users/peran_list.html']
+    context_object_name = 'peran_list'
+    full_template_name = 'users/peran_list.html'
+    partial_template_name = 'users/partials/peran_table_body.html'
+    success_url_name = 'users:peran_list'
+    search_fields = ['nama']
+    table_body_id = 'peran-table-body'
 
 
-class PeranCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class PeranCreateView(BaseCreateView):
     model = Peran
     fields = ['nama']
-    template_name = 'users/peran_form.html'
-    success_url = reverse_lazy('users:peran_list')
+    success_url_name = 'users:peran_list'
     permission_required = 'users.add_peran'
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        # django-htmx middleware will automatically convert HttpResponseRedirect to HX-Redirect
-        return response
 
-
-class PeranUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class PeranUpdateView(BaseUpdateView):
     model = Peran
     fields = ['nama']
-    template_name = 'users/peran_form.html'
-    success_url = reverse_lazy('users:peran_list')
+    success_url_name = 'users:peran_list'
     permission_required = 'users.change_peran'
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        # django-htmx middleware will automatically convert HttpResponseRedirect to HX-Redirect
-        return response
 
 
 class PeranDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -155,3 +135,35 @@ class PeranDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         if self.request.htmx:
             return ['users/partials/peran_delete_modal.html']
         return ['users/peran_confirm_delete.html']
+
+
+class SiswaListView(BaseListView):
+    """ListView untuk manajemen data siswa"""
+    model = Siswa
+    permission_required = ['users.view_siswa']
+    full_template_name = 'users/siswa_list.html'
+    partial_template_name = 'users/partials/siswa_table_body.html'
+    context_object_name = 'siswa_list'
+    success_url_name = 'users:siswa_list'
+    search_fields = ['first_name', 'last_name', 'nis', 'akun__email']
+    table_body_id = 'siswa-table-body'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.select_related('akun').order_by('first_name', 'last_name')
+
+
+class GuruListView(BaseListView):
+    """ListView untuk manajemen data guru"""
+    model = Guru
+    permission_required = ['users.view_guru']
+    full_template_name = 'users/guru_list.html'
+    partial_template_name = 'users/partials/guru_table_body.html'
+    context_object_name = 'guru_list'
+    success_url_name = 'users:guru_list'
+    search_fields = ['first_name', 'last_name', 'nip', 'jabatan', 'akun__email']
+    table_body_id = 'guru-table-body'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.select_related('akun').order_by('first_name', 'last_name')

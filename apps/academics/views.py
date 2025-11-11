@@ -1,30 +1,34 @@
 # apps/academics/views.py
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Count
-from django.shortcuts import render
-from django.views.generic import ListView
 
-from .models import Kelas
+from apps.core.views import BaseListView
+from .models import Kelas, TahunAjaran, Jurusan, Mapel, Jadwal
 
 
-class KelasListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class KelasListView(BaseListView):
     """
     Menampilkan halaman penuh daftar kelas.
     Hanya untuk Staf Internal (Admin, Guru, Kepsek, TU).
     """
     model = Kelas
     permission_required = ['academics.view_kelas']
-    template_name = 'academics/kelas_list.html'
+    full_template_name = 'academics/kelas_list.html'
+    partial_template_name = 'academics/partials/academics/_kelas_table_rows.html'
     context_object_name = 'daftar_kelas'
+    success_url_name = 'academics:kelas_list'
+    search_fields = ['nama']
+    table_body_id = 'kelas-table-body'
 
     def get_queryset(self):
         """
         Override queryset untuk mengoptimalkan N+1 query
         dan hanya mengambil kelas yang aktif.
         """
-        # Mulai dengan queryset dasar
-        qs = Kelas.objects.filter(tahun_ajaran__is_active=True)
+        # Apply base search first
+        qs = super().get_queryset()
+        
+        # Filter active classes
+        qs = qs.filter(tahun_ajaran__is_active=True)
         
         # OPTIMASI N+1 QUERY:
         # Gunakan select_related untuk ForeignKey (M:1)
@@ -40,27 +44,61 @@ class KelasListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         
         return qs.order_by('nama')
 
-# --- View untuk HTMX ---
 
-@login_required
-@permission_required('academics.view_kelas', 'users:login', True)
-def htmx_search_kelas(request):
-    """
-    View ini HANYA merender partial HTML untuk isi tabel.
-    Dipanggil oleh HTMX dari search bar.
-    """
-    search_text = request.GET.get('q', '').strip()
-    
-    # Mulai dengan queryset yang SAMA persis dengan CBV
-    qs = Kelas.objects.filter(tahun_ajaran__is_active=True)
-    qs = qs.select_related('jurusan', 'wali_kelas', 'tahun_ajaran')
-    qs = qs.annotate(jumlah_siswa=Count('kelassiswa'))
-    
-    # Terapkan filter pencarian
-    if search_text:
-        qs = qs.filter(nama__icontains=search_text)
-        
-    context = {'daftar_kelas': qs.order_by('nama')}
-    
-    # Render HANYA partial-nya
-    return render(request, 'partials/academics/_kelas_table_rows.html', context)
+class TahunAjaranListView(BaseListView):
+    """ListView untuk manajemen tahun ajaran"""
+    model = TahunAjaran
+    permission_required = ['academics.view_tahunajar']
+    full_template_name = 'academics/tahun_ajaran_list.html'
+    partial_template_name = 'academics/partials/tahun_ajaran_table_body.html'
+    context_object_name = 'tahun_ajaran_list'
+    success_url_name = 'academics:tahun_ajaran_list'
+    search_fields = ['tahun', 'semester']
+    table_body_id = 'tahun-ajaran-table-body'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.order_by('-is_active', '-tahun', 'semester')
+
+
+class JurusanListView(BaseListView):
+    """ListView untuk manajemen jurusan"""
+    model = Jurusan
+    permission_required = ['academics.view_jurusan']
+    full_template_name = 'academics/jurusan_list.html'
+    partial_template_name = 'academics/partials/jurusan_table_body.html'
+    context_object_name = 'jurusan_list'
+    success_url_name = 'academics:jurusan_list'
+    search_fields = ['nama', 'deskripsi']
+    table_body_id = 'jurusan-table-body'
+
+
+class MapelListView(BaseListView):
+    """ListView untuk manajemen mata pelajaran"""
+    model = Mapel
+    permission_required = ['academics.view_mapel']
+    full_template_name = 'academics/mapel_list.html'
+    partial_template_name = 'academics/partials/mapel_table_body.html'
+    context_object_name = 'mapel_list'
+    success_url_name = 'academics:mapel_list'
+    search_fields = ['nama']
+    table_body_id = 'mapel-table-body'
+
+
+class JadwalListView(BaseListView):
+    """ListView untuk melihat jadwal pelajaran"""
+    model = Jadwal
+    permission_required = ['academics.view_jadwal']
+    full_template_name = 'academics/jadwal_list.html'
+    partial_template_name = 'academics/partials/jadwal_table_body.html'
+    context_object_name = 'jadwal_list'
+    success_url_name = 'academics:jadwal_list'
+    search_fields = ['kelas__nama', 'mapel__nama', 'guru__first_name', 'guru__last_name']
+    table_body_id = 'jadwal-table-body'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.select_related('kelas', 'mapel', 'guru', 'kelas__tahun_ajaran')
+        return qs.filter(kelas__tahun_ajaran__is_active=True).order_by('hari', 'jam_mulai')
+
+# HTMX search functionality now handled by BaseListView

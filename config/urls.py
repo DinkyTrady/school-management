@@ -23,7 +23,8 @@ urlpatterns = [
     path('', include('apps.core.urls')),
     path('admin/', admin.site.urls),
     path('users/', include('apps.users.urls', namespace='users')),
-    path('academics/', include('apps.academics.urls', namespace='academics'))
+    path('academics/', include('apps.academics.urls', namespace='academics')),
+    path('grades/', include('apps.grades.urls', namespace='grades'))
 ]
 
 if settings.DEBUG:
