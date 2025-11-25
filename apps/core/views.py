@@ -12,6 +12,7 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
+from django.shortcuts import redirect
 
 from apps.users.models import Peran
 from apps.academics.models import Kelas, Mapel
@@ -95,6 +96,19 @@ class BaseUpdateView(BaseCrudMixin, UpdateView):
 class BaseDeleteView(BaseCrudMixin, DeleteView):
     full_template_name = 'core/partials/_generic_form.html'
     partial_template_name = 'core/partials/_generic_form.html'
+
+
+class IntroPageView(TemplateView):
+    '''
+    View untuk halaman intro/perkenalan SIGMA sebelum login
+    '''
+    template_name = 'core/intro.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Jika user sudah login, redirect ke dashboard
+        if request.user.is_authenticated:
+            return redirect('core:dashboard')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
