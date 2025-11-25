@@ -1,0 +1,453 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id" data-theme="emerald">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGMA - Selamat Datang</title>
+    {% load static tailwind_tags %}
+    {% tailwind_preload_css %}
+    {% tailwind_css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .animate-slideInRight {
+            animation: slideInRight 0.6s ease-out forwards;
+        }
+        
+        .animate-pulse-glow {
+            animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 min-h-screen">
+    <!-- Navbar Minimalis -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</span>
+                </div>
+                <a href="{% url 'users:login' %}" class="btn btn-sm bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 hover:from-emerald-600 hover:to-teal-700 rounded-lg transition-all duration-200">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Kolom Kiri: Konten -->
+                <div class="space-y-6 animate-fadeInUp">
+                    <div class="inline-block px-4 py-2 bg-emerald-100 border border-emerald-300 rounded-full">
+                        <span class="text-sm font-semibold text-emerald-700">
+                            <i class="fas fa-star mr-2"></i>Selamat Datang di SIGMA
+                        </span>
+                    </div>
+                    
+                    <h1 class="text-5xl sm:text-6xl font-extrabold leading-tight bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+                        Sistem Manajemen Akademik Terintegrasi
+                    </h1>
+                    
+                    <p class="text-lg sm:text-xl text-gray-700 leading-relaxed max-w-lg">
+                        Platform modern untuk mengelola data guru, siswa, jadwal, dan aktivitas akademik secara efisien dan terstruktur.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <a href="{% url 'users:login' %}" class="btn bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 hover:from-emerald-600 hover:to-teal-700 text-lg h-14 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group">
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i> Masuk Sekarang
+                        </a>
+                        <button onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})" class="btn btn-outline border-emerald-300 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-400 text-lg h-14 rounded-xl transition-all duration-200">
+                            <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Ilustrasi -->
+                <div class="relative animate-slideInRight">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-200 to-teal-200 rounded-3xl blur-2xl opacity-30"></div>
+                    <div class="relative bg-white rounded-3xl shadow-2xl border border-emerald-100 p-8 backdrop-blur-sm">
+                        <div class="space-y-6">
+                            <!-- Animasi Ikon Akademik -->
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-2xl p-6 flex items-center justify-center h-20 animate-fadeInUp delay-100">
+                                    <i class="fas fa-chalkboard-user text-4xl text-emerald-600"></i>
+                                </div>
+                                <div class="bg-gradient-to-br from-teal-100 to-teal-50 rounded-2xl p-6 flex items-center justify-center h-20 animate-fadeInUp delay-200">
+                                    <i class="fas fa-book-open text-4xl text-teal-600"></i>
+                                </div>
+                                <div class="bg-gradient-to-br from-cyan-100 to-cyan-50 rounded-2xl p-6 flex items-center justify-center h-20 animate-fadeInUp delay-300">
+                                    <i class="fas fa-graduation-cap text-4xl text-cyan-600"></i>
+                                </div>
+                            </div>
+
+                            <!-- Statistik Dummy -->
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center text-white">
+                                        <i class="fas fa-users text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-emerald-700">Data Terintegrasi</p>
+                                        <p class="text-xs text-gray-600">Mengelola semua informasi akademik</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 bg-teal-50 rounded-xl border border-teal-100">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center text-white">
+                                        <i class="fas fa-lock text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-teal-700">Berbasis Peran</p>
+                                        <p class="text-xs text-gray-600">Akses aman sesuai dengan peran</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 bg-cyan-50 rounded-xl border border-cyan-100">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center text-white">
+                                        <i class="fas fa-chart-line text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-cyan-700">Real-time Dashboard</p>
+                                        <p class="text-xs text-gray-600">Visualisasi data secara langsung</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-white/50 backdrop-blur-sm border-t border-emerald-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
+                    Fitur Unggulan SIGMA
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Semua yang Anda butuhkan untuk mengelola akademik sekolah secara modern dan efisien
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="group animate-fadeInUp delay-100">
+                    <div class="bg-white rounded-2xl border border-emerald-100 p-8 shadow-md hover:shadow-xl transition-all duration-300 h-full hover:border-emerald-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-users text-3xl text-emerald-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Manajemen Pengguna</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Kelola data guru, siswa, dan staff dengan sistem berbasis peran yang aman dan terstruktur.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group animate-fadeInUp delay-200">
+                    <div class="bg-white rounded-2xl border border-teal-100 p-8 shadow-md hover:shadow-xl transition-all duration-300 h-full hover:border-teal-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-100 to-teal-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-book-open text-3xl text-teal-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Akademik Lengkap</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Akses informasi jadwal, nilai, tugas, dan presensi dengan cepat dan mudah dari satu platform.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group animate-fadeInUp delay-300">
+                    <div class="bg-white rounded-2xl border border-cyan-100 p-8 shadow-md hover:shadow-xl transition-all duration-300 h-full hover:border-cyan-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-cyan-100 to-cyan-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-user-shield text-3xl text-cyan-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Kontrol Berbasis Peran</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Antarmuka yang menyesuaikan dengan peran pengguna: Admin, Guru, atau Siswa untuk pengalaman optimal.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group animate-fadeInUp delay-400">
+                    <div class="bg-white rounded-2xl border border-blue-100 p-8 shadow-md hover:shadow-xl transition-all duration-300 h-full hover:border-blue-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-chart-line text-3xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Dashboard Interaktif</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Visualisasi data akademik secara real-time dengan dashboard yang intuitif dan mudah dipahami.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-white rounded-3xl border border-emerald-100 p-12 shadow-lg">
+                <div class="flex items-start gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-lightbulb text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1 animate-fadeInUp">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">Tentang SIGMA</h2>
+                        <div class="space-y-4 text-gray-700 text-lg leading-relaxed">
+                            <p>
+                                <strong>SIGMA (Sistem Informasi Guru, Murid, dan Administrasi)</strong> adalah solusi modern yang dirancang khusus untuk mempermudah pengelolaan data akademik di sekolah.
+                            </p>
+                            <p>
+                                Dengan antarmuka yang intuitif dan responsif, SIGMA membantu administrator mengelola akun pengguna dan data akademik secara efisien, memberdayakan guru dalam mengelola pembelajaran dan penilaian, serta memberikan akses kepada siswa untuk melihat informasi akademik mereka dengan mudah.
+                            </p>
+                            <p>
+                                Dibangun dengan teknologi terkini, sistem berbasis peran kami menjamin keamanan data dan memberikan pengalaman pengguna yang disesuaikan untuk setiap peran: Admin, Guru, dan Siswa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roles Overview Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 border-t border-emerald-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
+                    Peran dalam SIGMA
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Setiap peran memiliki akses dan fitur yang disesuaikan dengan kebutuhan mereka
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Admin Card -->
+                <div class="animate-fadeInUp delay-100">
+                    <div class="bg-white rounded-2xl border-2 border-emerald-200 shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 p-8 text-white">
+                            <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                                <i class="fas fa-user-tie text-4xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">Administrator</h3>
+                        </div>
+                        <div class="p-8">
+                            <p class="text-gray-600 mb-6">
+                                Mengelola seluruh sistem dan data akademik sekolah dengan kontrol penuh.
+                            </p>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-emerald-500"></i>
+                                    <span>Manajemen akun pengguna</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-emerald-500"></i>
+                                    <span>Pengaturan peran & hak akses</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-emerald-500"></i>
+                                    <span>Manajemen data akademik</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-emerald-500"></i>
+                                    <span>Laporan dan analitik sistem</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guru Card -->
+                <div class="animate-fadeInUp delay-200">
+                    <div class="bg-white rounded-2xl border-2 border-teal-200 shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+                        <div class="bg-gradient-to-r from-teal-500 to-cyan-600 p-8 text-white">
+                            <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                                <i class="fas fa-chalkboard-user text-4xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">Guru</h3>
+                        </div>
+                        <div class="p-8">
+                            <p class="text-gray-600 mb-6">
+                                Mengelola kelas, nilai, tugas, dan interaksi dengan siswa mereka.
+                            </p>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-teal-500"></i>
+                                    <span>Kelola data kelas dan siswa</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-teal-500"></i>
+                                    <span>Input nilai dan tugas</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-teal-500"></i>
+                                    <span>Pantau kehadiran siswa</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-teal-500"></i>
+                                    <span>Lihat jadwal dan kurikulum</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Siswa Card -->
+                <div class="animate-fadeInUp delay-300">
+                    <div class="bg-white rounded-2xl border-2 border-cyan-200 shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+                        <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-8 text-white">
+                            <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                                <i class="fas fa-user-graduate text-4xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">Siswa</h3>
+                        </div>
+                        <div class="p-8">
+                            <p class="text-gray-600 mb-6">
+                                Melihat informasi akademik dan data pembelajaran mereka dengan mudah.
+                            </p>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-cyan-500"></i>
+                                    <span>Lihat profil dan biodata</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-cyan-500"></i>
+                                    <span>Akses jadwal pelajaran</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-cyan-500"></i>
+                                    <span>Lihat nilai dan tugas</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <i class="fas fa-check-circle text-cyan-500"></i>
+                                    <span>Pantau kehadiran pribadi</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 rounded-3xl shadow-2xl overflow-hidden">
+                <div class="relative px-8 py-16 sm:px-12 sm:py-20 text-center text-white">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-10"></div>
+                    
+                    <div class="relative z-10 animate-fadeInUp">
+                        <h2 class="text-4xl sm:text-5xl font-extrabold mb-6 leading-tight">
+                            Siap Memulai?
+                        </h2>
+                        <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+                            Masuk ke aplikasi SIGMA sekarang dan rasakan kemudahan mengelola akademik sekolah Anda.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="{% url 'users:login' %}" class="btn bg-white text-emerald-600 border-0 hover:bg-gray-100 text-lg h-14 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+                                <i class="fas fa-arrow-right"></i> Masuk Sekarang
+                            </a>
+                            <button onclick="document.body.scrollTop = 0; window.scrollY = 0;" class="btn btn-outline border-white text-white hover:bg-white/10 hover:border-white text-lg h-14 rounded-xl transition-all duration-200">
+                                <i class="fas fa-arrow-up"></i> Kembali ke Atas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 pb-8 border-b border-gray-800">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-graduation-cap text-white"></i>
+                        </div>
+                        <span class="text-xl font-extrabold text-white">SIGMA</span>
+                    </div>
+                    <p class="text-sm text-gray-500">Sistem Informasi & Management Akademik</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Menu Cepat</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#features" class="hover:text-white transition-colors">Fitur</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Tentang</a></li>
+                        <li><a href="{% url 'users:login' %}" class="hover:text-white transition-colors">Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Informasi</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><span class="hover:text-white transition-colors cursor-default">Privacy Policy</span></li>
+                        <li><span class="hover:text-white transition-colors cursor-default">Terms of Service</span></li>
+                        <li><span class="hover:text-white transition-colors cursor-default">Contact Support</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2025 SIGMA. Hak Cipta Dilindungi.</p>
+                <p>Dikembangkan dengan <i class="fas fa-heart text-red-500 mx-1"></i> oleh DinkyTrady</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
