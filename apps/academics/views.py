@@ -85,6 +85,9 @@ class MapelListView(BaseListView):
     table_body_id = 'mapel-table-body'
 
 
+from .models import Kelas, TahunAjaran, Jurusan, Mapel, Jadwal, KelasSiswa
+
+
 class JadwalListView(BaseListView):
     """ListView untuk melihat jadwal pelajaran"""
     model = Jadwal
@@ -98,7 +101,26 @@ class JadwalListView(BaseListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.select_related('kelas', 'mapel', 'guru', 'kelas__tahun_ajaran')
-        return qs.filter(kelas__tahun_ajaran__is_active=True).order_by('hari', 'jam_mulai')
+        user = self.request.user
+
+        qs = qs.select_related(
+            'kelas', 'mapel', 'guru', 'kelas__tahun_ajaran'
+        ).filter(kelas__tahun_ajaran__is_active=True)
+
+        if user.is_siswa:
+            try:
+                siswa_profile = user.siswa_profile
+                kelas_siswa = KelasSiswa.objects.filter(
+                    siswa=siswa_profile,
+                    tahun_ajaran__is_active=True
+                ).select_related('kelas').first()
+
+                if kelas_siswa:
+                    return qs.filter(kelas=kelas_siswa.kelas).order_by('hari', 'jam_mulai')
+                return qs.none()
+            except AttributeError:
+                return qs.none()
+        
+        return qs.order_by('hari', 'jam_mulai')
 
 # HTMX search functionality now handled by BaseListView
