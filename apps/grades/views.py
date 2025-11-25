@@ -1,5 +1,4 @@
-from django.db.models import Prefetch
-
+from apps.academics.models import KelasSiswa
 from apps.core.views import BaseListView
 from .models import Tugas, Nilai, Presensi
 
@@ -17,11 +16,28 @@ class TugasListView(BaseListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        user = self.request.user
+
         qs = qs.select_related(
             'jadwal', 'jadwal__kelas', 'jadwal__mapel', 'jadwal__guru',
             'jadwal__kelas__tahun_ajaran'
-        )
-        return qs.filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tenggat')
+        ).filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tenggat')
+        
+        if user.is_siswa:
+            try:
+                siswa_profile = user.siswa_profile
+                kelas_siswa = KelasSiswa.objects.filter(
+                    siswa=siswa_profile,
+                    tahun_ajaran__is_active=True
+                ).select_related('kelas').first()
+
+                if kelas_siswa:
+                    return qs.filter(jadwal__kelas=kelas_siswa.kelas)
+                return qs.none() 
+            except AttributeError:
+                return qs.none()
+
+        return qs
 
 
 class NilaiListView(BaseListView):
