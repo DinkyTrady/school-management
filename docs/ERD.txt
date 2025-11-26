@@ -1,0 +1,298 @@
+SIGMA Database - Entity Relationship Diagram (ASCII)
+=====================================================
+
+LEGEND:
+  [Model]         = Table
+  PK (integer)    = Primary Key
+  FK → [Model]    = Foreign Key
+  M:M             = Many-to-Many via junction table
+  1:1             = One-to-One
+  1:M             = One-to-Many (reverse FK)
+  ────────        = Relationship line
+  Unique          = Unique constraint
+  Index           = Database index
+
+═══════════════════════════════════════════════════════════════════════════════
+
+                        ┌─────────────────────────────────────┐
+                        │       AUTHENTICATION LAYER           │
+                        └─────────────────────────────────────┘
+
+    ┌──────────────────────────┐              ┌──────────────────────┐
+    │      Akun (User)         │◄─── FK───────┤      Peran (Role)    │
+    ├──────────────────────────┤              ├──────────────────────┤
+    │ PK id                    │              │ PK id                │
+    │    email (unique)◄─ AUTH │              │    nama (unique)     │
+    │    password              │              │                      │
+    │ FK peran → Peran         │              │ Related:             │
+    │    is_active (bool)      │              │  - Akun.peran (1:M)  │
+    │    is_staff              │              └──────────────────────┘
+    │    is_superuser          │
+    │    created_at            │
+    │ Related:                 │
+    │  - Siswa.akun (1:1)      │
+    │  - Guru.akun (1:1)       │
+    └──────────────────────────┘
+           ▲      ▲      ▲
+           │      │      │
+        1:1│    1:1│    M:M(Groups)
+           │      │      │
+    ┌──────┴──────┴──┐   │
+    │               │   │
+    ▼               ▼   │ (via Django's auth_user_groups)
+┌──────────────────┐  ┌─────────────────────┐
+│    Siswa         │  │     Guru            │
+│  (Student)       │  │   (Teacher)         │
+├──────────────────┤  ├─────────────────────┤
+│ PK akun_id (FK)  │  │ PK akun_id (FK)     │
+│    nis (unique)  │  │    nip (unique)     │
+│ Inherited (from Person abstract):        │
+│    first_name    │  │    first_name       │
+│    last_name     │  │    last_name        │
+│    alamat        │  │    alamat           │
+│    tanggal_lahir │  │    tanggal_lahir    │
+│    nomor_hp      │  │    nomor_hp         │
+│    gender        │  │    gender           │
+│    created_at    │  │    jabatan          │
+│    updated_at    │  │    created_at       │
+│                  │  │    updated_at       │
+│ Related:         │  │ Related:            │
+│  - KelasSiswa(M) │  │  - Kelas.wali_kelas │
+│  - SiswaWali(M)  │  │  - Jadwal.guru      │
+│  - Nilai(M)      │  │  - Tugas (reverse)  │
+│  - Presensi(M)   │  │                     │
+└──────────────────┘  └─────────────────────┘
+        ▲                      ▲
+        │ M:M                  │
+        │                      │
+        └─────────┬────────────┘
+                  │
+                  ▼ (via KelasSiswa)
+          ┌──────────────────────┐
+          │   KelasSiswa         │
+          │  (Enrollment)        │
+          ├──────────────────────┤
+          │ FK siswa → Siswa     │
+          │ FK kelas → Kelas     │
+          │ FK tahun_ajaran      │
+          │ Constraint:          │
+          │  unique(siswa,       │
+          │    kelas, tahun)     │
+          │ Index:               │
+          │  [kelas_id,          │
+          │   tahun_ajaran_id]   │
+          └──────────────────────┘
+
+    ┌─────────────────────────┐
+    │       Wali              │
+    │    (Guardian)           │
+    ├─────────────────────────┤
+    │ PK id                   │
+    │ Inherited (Person):     │
+    │  - first_name           │
+    │  - last_name            │
+    │  - alamat               │
+    │  - tanggal_lahir        │
+    │  - nomor_hp             │
+    │  - gender               │
+    │  - created_at           │
+    │  - updated_at           │
+    │                         │
+    │ Related:                │
+    │  - SiswaWali (M2M)      │
+    └─────────────────────────┘
+           ▲
+           │ M:M
+           │
+           ▼
+    ┌─────────────────────────┐
+    │   SiswaWali             │
+    │ (Student-Guardian Rel)  │
+    ├─────────────────────────┤
+    │ FK siswa → Siswa        │
+    │ FK wali → Wali          │
+    │ hubungan (choices):     │
+    │  'Ayah', 'Ibu', 'Wali'  │
+    │ Constraint:             │
+    │  unique(siswa, wali)    │
+    │ Index:                  │
+    │  [wali_id, siswa_id]    │
+    └─────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+                        ┌──────────────────────────────┐
+                        │    ACADEMICS LAYER            │
+                        └──────────────────────────────┘
+
+┌────────────────────────────┐         ┌──────────────────────┐
+│     TahunAjaran            │         │     Jurusan          │
+│   (Academic Year)          │         │     (Major)          │
+├────────────────────────────┤         ├──────────────────────┤
+│ PK id                      │         │ PK id                │
+│    tahun (e.g. 2024/2025)  │         │    nama (db_index)   │
+│    semester (Ganjil/Genap) │         │    deskripsi         │
+│    tanggal_mulai           │         │ Index: nama          │
+│    tanggal_selesai         │         │                      │
+│    is_active (bool)        │         │ Related:             │
+│ Index: (tahun, semester)   │         │  - Kelas(1:M)        │
+│                            │         └──────────────────────┘
+│ Related:                   │                   △
+│  - Kelas (1:M)  ◄──┐       │                   │ FK
+│  - KelasSiswa(M)  │ FK     │                   │
+└────────────────────────────┘ │              FK │
+           △                    │                 │
+           │                    │                 │
+           │                    ▼                 ▼
+           │            ┌──────────────────────────────┐
+           │            │        Kelas                 │
+           │            │      (Class/Form)            │
+           │            ├──────────────────────────────┤
+           │            │ PK id                        │
+           │            │    nama (e.g. XI IPA-1)      │
+           │            │ FK jurusan → Jurusan         │
+           └────────────┤ FK tahun_ajaran (TahunAjaran)
+                        │ FK wali_kelas → Guru         │
+                        │ Constraint:                  │
+                        │  unique(nama, tahun_ajaran)  │
+                        │ Index: nama, FK fields       │
+                        │                              │
+                        │ Related:                     │
+                        │  - KelasSiswa (M2M via)      │
+                        │  - Jadwal (1:M)              │
+                        └──────────────────────────────┘
+                                △       △
+                                │       │
+                                │       └─── FK kelas
+                                │
+                            FK kelas
+                                │
+                        ┌───────┴────────┐
+                        ▼                ▼
+                 ┌─────────────┐   ┌────────────┐
+                 │   Jadwal    │   │   Mapel    │
+                 │ (Schedule)  │   │  (Subject) │
+                 ├─────────────┤   ├────────────┤
+                 │ PK id       │   │ PK id      │
+                 │    hari     │   │    nama    │
+                 │  (Mon-Sun)  │   │  (unique)  │
+                 │    jam_mu..║   │            │
+                 │    jam_se..║   │ Related:   │
+                 │ FK kelas───┘   │  - Jadwal  │
+                 │ FK mapel◄──────┤  (1:M)     │
+                 │ FK guru        │  - Tugas   │
+                 │ (FK Guru FK)   │  (1:M)     │
+                 │ Constraints:   │  - Nilai   │
+                 │  unique(kelas, │  (1:M)     │
+                 │    hari,       │            │
+                 │    jam_mulai)  │            │
+                 │  unique(guru,  │            │
+                 │    hari,       │            │
+                 │    jam_mulai)  │            │
+                 │ Related:       │            │
+                 │  - Tugas(1:M)  │            │
+                 │  - Nilai(1:M)  │            │
+                 │  - Presensi(1) │            │
+                 │     :M         │            │
+                 └─────────────┘   └────────────┘
+                        ▲
+                        │ FK jadwal
+                        │
+            ┌───────────┴───────────┐
+            ▼                       ▼
+     ┌─────────────┐        ┌──────────────┐
+     │   Tugas     │        │  Nilai       │
+     │(Assignment) │        │  (Score)     │
+     ├─────────────┤        ├──────────────┤
+     │ PK id       │        │ PK id        │
+     │    nama     │        │    tipe_pel. │
+     │ (index)    │        │   (Tugas,    │
+     │    deskripsi        │    UH,UTS,   │
+     │    mulai    │        │    UAS)      │
+     │    tenggat  │        │    nilai (0- │
+     │ FK jadwal───┤        │    100)      │
+     │ (index)     │        │    tanggal   │
+     │             │        │    penilaian │
+     │ Related:    │        │ FK siswa     │
+     │  - Nilai(1) │        │ FK jadwal    │
+     │    :M       │        │ FK tugas (opt)
+     │             │        │ Validation:  │
+     └─────────────┘        │  - Non-Tugas │
+                            │    grades    │
+                            │    unique/   │
+                            │    siswa/    │
+                            │    jadwal/   │
+                            │    tipe      │
+                            │  - Tugas     │
+                            │    type req. │
+                            │    tugas_id  │
+                            │ Related:     │
+                            │  - Presensi? │
+                            └──────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+                        ┌──────────────────────────┐
+                        │    GRADES LAYER           │
+                        └──────────────────────────┘
+
+┌───────────────────────┐
+│   Presensi            │
+│  (Attendance)         │
+├───────────────────────┤
+│ PK id                 │
+│    tanggal (index)    │
+│    status (choices):  │
+│   'Hadir','Sakit',    │
+│   'Izin','Alpha'      │
+│    keterangan         │
+│ FK siswa → Siswa      │
+│ FK jadwal → Jadwal    │
+│ Constraint:           │
+│  unique(siswa,        │
+│    jadwal, tanggal)   │
+│ Index: tanggal,       │
+│  [jadwal_id, tanggal] │
+└───────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SUMMARY STATISTICS:
+- Total Models: 15
+- Total Fields: 100+
+- Total Foreign Keys: 20+
+- Total Unique Constraints: 8+
+- Total Indexes: 15+
+- User Roles: 5+ (Admin, Guru, Siswa, TU, Kepala Sekolah, etc.)
+
+KEY RELATIONSHIPS:
+1. User Authentication:
+   Akun (email-based) → Peran (role) → Akun.is_admin/is_guru/is_siswa
+
+2. Student Profile:
+   Akun 1:1←→ Siswa
+   Siswa M:M←→ Kelas (via KelasSiswa per year)
+   Siswa M:M←→ Wali (via SiswaWali)
+
+3. Class & Schedule:
+   Kelas → TahunAjaran (1:M, per year)
+   Kelas → Jurusan (1:M)
+   Kelas → Guru (1:1, wali_kelas)
+   Jadwal → Kelas + Mapel + Guru (per day/time)
+
+4. Grades:
+   Nilai → Siswa + Jadwal + Tugas (optional)
+   Tugas → Jadwal
+   Presensi → Siswa + Jadwal + Date
+
+5. Cascading Deletes:
+   ✓ Siswa delete → Nilai/Presensi/KelasSiswa deleted
+   ✓ Kelas delete → Jadwal/KelasSiswa deleted
+   ✓ Guru delete → Jadwal protected (can't delete)
+   ✓ Jadwal delete → Tugas/Nilai/Presensi deleted
+
+QUERY OPTIMIZATION POINTS:
+- Person.get_full_name() and get_age() methods
+- Multiple select_related() chains in views
+- Annotate(Count) for student counts per class
+- Indexes on FK, search fields, and constraints

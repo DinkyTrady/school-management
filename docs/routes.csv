@@ -1,0 +1,31 @@
+HTTP Method,URL Pattern,View Class/Function,Permission Required,Description,HTMX Support
+GET,/,IntroPageView,None,Landing page (redirects to dashboard if authenticated),No
+GET,/dashboard/,DashboardView,login_required,Admin dashboard with summary cards,No
+POST,/users/auth/login/,django.contrib.auth.views.LoginView,None,User login page (built-in),No
+POST,/users/auth/logout/,django.contrib.auth.views.LogoutView,None,User logout (built-in),No
+GET,/users/akun/,AkunListView,users.view_akun,List all accounts with search & pagination,Yes
+GET,/users/akun/add/,AkunCreateView,users.add_akun,Create new account form,Yes
+GET,/users/akun/<int:pk>/,AkunDetailView,users.view_akun,View account details (read-only),No
+GET,/users/akun/<int:pk>/edit/,AkunUpdateView,users.change_akun,Edit account (email, role, permissions),Yes
+POST,/users/akun/<int:pk>/edit/,AkunUpdateView,users.change_akun,Submit edited account,Yes
+GET,/users/akun/<int:pk>/delete/,AkunDeleteView,users.delete_akun,Delete account confirmation,Yes
+POST,/users/akun/<int:pk>/delete/,AkunDeleteView,users.delete_akun,Submit account deletion,Yes
+GET,/users/roles/,PeranListView,users.view_peran,List all roles with search,Yes
+GET,/users/roles/add/,PeranCreateView,users.add_peran,Create new role form,Yes
+GET,/users/roles/<int:pk>/edit/,PeranUpdateView,users.change_peran,Edit role name,Yes
+POST,/users/roles/<int:pk>/edit/,PeranUpdateView,users.change_peran,Submit edited role,Yes
+GET,/users/roles/<int:pk>/delete/,PeranDeleteView,users.delete_peran,Delete role confirmation,Yes
+POST,/users/roles/<int:pk>/delete/,PeranDeleteView,users.delete_peran,Submit role deletion,Yes
+GET,/users/search-permissions/,search_permissions,None,AJAX search for permissions (return checkboxes),Yes
+GET,/users/siswa/,SiswaListView,users.view_siswa,List all students with search,Yes
+GET,/users/guru/,GuruListView,users.view_guru,List all teachers with search,Yes
+GET,/academics/kelas/,KelasListView,academics.view_kelas,List all classes (active year only) with search,Yes
+GET,/academics/tahun-ajaran/,TahunAjaranListView,academics.view_tahunajar,List academic years,Yes
+GET,/academics/jurusan/,JurusanListView,academics.view_jurusan,List all majors with search,Yes
+GET,/academics/mapel/,MapelListView,academics.view_mapel,List all subjects with search,Yes
+GET,/academics/jadwal/,JadwalListView,academics.view_jadwal,List schedules (filtered by student's class if student),Yes
+GET,/grades/tugas/,TugasListView,grades.view_tugas,List assignments (filtered by student's class if student),Yes
+GET,/grades/nilai/,NilaiListView,grades.view_nilai,List student grades with search,Yes
+GET,/grades/presensi/,PresensiListView,grades.view_presensi,List attendance records with search,Yes
+GET,/__reload__/,django_browser_reload.urls,None,Browser auto-reload endpoint (dev mode only),No
+GET,/admin/,Django Admin,superuser,Django admin interface,No
