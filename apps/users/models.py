@@ -65,6 +65,111 @@ class Akun(AbstractBaseUser, PermissionsMixin):
     def is_admin(self):
         return self.has_peran('Admin')
 
+    def sync_permissions(self):
+        """Sync user group assignment based on their role"""
+        from .permissions import RoleBasedPermissions
+        RoleBasedPermissions.assign_user_to_group(self)
+    
+    def save(self, *args, **kwargs):
+        """Override save to auto-sync permissions when role changes"""
+        is_new = self.pk is None
+        old_peran = None
+        
+        if not is_new:
+            try:
+                old_instance = Akun.objects.get(pk=self.pk)
+                old_peran = old_instance.peran
+            except Akun.DoesNotExist:
+                pass
+        
+        super().save(*args, **kwargs)
+        
+        # Sync group membership if role changed or new user
+        if is_new or old_peran != self.peran:
+            self.sync_permissions()
+
+    def can_access_model(self, model_name, action='view'):
+        """Check if user can access specific model based on role"""
+        from .permissions import RoleBasedPermissions
+        return RoleBasedPermissions.user_can_access_data(self, model_name, action)
+    
+    def can_edit_delete_model(self, model_name):
+        """Check if user can edit/delete specific model"""
+        from .permissions import RoleBasedPermissions
+        return RoleBasedPermissions.user_can_edit_delete(self, model_name)
+    
+    def get_accessible_actions(self, model_name):
+        """Get list of accessible actions for a model"""
+        from .permissions import RoleBasedPermissions
+        return RoleBasedPermissions.get_user_accessible_actions(self, model_name)
+
+    # Permission methods based on intro.html role descriptions
+    
+    # Administrator permissions: "Mengelola seluruh sistem dan data akademik sekolah dengan kontrol penuh"
+    def can_manage_users(self):
+        """Administrator: Manajemen akun pengguna"""
+        return self.is_admin
+
+    def can_manage_roles_access(self):
+        """Administrator: Pengaturan peran & hak akses"""
+        return self.is_admin
+
+    def can_manage_academic_data(self):
+        """Administrator: Manajemen data akademik"""
+        return self.is_admin
+
+    def can_view_reports_analytics(self):
+        """Administrator: Laporan dan analitik sistem"""
+        return self.is_admin
+
+    # Guru permissions: "Mengelola kelas, nilai, tugas, dan interaksi dengan siswa mereka"
+    def can_manage_class_students(self):
+        """Guru: Kelola data kelas dan siswa"""
+        return self.is_guru or self.is_admin
+
+    def can_input_grades_assignments(self):
+        """Guru: Input nilai dan tugas"""
+        return self.is_guru or self.is_admin
+
+    def can_monitor_student_attendance(self):
+        """Guru: Pantau kehadiran siswa"""
+        return self.is_guru or self.is_admin
+
+    def can_view_schedule_curriculum(self):
+        """Guru: Lihat jadwal dan kurikulum"""
+        return self.is_guru or self.is_admin
+
+    # Siswa permissions: "Melihat informasi akademik dan data pembelajaran mereka dengan mudah"
+    def can_view_profile_biodata(self):
+        """Siswa: Lihat profil dan biodata"""
+        return True  # All authenticated users
+
+    def can_access_class_schedule(self):
+        """Siswa: Akses jadwal pelajaran"""
+        return self.is_siswa or self.is_guru or self.is_admin
+
+    def can_view_grades_assignments(self):
+        """Siswa: Lihat nilai dan tugas"""
+        return self.is_siswa or self.is_guru or self.is_admin
+
+    def can_monitor_own_attendance(self):
+        """Siswa: Pantau kehadiran pribadi"""
+        return self.is_siswa or self.is_guru or self.is_admin
+        
+    # Helper methods for template usage
+    def has_edit_permission(self, model_name):
+        """Template helper: Check if user can edit model"""
+        return self.can_edit_delete_model(model_name)
+    
+    def has_delete_permission(self, model_name):
+        """Template helper: Check if user can delete model"""
+        return self.can_edit_delete_model(model_name)
+    
+    def has_add_permission(self, model_name):
+        """Template helper: Check if user can add new records"""
+        actions = self.get_accessible_actions(model_name)
+        return 'add' in actions
+
     class Meta:
         verbose_name_plural = 'Akun'
 
