@@ -39,16 +39,21 @@
         {% endif %}
     </td>
     <td>
+        {% load permissions %}
         <div class="flex space-x-1">
             <a href="{% url 'users:akun_detail' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
                 <i class="fa-solid fa-eye"></i>
             </a>
+            {% if user|can_edit_model:"akun" %}
             <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square" title="Edit">
                 <i class="fa-solid fa-edit"></i>
             </a>
+            {% endif %}
+            {% if user|can_delete_model:"akun" %}
             <button hx-get="{% url 'users:akun_delete' pk=akun.pk %}" hx-target="body" hx-swap="beforeend" class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
                 <i class="fa-solid fa-trash"></i>
             </button>
+            {% endif %}
         </div>
     </td>
 </tr>

@@ -14,8 +14,9 @@ from django.views.generic import (
 )
 
 from apps.core.views import BaseCreateView, BaseListView, BaseUpdateView
+from apps.core.mixins import UserManagementMixin, ViewOnlyMixin
 
-from .forms import AkunChangeForm, AkunCreationForm
+from .forms import AkunChangeForm, AkunCreationForm, SiswaForm, GuruForm
 from .models import Akun as AkunType, Peran, Siswa, Guru
 
 Akun: AkunType = get_user_model()
@@ -42,9 +43,9 @@ def search_permissions(request):
     )
 
 
-class AkunListView(BaseListView):
+class AkunListView(UserManagementMixin, BaseListView):
     model = Akun
-    permission_required = 'users.view_akun'
+    required_permission = 'view'
     context_object_name = 'akun_list'
     full_template_name = 'users/akun_list.html'
     partial_template_name = 'users/partials/akun_table_body.html'
@@ -57,28 +58,25 @@ class AkunListView(BaseListView):
         return qs.select_related('peran').all().order_by('id')
 
 
-class AkunCreateView(BaseCreateView):
+class AkunCreateView(UserManagementMixin, BaseCreateView):
     model = Akun
     form_class = AkunCreationForm
     success_url_name = 'users:akun_list'
-    permission_required = 'users.add_akun'
 
 
-class AkunDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class AkunDetailView(UserManagementMixin, LoginRequiredMixin, DetailView):
     model = Akun
     template_name = 'users/akun_detail.html'
     context_object_name = 'akun'
-    permission_required = 'users.view_akun'
 
     def get_queryset(self):
         return Akun.objects.select_related('peran').all()
 
 
-class AkunUpdateView(BaseUpdateView):
+class AkunUpdateView(UserManagementMixin, BaseUpdateView):
     model = Akun
     form_class = AkunChangeForm
     success_url_name = 'users:akun_list'
-    permission_required = 'users.change_akun'
 
     def form_valid(self, form):
         self.object = form.save()
@@ -87,11 +85,10 @@ class AkunUpdateView(BaseUpdateView):
         return TemplateResponse(self.request, self.get_template_names(), context)
 
 
-class AkunDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class AkunDeleteView(UserManagementMixin, LoginRequiredMixin, DeleteView):
     model = Akun
     template_name = 'users/akun_confirm_delete.html'
     success_url = reverse_lazy('users:akun_list')
-    permission_required = 'users.delete_akun'
 
     def get_template_names(self):
         if self.request.htmx:
@@ -100,9 +97,9 @@ class AkunDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 # -- Views peran
-class PeranListView(BaseListView):
+class PeranListView(UserManagementMixin, BaseListView):
     model = Peran
-    permission_required = 'users.view_peran'
+    required_permission = 'view'
     context_object_name = 'peran_list'
     full_template_name = 'users/peran_list.html'
     partial_template_name = 'users/partials/peran_table_body.html'
@@ -111,25 +108,22 @@ class PeranListView(BaseListView):
     table_body_id = 'peran-table-body'
 
 
-class PeranCreateView(BaseCreateView):
+class PeranCreateView(UserManagementMixin, BaseCreateView):
     model = Peran
     fields = ['nama']
     success_url_name = 'users:peran_list'
-    permission_required = 'users.add_peran'
 
 
-class PeranUpdateView(BaseUpdateView):
+class PeranUpdateView(UserManagementMixin, BaseUpdateView):
     model = Peran
     fields = ['nama']
     success_url_name = 'users:peran_list'
-    permission_required = 'users.change_peran'
 
 
-class PeranDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class PeranDeleteView(UserManagementMixin, LoginRequiredMixin, DeleteView):
     model = Peran
     template_name = 'users/peran_confirm_delete.html'
     success_url = reverse_lazy('users:peran_list')
-    permission_required = 'users.delete_peran'
 
     def get_template_names(self):
         if self.request.htmx:
@@ -137,10 +131,11 @@ class PeranDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return ['users/peran_confirm_delete.html']
 
 
-class SiswaListView(BaseListView):
-    """ListView untuk manajemen data siswa"""
+class SiswaListView(ViewOnlyMixin, BaseListView):
+    """ListView untuk manajemen data siswa - All can view"""
     model = Siswa
-    permission_required = ['users.view_siswa']
+    required_permission = 'view'
+    model_name = 'siswa'
     full_template_name = 'users/siswa_list.html'
     partial_template_name = 'users/partials/siswa_table_body.html'
     context_object_name = 'siswa_list'
@@ -153,10 +148,11 @@ class SiswaListView(BaseListView):
         return qs.select_related('akun').order_by('first_name', 'last_name')
 
 
-class GuruListView(BaseListView):
-    """ListView untuk manajemen data guru"""
+class GuruListView(ViewOnlyMixin, BaseListView):
+    """ListView untuk manajemen data guru - All can view"""
     model = Guru
-    permission_required = ['users.view_guru']
+    required_permission = 'view'
+    model_name = 'guru'
     full_template_name = 'users/guru_list.html'
     partial_template_name = 'users/partials/guru_table_body.html'
     context_object_name = 'guru_list'
@@ -167,3 +163,69 @@ class GuruListView(BaseListView):
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.select_related('akun').order_by('first_name', 'last_name')
+
+
+# CRUD Views untuk Siswa (Admin only)
+class SiswaCreateView(UserManagementMixin, BaseCreateView):
+    """CreateView for Siswa - Admin only"""
+    model = Siswa
+    form_class = SiswaForm
+    success_url_name = 'users:siswa_list'
+
+
+class SiswaUpdateView(UserManagementMixin, BaseUpdateView):
+    """UpdateView for Siswa - Admin only"""
+    model = Siswa
+    form_class = SiswaForm
+    success_url_name = 'users:siswa_list'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Data siswa berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class SiswaDeleteView(UserManagementMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Siswa - Admin only"""
+    model = Siswa
+    template_name = 'users/siswa_confirm_delete.html'
+    success_url = reverse_lazy('users:siswa_list')
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['users/partials/siswa_delete_modal.html']
+        return ['users/siswa_confirm_delete.html']
+
+
+# CRUD Views untuk Guru (Admin only)
+class GuruCreateView(UserManagementMixin, BaseCreateView):
+    """CreateView for Guru - Admin only"""
+    model = Guru
+    form_class = GuruForm
+    success_url_name = 'users:guru_list'
+
+
+class GuruUpdateView(UserManagementMixin, BaseUpdateView):
+    """UpdateView for Guru - Admin only"""
+    model = Guru
+    form_class = GuruForm
+    success_url_name = 'users:guru_list'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Data guru berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class GuruDeleteView(UserManagementMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Guru - Admin only"""
+    model = Guru
+    template_name = 'users/guru_confirm_delete.html'
+    success_url = reverse_lazy('users:guru_list')
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['users/partials/guru_delete_modal.html']
+        return ['users/guru_confirm_delete.html']

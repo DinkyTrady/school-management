@@ -9,16 +9,32 @@
   <td>{{ jadwal.mapel.nama }}</td>
   <td>{{ jadwal.guru.get_full_name }}</td>
   <td>
+    {% load permissions %}
     <div class="flex space-x-1">
       <button class="btn btn-sm btn-ghost btn-square" title="Detail">
         <i class="fa-solid fa-eye"></i>
       </button>
-      <button class="btn btn-sm btn-ghost btn-square" title="Edit">
+      {% if user|can_edit_model:"jadwal" %}
+      <a href="{% url 'academics:jadwal_edit' jadwal.pk %}" class="btn btn-sm btn-warning btn-square" title="Edit">
         <i class="fa-solid fa-edit"></i>
-      </button>
-      <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+      </a>
+      {% endif %}
+      {% if user|can_delete_model:"jadwal" %}
+      <button class="btn btn-sm btn-error btn-square" title="Hapus"
+              hx-delete="{% url 'academics:jadwal_delete' jadwal.pk %}"
+              hx-confirm="Apakah Anda yakin ingin menghapus jadwal '{{ jadwal.kelas.nama }} - {{ jadwal.mapel.nama }}'?"
+              hx-target="closest tr"
+              hx-swap="outerHTML">
         <i class="fa-solid fa-trash"></i>
       </button>
+      {% endif %}
+      
+      <!-- Role-based access indicator -->
+      {% if not user|can_edit_model:"jadwal" %}
+      <span class="text-xs text-gray-400 ml-2" title="Hanya dapat melihat">
+        <i class="fas fa-eye-slash"></i>
+      </span>
+      {% endif %}
     </div>
   </td>
 </tr>

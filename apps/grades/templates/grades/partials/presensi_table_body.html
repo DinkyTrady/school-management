@@ -21,10 +21,40 @@
   </td>
   <td class="text-xs">{{ presensi.keterangan|default:"-"|truncatewords:8 }}</td>
   <td>
-    <div class="flex space-x-1">
-      <button class="btn btn-sm btn-ghost btn-square" title="Detail"><i class="fa-solid fa-eye"></i></button>
-      <button class="btn btn-sm btn-ghost btn-square" title="Edit"><i class="fa-solid fa-edit"></i></button>
-      <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+    {% load permissions %}
+    
+    <!-- Use our new permission system -->
+    <div class="flex space-x-1 items-center">
+      <!-- View button (always available) -->
+      <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+        <i class="fa-solid fa-eye"></i>
+      </button>
+      
+      <!-- Edit button (Guru and Admin only for presensi) -->
+      {% if user|can_edit_model:"presensi" %}
+      <a href="{% url 'grades:presensi_edit' presensi.pk %}" 
+         class="btn btn-sm btn-warning btn-square" title="Edit">
+        <i class="fa-solid fa-edit"></i>
+      </a>
+      {% endif %}
+      
+      <!-- Delete button (Guru and Admin only for presensi) -->
+      {% if user|can_delete_model:"presensi" %}
+      <button class="btn btn-sm btn-error btn-square" title="Hapus" 
+              hx-delete="{% url 'grades:presensi_delete' presensi.pk %}"
+              hx-confirm="Apakah Anda yakin ingin menghapus presensi {{ presensi.siswa.get_full_name }}?"
+              hx-target="closest tr"
+              hx-swap="outerHTML">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+      {% endif %}
+      
+      <!-- Role-based access indicator -->
+      {% if not user|can_edit_model:"presensi" %}
+      <span class="text-xs text-gray-400 ml-2" title="Hanya dapat melihat">
+        <i class="fas fa-eye-slash"></i>
+      </span>
+      {% endif %}
     </div>
   </td>
 </tr>

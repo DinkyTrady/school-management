@@ -142,3 +142,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             context['total_mapel'] = Mapel.objects.count()
 
         return context
+
+
+class PermissionTestView(LoginRequiredMixin, TemplateView):
+    """
+    View to test the role-based permission system
+    Shows permission matrix for different roles based on intro.html
+    """
+    template_name = 'core/permission_test.html'

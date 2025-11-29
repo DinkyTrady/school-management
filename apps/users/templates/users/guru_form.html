@@ -1,0 +1,224 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    {% if object %}Edit Guru{% else %}Tambah Guru Baru{% endif %}
+{% endblock title %}
+
+{% block content %}
+<div class="card bg-base-100 shadow-xl max-w-4xl mx-auto">
+    <div class="card-body">
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="avatar placeholder">
+                <div class="bg-warning text-warning-content rounded-full w-12">
+                    <span><i class="fa-solid fa-chalkboard-user text-xl"></i></span>
+                </div>
+            </div>
+            <div>
+                <h2 class="card-title text-2xl">
+                    {% if object %}
+                        <i class="fa-solid fa-edit mr-2"></i>Edit Data Guru
+                    {% else %}
+                        <i class="fa-solid fa-plus mr-2"></i>Tambah Guru Baru
+                    {% endif %}
+                </h2>
+                <p class="text-sm opacity-70">
+                    {% if object %}
+                        Perbarui informasi guru {{ object.get_full_name }}
+                    {% else %}
+                        Lengkapi data guru yang akan didaftarkan
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <form method="post" class="space-y-6" hx-post="{% if object %}{% url 'users:guru_edit' object.pk %}{% else %}{% url 'users:guru_add' %}{% endif %}"
+              hx-target="body" hx-swap="innerHTML">
+            {% csrf_token %}
+            
+            <!-- Account Selection -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium">
+                        <i class="fa-solid fa-at mr-2"></i>{{ form.akun.label }}
+                    </span>
+                    <span class="label-text-alt text-error">*</span>
+                </label>
+                {{ form.akun }}
+                {% if form.akun.errors %}
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ form.akun.errors.0 }}</span>
+                    </label>
+                {% endif %}
+                <label class="label">
+                    <span class="label-text-alt">Pilih akun dengan role Guru yang belum memiliki profil</span>
+                </label>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="divider">
+                <i class="fa-solid fa-user mr-2"></i>Informasi Pribadi
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- NIP -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">
+                            <i class="fa-solid fa-id-badge mr-2"></i>{{ form.nip.label }}
+                        </span>
+                        <span class="label-text-alt text-error">*</span>
+                    </label>
+                    {{ form.nip }}
+                    {% if form.nip.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ form.nip.errors.0 }}</span>
+                        </label>
+                    {% endif %}
+                </div>
+
+                <!-- Gender -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">
+                            <i class="fa-solid fa-venus-mars mr-2"></i>{{ form.gender.label }}
+                        </span>
+                        <span class="label-text-alt text-error">*</span>
+                    </label>
+                    {{ form.gender }}
+                    {% if form.gender.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ form.gender.errors.0 }}</span>
+                        </label>
+                    {% endif %}
+                </div>
+
+                <!-- First Name -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">{{ form.first_name.label }}</span>
+                        <span class="label-text-alt text-error">*</span>
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ form.first_name.errors.0 }}</span>
+                        </label>
+                    {% endif %}
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">{{ form.last_name.label }}</span>
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ form.last_name.errors.0 }}</span>
+                        </label>
+                    {% endif %}
+                </div>
+
+                <!-- Jabatan -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">
+                            <i class="fa-solid fa-briefcase mr-2"></i>{{ form.jabatan.label }}
+                        </span>
+                    </label>
+                    {{ form.jabatan }}
+                    {% if form.jabatan.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ form.jabatan.errors.0 }}</span>
+                        </label>
+                    {% endif %}
+                </div>
+
+                <!-- Tanggal Lahir -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">
+                            <i class="fa-solid fa-calendar mr-2"></i>{{ form.tanggal_lahir.label }}
+                        </span>
+                    </label>
+                    {{ form.tanggal_lahir }}
+                    {% if form.tanggal_lahir.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ form.tanggal_lahir.errors.0 }}</span>
+                        </label>
+                    {% endif %}
+                </div>
+
+                <!-- Nomor Handphone -->
+                <div class="form-control md:col-span-2">
+                    <label class="label">
+                        <span class="label-text font-medium">
+                            <i class="fa-solid fa-phone mr-2"></i>{{ form.nomor_handphone.label }}
+                        </span>
+                    </label>
+                    {{ form.nomor_handphone }}
+                    {% if form.nomor_handphone.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ form.nomor_handphone.errors.0 }}</span>
+                        </label>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium">
+                        <i class="fa-solid fa-home mr-2"></i>{{ form.alamat.label }}
+                    </span>
+                </label>
+                {{ form.alamat }}
+                {% if form.alamat.errors %}
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ form.alamat.errors.0 }}</span>
+                    </label>
+                {% endif %}
+            </div>
+
+            <!-- Form Actions -->
+            <div class="divider"></div>
+            <div class="card-actions justify-between">
+                <a href="{% url 'users:guru_list' %}" class="btn btn-ghost">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>Kembali
+                </a>
+                <div class="flex space-x-2">
+                    <button type="reset" class="btn btn-outline">
+                        <i class="fa-solid fa-undo mr-2"></i>Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-save mr-2"></i>
+                        {% if object %}Update Guru{% else %}Simpan Guru{% endif %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Success Message -->
+{% if success_message %}
+<div class="toast toast-top toast-end">
+    <div class="alert alert-success">
+        <i class="fa-solid fa-check-circle"></i>
+        <span>{{ success_message }}</span>
+    </div>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-hide success message
+    const toast = document.querySelector('.toast');
+    if (toast) {
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+});
+</script>
+{% endblock content %}

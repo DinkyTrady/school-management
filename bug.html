@@ -1,0 +1,110 @@
+            <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+            <div class="w-80 min-h-full bg-base-200 flex flex-col">
+                <!-- Sidebar content here -->
+                <div class="p-4 border-b border-base-300">
+                    <h2 class="text-xl font-bold text-primary">SIGMA</h2>
+                    <p class="text-xs text-base-content/70">School Information &amp; Management</p>
+                </div>
+                <ul class="menu p-0 gap-1 flex-1 overflow-y-auto">
+                    <!-- Dashboard - Semua Role -->
+<li class="font-bold">
+    <a href="/">
+        <i class="fa-solid fa-gauge-high w-4"></i> Dashboard
+    </a>
+</li>
+
+
+    <!-- MANAJEMEN PENGGUNA -->
+    
+    <li class="menu-title mt-4">
+        <i class="fa-solid fa-users-gear"></i> Manajemen Pengguna
+    </li>
+    <li class="">
+        <a href="/users/akun/">
+            <i class="fa-solid fa-users w-4"></i> Akun
+        </a>
+    </li>
+    <li class="">
+        <a href="/users/roles/">
+            <i class="fa-solid fa-user-shield w-4"></i> Peran
+        </a>
+    </li>
+    <li class="">
+        <a href="/users/siswa/">
+            <i class="fa-solid fa-user-graduate w-4"></i> Siswa
+        </a>
+    </li>
+    <li class="">
+        <a href="/users/guru/">
+            <i class="fa-solid fa-chalkboard-user w-4"></i> Guru
+        </a>
+    </li>
+    
+
+    <!-- AKADEMIK -->
+    
+    <li class="menu-title mt-4">
+        <i class="fa-solid fa-school"></i> Akademik
+    </li>
+    <li class="">
+        <a href="/academics/tahun-ajaran/">
+            <i class="fa-solid fa-calendar-alt w-4"></i> Tahun Ajaran
+        </a>
+    </li>
+    <li class="">
+        <a href="/academics/jurusan/">
+            <i class="fa-solid fa-graduation-cap w-4"></i> Jurusan
+        </a>
+    </li>
+    <li class="">
+        <a href="/academics/kelas/">
+            <i class="fa-solid fa-door-open w-4"></i> Kelas
+        </a>
+    </li>
+    <li class="">
+        <a href="/academics/mapel/">
+            <i class="fa-solid fa-book-open w-4"></i> Mata Pelajaran
+        </a>
+    </li>
+    <li class="">
+        <a href="/academics/jadwal/">
+            <i class="fa-solid fa-calendar-days w-4"></i> Jadwal Pelajaran
+        </a>
+    </li>
+    
+
+    <!-- NILAI & PRESENSI -->
+    
+    <li class="menu-title mt-4">
+        <i class="fa-solid fa-chart-line"></i> Penilaian &amp; Kehadiran
+    </li>
+    
+        <li class="">
+            <a href="/grades/tugas/">
+                <i class="fa-solid fa-tasks w-4"></i> Tugas
+            </a>
+        </li>
+    
+    <li class="">
+        <a href="/grades/nilai/">
+            <i class="fa-solid fa-award w-4"></i> Nilai
+        </a>
+    </li>
+    <li class="">
+        <a href="/grades/presensi/">
+            <i class="fa-solid fa-user-check w-4"></i> Presensi
+        </a>
+    </li>
+    
+
+
+                </ul>
+                
+                <div class="p-4 border-t border-base-300">
+                    <button onclick="logout_modal.showModal()" class="btn btn-error btn-outline btn-block">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </div>
+                
+            </div>
+        

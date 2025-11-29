@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Role Badge</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-base-200">
+    <div class="container mx-auto p-8">
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Role Badge Test</h2>
+                
+                <!-- Test different roles -->
+                <div class="space-y-4">
+                    <div>
+                        <strong>Admin Badge:</strong>
+                        <span class="badge badge-error">Admin</span>
+                    </div>
+                    
+                    <div>
+                        <strong>Guru Badge:</strong>
+                        <span class="badge badge-warning">Guru</span>
+                    </div>
+                    
+                    <div>
+                        <strong>Siswa Badge:</strong>
+                        <span class="badge badge-info">Siswa</span>
+                    </div>
+                    
+                    <div>
+                        <strong>Guest Badge:</strong>
+                        <span class="badge badge-ghost">Guest</span>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <h4>Template Tag Fixed!</h4>
+                        <p>Role badges sekarang menggunakan <code>mark_safe()</code> untuk proper HTML rendering.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
