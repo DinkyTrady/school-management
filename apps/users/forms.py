@@ -8,8 +8,10 @@ from django.forms import (
     PasswordInput,
     ValidationError,
 )
+from django import forms
+from django.db import models
 
-from .models import Akun, Peran
+from .models import Akun, Peran, Siswa, Guru
 
 
 class AkunCreationForm(ModelForm):
@@ -126,3 +128,138 @@ class AkunChangeForm(UserChangeForm):
 
             self.save_m2m()
         return instance
+
+
+class SiswaForm(ModelForm):
+    """Form untuk create dan update Siswa"""
+    
+    class Meta:
+        model = Siswa
+        fields = ['akun', 'nis', 'first_name', 'last_name', 'gender', 'nomor_handphone', 'alamat', 'tanggal_lahir']
+        widgets = {
+            'akun': forms.Select(attrs={
+                'class': 'select select-bordered w-full'
+            }),
+            'nis': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Nomor Induk Siswa'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Nama depan'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Nama belakang'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'select select-bordered w-full'
+            }),
+            'nomor_handphone': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': '08xxxxxxxxxx'
+            }),
+            'alamat': forms.Textarea(attrs={
+                'class': 'textarea textarea-bordered w-full',
+                'rows': 3,
+                'placeholder': 'Alamat lengkap siswa'
+            }),
+            'tanggal_lahir': forms.DateInput(attrs={
+                'class': 'input input-bordered w-full',
+                'type': 'date'
+            }),
+        }
+        labels = {
+            'akun': 'Akun Pengguna',
+            'nis': 'NIS',
+            'first_name': 'Nama Depan',
+            'last_name': 'Nama Belakang',
+            'gender': 'Jenis Kelamin',
+            'nomor_handphone': 'Nomor Handphone',
+            'alamat': 'Alamat',
+            'tanggal_lahir': 'Tanggal Lahir'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter akun to only show Siswa role accounts or accounts without profiles
+        from django.db import models as django_models
+        siswa_akuns = Akun.objects.filter(
+            django_models.Q(peran__nama='Siswa') & 
+            django_models.Q(siswa_profile__isnull=True)
+        )
+        if self.instance.pk:  # If editing, include current akun
+            siswa_akuns = siswa_akuns | Akun.objects.filter(pk=self.instance.akun_id)
+        
+        self.fields['akun'].queryset = siswa_akuns
+        self.fields['alamat'].required = False
+
+
+class GuruForm(ModelForm):
+    """Form untuk create dan update Guru"""
+    
+    class Meta:
+        model = Guru
+        fields = ['akun', 'nip', 'first_name', 'last_name', 'gender', 'jabatan', 'nomor_handphone', 'alamat', 'tanggal_lahir']
+        widgets = {
+            'akun': forms.Select(attrs={
+                'class': 'select select-bordered w-full'
+            }),
+            'nip': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Nomor Induk Pegawai'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Nama depan'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Nama belakang'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'select select-bordered w-full'
+            }),
+            'jabatan': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Contoh: Guru Matematika, Wakil Kepala Sekolah'
+            }),
+            'nomor_handphone': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': '08xxxxxxxxxx'
+            }),
+            'alamat': forms.Textarea(attrs={
+                'class': 'textarea textarea-bordered w-full',
+                'rows': 3,
+                'placeholder': 'Alamat lengkap guru'
+            }),
+            'tanggal_lahir': forms.DateInput(attrs={
+                'class': 'input input-bordered w-full',
+                'type': 'date'
+            }),
+        }
+        labels = {
+            'akun': 'Akun Pengguna',
+            'nip': 'NIP',
+            'first_name': 'Nama Depan',
+            'last_name': 'Nama Belakang',
+            'gender': 'Jenis Kelamin',
+            'jabatan': 'Jabatan',
+            'nomor_handphone': 'Nomor Handphone',
+            'alamat': 'Alamat',
+            'tanggal_lahir': 'Tanggal Lahir'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter akun to only show Guru role accounts or accounts without profiles
+        from django.db import models as django_models
+        guru_akuns = Akun.objects.filter(
+            django_models.Q(peran__nama='Guru') & 
+            django_models.Q(guru_profile__isnull=True)
+        )
+        if self.instance.pk:  # If editing, include current akun
+            guru_akuns = guru_akuns | Akun.objects.filter(pk=self.instance.akun_id)
+            
+        self.fields['akun'].queryset = guru_akuns
+        self.fields['alamat'].required = False
