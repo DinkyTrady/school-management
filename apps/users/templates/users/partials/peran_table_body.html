@@ -15,13 +15,21 @@
         </div>
     </td>
     <td>
+        {% load permissions %}
         <div class="flex space-x-1">
+            <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+            {% if user|can_edit_model:"peran" %}
             <a href="{% url 'users:peran_edit' pk=peran.pk %}" class="btn btn-sm btn-ghost btn-square" title="Edit">
                 <i class="fa-solid fa-edit"></i>
             </a>
+            {% endif %}
+            {% if user|can_delete_model:"peran" %}
             <button hx-get="{% url 'users:peran_delete' pk=peran.pk %}" hx-target="body" hx-swap="beforeend" class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
                 <i class="fa-solid fa-trash"></i>
             </button>
+            {% endif %}
         </div>
     </td>
 </tr>

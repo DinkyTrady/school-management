@@ -1,0 +1,27 @@
+<dialog id="delete_nilai_modal" class="modal modal-bottom sm:modal-middle" open>
+    <div class="modal-box">
+        <h3 class="font-bold text-lg text-error">Konfirmasi Hapus Nilai</h3>
+        <p class="py-4">Apakah Anda yakin ingin menghapus nilai <strong>{{ object.siswa.get_full_name }}</strong>?</p>
+        <div class="text-sm text-gray-600 mb-4">
+            <p><strong>Siswa:</strong> {{ object.siswa.get_full_name }} ({{ object.siswa.nis }})</p>
+            <p><strong>Kelas:</strong> {{ object.jadwal.kelas.nama }}</p>
+            <p><strong>Mapel:</strong> {{ object.jadwal.mapel.nama }}</p>
+            <p><strong>Tipe:</strong> {{ object.tipe_penilaian }}</p>
+            <p><strong>Nilai:</strong> {{ object.nilai }}</p>
+            <p><strong>Tanggal:</strong> {{ object.tanggal_penilaian }}</p>
+        </div>
+        <p class="text-sm text-warning">Tindakan ini tidak dapat dibatalkan.</p>
+        <div class="modal-action">
+            <form hx-post="{% url 'grades:nilai_delete' pk=object.pk %}" 
+                  hx-swap="outerHTML" 
+                  hx-target="#nilai-table-body" 
+                  hx-confirm="" 
+                  hx-on::after-request="document.getElementById('delete_nilai_modal').remove();">
+                {% csrf_token %}
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-error">Ya, Hapus</button>
+            </form>
+            <button class="btn" onclick="document.getElementById('delete_nilai_modal').remove();">Batal</button>
+        </div>
+    </div>
+</dialog>

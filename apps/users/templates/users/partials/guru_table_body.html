@@ -27,8 +27,28 @@
   <td>
     <div class="flex space-x-1">
       <button class="btn btn-sm btn-ghost btn-square" title="Detail"><i class="fa-solid fa-eye"></i></button>
-      <button class="btn btn-sm btn-ghost btn-square" title="Edit"><i class="fa-solid fa-edit"></i></button>
-      <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+      {% load permissions %}
+      {% if user|can_edit_model:"guru" %}
+      <a href="{% url 'users:guru_edit' guru.pk %}" class="btn btn-sm btn-warning btn-square" title="Edit">
+        <i class="fa-solid fa-edit"></i>
+      </a>
+      {% endif %}
+      {% if user|can_delete_model:"guru" %}
+      <button class="btn btn-sm btn-error btn-square" title="Hapus"
+              hx-delete="{% url 'users:guru_delete' guru.pk %}"
+              hx-confirm="Apakah Anda yakin ingin menghapus guru '{{ guru.get_full_name }}'?"
+              hx-target="closest tr"
+              hx-swap="outerHTML">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+      {% endif %}
+      
+      <!-- Role-based access indicator -->
+      {% if not user|can_edit_model:"guru" %}
+      <span class="text-xs text-gray-400 ml-2" title="Hanya dapat melihat">
+        <i class="fas fa-eye-slash"></i>
+      </span>
+      {% endif %}
     </div>
   </td>
 </tr>

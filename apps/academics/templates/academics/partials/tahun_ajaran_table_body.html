@@ -25,18 +25,33 @@
         {% endif %}
     </td>
     <td>
+        {% load permissions %}
         <div class="flex space-x-1">
-            <button class="btn btn-sm btn-ghost btn-square" title="Edit">
-                <i class="fa-solid fa-edit"></i>
+            <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+                <i class="fa-solid fa-eye"></i>
             </button>
-            {% if not tahun_ajaran.is_active %}
-                <button class="btn btn-sm btn-success btn-square" title="Aktifkan">
-                    <i class="fa-solid fa-play"></i>
-                </button>
+            {% if user|can_edit_model:"tahunajar" %}
+            <a href="{% url 'academics:tahun_ajaran_edit' tahun_ajaran.pk %}"
+               class="btn btn-sm btn-warning btn-square" title="Edit">
+                <i class="fa-solid fa-edit"></i>
+            </a>
             {% endif %}
-            <button class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+            {% if user|can_delete_model:"tahunajar" %}
+            <button class="btn btn-sm btn-error btn-square" title="Hapus"
+                    hx-delete="{% url 'academics:tahun_ajaran_delete' tahun_ajaran.pk %}"
+                    hx-confirm="Apakah Anda yakin ingin menghapus tahun ajaran '{{ tahun_ajaran.tahun }} {{ tahun_ajaran.semester }}'?"
+                    hx-target="closest tr"
+                    hx-swap="outerHTML">
                 <i class="fa-solid fa-trash"></i>
             </button>
+            {% endif %}
+            
+            <!-- Role-based access indicator -->
+            {% if not user|can_edit_model:"tahunajar" %}
+            <span class="text-xs text-gray-400 ml-2" title="Hanya dapat melihat">
+                <i class="fas fa-eye-slash"></i>
+            </span>
+            {% endif %}
         </div>
     </td>
 </tr>
