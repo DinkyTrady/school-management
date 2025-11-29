@@ -9,7 +9,18 @@
     <div class="card-body">
         <div class="flex justify-between items-center mb-4">
             <h2 class="card-title text-2xl">Daftar Akun Pengguna</h2>
-            <a href="{% url 'users:akun_add' %}" class="btn btn-primary">Tambah Akun Baru</a>
+            {% load permissions %}
+            {% if user|can_add_model:"akun" %}
+            <a href="{% url 'users:akun_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tambah Akun Baru
+            </a>
+            {% endif %}
+            
+            <!-- Role indicator -->
+            <div class="text-sm text-gray-500">
+                <i class="fas fa-user"></i>
+                {% role_badge user %}
+            </div>
         </div>
 
         <div class="mb-4">

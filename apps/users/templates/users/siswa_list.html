@@ -5,7 +5,18 @@
   <div class="card-body">
     <div class="flex justify-between items-center mb-4">
       <h2 class="card-title text-2xl">Daftar Siswa</h2>
-      <a href="#" class="btn btn-primary">Tambah Siswa Baru</a>
+      {% load permissions %}
+      {% if user|can_add_model:"siswa" %}
+      <a href="{% url 'users:siswa_add' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Tambah Siswa Baru
+      </a>
+      {% endif %}
+      
+      <!-- Role indicator -->
+      <div class="text-sm text-gray-500">
+        <i class="fas fa-user"></i>
+        {% role_badge user %}
+      </div>
     </div>
     <div class="mb-4">
       <input type="text" name="q" placeholder="Cari nama / NIS / email..."

@@ -7,7 +7,18 @@
   <div class="card-body">
     <div class="flex justify-between items-center mb-4">
       <h2 class="card-title text-2xl">Daftar Jadwal Pelajaran</h2>
-      <a href="#" class="btn btn-primary">Tambah Jadwal Baru</a>
+      {% load permissions %}
+      {% if user|can_add_model:"jadwal" %}
+      <a href="{% url 'academics:jadwal_add' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Tambah Jadwal Baru
+      </a>
+      {% endif %}
+      
+      <!-- Role indicator -->
+      <div class="text-sm text-gray-500">
+        <i class="fas fa-user"></i>
+        {% role_badge user %}
+      </div>
     </div>
 
     <div class="mb-4">
