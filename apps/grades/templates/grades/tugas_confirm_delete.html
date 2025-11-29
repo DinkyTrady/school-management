@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+{% block title %}Hapus Tugas{% endblock title %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="card bg-base-100 shadow-xl max-w-2xl mx-auto">
+        <div class="card-body">
+            <h2 class="card-title text-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                Konfirmasi Hapus Tugas
+            </h2>
+            
+            <div class="alert alert-warning">
+                <i class="fas fa-warning"></i>
+                <span>Tindakan ini tidak dapat dibatalkan!</span>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                <h3 class="font-semibold mb-2">Detail Tugas yang akan dihapus:</h3>
+                <div class="space-y-2">
+                    <p><strong>Nama:</strong> {{ object.nama }}</p>
+                    <p><strong>Kelas:</strong> {{ object.jadwal.kelas.nama }}</p>
+                    <p><strong>Mata Pelajaran:</strong> {{ object.jadwal.mapel.nama }}</p>
+                    <p><strong>Guru:</strong> {{ object.jadwal.guru.get_full_name }}</p>
+                    <p><strong>Periode:</strong> {{ object.mulai }} - {{ object.tenggat }}</p>
+                    {% if object.deskripsi %}
+                    <p><strong>Deskripsi:</strong> {{ object.deskripsi|truncatewords:20 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <p class="text-lg mb-6">
+                Apakah Anda yakin ingin menghapus tugas <strong>"{{ object.nama }}"</strong>?
+            </p>
+            
+            <div class="card-actions justify-end">
+                <a href="{% url 'grades:tugas_list' %}" class="btn btn-ghost">
+                    <i class="fas fa-arrow-left"></i>
+                    Batal
+                </a>
+                <form method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-error">
+                        <i class="fas fa-trash"></i>
+                        Ya, Hapus Tugas
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
