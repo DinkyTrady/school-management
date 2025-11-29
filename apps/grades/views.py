@@ -1,12 +1,19 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import DeleteView
+from django.urls import reverse_lazy
+from django.template.response import TemplateResponse
+
 from apps.academics.models import KelasSiswa
-from apps.core.views import BaseListView
+from apps.core.views import BaseListView, BaseCreateView, BaseUpdateView
+from apps.core.mixins import TugasPermissionMixin, NilaiPermissionMixin, PresensiPermissionMixin
 from .models import Tugas, Nilai, Presensi
+from .forms import TugasForm, NilaiForm, PresensiForm
 
 
-class TugasListView(BaseListView):
-    """ListView untuk manajemen tugas"""
+class TugasListView(TugasPermissionMixin, BaseListView):
+    """ListView untuk manajemen tugas - Role-based access from intro.html"""
     model = Tugas
-    permission_required = ['grades.view_tugas']
+    required_permission = 'view'
     full_template_name = 'grades/tugas_list.html'
     partial_template_name = 'grades/partials/tugas_table_body.html'
     context_object_name = 'tugas_list'
@@ -40,10 +47,10 @@ class TugasListView(BaseListView):
         return qs
 
 
-class NilaiListView(BaseListView):
-    """ListView untuk melihat nilai siswa"""
+class NilaiListView(NilaiPermissionMixin, BaseListView):
+    """ListView untuk melihat nilai siswa - Role-based access from intro.html"""
     model = Nilai
-    permission_required = ['grades.view_nilai']
+    required_permission = 'view'
     full_template_name = 'grades/nilai_list.html'
     partial_template_name = 'grades/partials/nilai_table_body.html'
     context_object_name = 'nilai_list'
@@ -63,10 +70,10 @@ class NilaiListView(BaseListView):
         return qs.filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal_penilaian')
 
 
-class PresensiListView(BaseListView):
-    """ListView untuk melihat presensi siswa"""
+class PresensiListView(PresensiPermissionMixin, BaseListView):
+    """ListView untuk melihat presensi siswa - Role-based access from intro.html"""
     model = Presensi
-    permission_required = ['grades.view_presensi']
+    required_permission = 'view'
     full_template_name = 'grades/presensi_list.html'
     partial_template_name = 'grades/partials/presensi_table_body.html'
     context_object_name = 'presensi_list'
@@ -84,3 +91,125 @@ class PresensiListView(BaseListView):
             'jadwal__guru', 'jadwal__kelas__tahun_ajaran'
         )
         return qs.filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal')
+
+
+# CRUD Views for Guru to manage grades data (based on intro.html permissions)
+
+class TugasCreateView(TugasPermissionMixin, BaseCreateView):
+    """CreateView for Tugas - Guru can create assignments"""
+    model = Tugas
+    form_class = TugasForm
+    required_permission = 'add'
+    success_url_name = 'grades:tugas_list'
+
+
+class TugasUpdateView(TugasPermissionMixin, BaseUpdateView):
+    """UpdateView for Tugas - Guru can edit assignments"""  
+    model = Tugas
+    form_class = TugasForm
+    required_permission = 'change'
+    success_url_name = 'grades:tugas_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Tugas berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class TugasDeleteView(TugasPermissionMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Tugas - Guru can delete assignments"""
+    model = Tugas  
+    template_name = 'grades/tugas_confirm_delete.html'
+    success_url = reverse_lazy('grades:tugas_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['grades/partials/tugas_delete_modal.html']
+        return ['grades/tugas_confirm_delete.html']
+    
+    def has_permission(self):
+        return (
+            self.request.user.is_authenticated and 
+            self.request.user.can_edit_delete_model('tugas')
+        )
+
+
+class NilaiCreateView(NilaiPermissionMixin, BaseCreateView):
+    """CreateView for Nilai - Guru can input grades"""
+    model = Nilai
+    form_class = NilaiForm
+    required_permission = 'add'
+    success_url_name = 'grades:nilai_list'
+
+
+class NilaiUpdateView(NilaiPermissionMixin, BaseUpdateView):
+    """UpdateView for Nilai - Guru can edit grades"""
+    model = Nilai
+    form_class = NilaiForm
+    required_permission = 'change' 
+    success_url_name = 'grades:nilai_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Nilai berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class NilaiDeleteView(NilaiPermissionMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Nilai - Guru can delete grades"""
+    model = Nilai
+    template_name = 'grades/nilai_confirm_delete.html'
+    success_url = reverse_lazy('grades:nilai_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['grades/partials/nilai_delete_modal.html']
+        return ['grades/nilai_confirm_delete.html']
+    
+    def has_permission(self):
+        return (
+            self.request.user.is_authenticated and 
+            self.request.user.can_edit_delete_model('nilai')
+        )
+
+
+class PresensiCreateView(PresensiPermissionMixin, BaseCreateView):
+    """CreateView for Presensi - Guru can record attendance"""
+    model = Presensi
+    form_class = PresensiForm
+    required_permission = 'add'
+    success_url_name = 'grades:presensi_list'
+
+
+class PresensiUpdateView(PresensiPermissionMixin, BaseUpdateView):
+    """UpdateView for Presensi - Guru can edit attendance"""
+    model = Presensi
+    form_class = PresensiForm
+    required_permission = 'change'
+    success_url_name = 'grades:presensi_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Presensi berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class PresensiDeleteView(PresensiPermissionMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Presensi - Guru can delete attendance"""
+    model = Presensi
+    template_name = 'grades/presensi_confirm_delete.html'
+    success_url = reverse_lazy('grades:presensi_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['grades/partials/presensi_delete_modal.html']
+        return ['grades/presensi_confirm_delete.html']
+    
+    def has_permission(self):
+        return (
+            self.request.user.is_authenticated and 
+            self.request.user.can_edit_delete_model('presensi')
+        )

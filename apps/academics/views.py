@@ -1,17 +1,24 @@
 # apps/academics/views.py
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DeleteView
+from django.urls import reverse_lazy
+from django.template.response import TemplateResponse
 from django.db.models import Count
 
-from apps.core.views import BaseListView
-from .models import Kelas, TahunAjaran, Jurusan, Mapel, Jadwal
+from apps.core.views import BaseListView, BaseCreateView, BaseUpdateView
+from apps.core.mixins import AcademicViewOnlyMixin, FullAccessMixin
+from .models import Kelas, TahunAjaran, Jurusan, Mapel, Jadwal, KelasSiswa
+from .forms import KelasForm, TahunAjaranForm, JurusanForm, MapelForm, JadwalForm
 
 
-class KelasListView(BaseListView):
+class KelasListView(AcademicViewOnlyMixin, BaseListView):
     """
     Menampilkan halaman penuh daftar kelas.
-    Hanya untuk Staf Internal (Admin, Guru, Kepsek, TU).
+    Admin: Full access, Guru/Siswa: View only
     """
     model = Kelas
-    permission_required = ['academics.view_kelas']
+    required_permission = 'view'
+    model_name = 'kelas'
     full_template_name = 'academics/kelas_list.html'
     partial_template_name = 'academics/partials/academics/_kelas_table_rows.html'
     context_object_name = 'daftar_kelas'
@@ -45,10 +52,44 @@ class KelasListView(BaseListView):
         return qs.order_by('nama')
 
 
-class TahunAjaranListView(BaseListView):
+# CRUD Views untuk Kelas (Admin only)
+class KelasCreateView(FullAccessMixin, BaseCreateView):
+    """CreateView for Kelas - Admin only"""
+    model = Kelas
+    form_class = KelasForm
+    success_url_name = 'academics:kelas_list'
+
+
+class KelasUpdateView(FullAccessMixin, BaseUpdateView):
+    """UpdateView for Kelas - Admin only"""  
+    model = Kelas
+    form_class = KelasForm
+    success_url_name = 'academics:kelas_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Kelas berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class KelasDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Kelas - Admin only"""
+    model = Kelas
+    template_name = 'academics/kelas_confirm_delete.html'
+    success_url = reverse_lazy('academics:kelas_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['academics/partials/kelas_delete_modal.html']
+        return ['academics/kelas_confirm_delete.html']
+
+
+class TahunAjaranListView(AcademicViewOnlyMixin, BaseListView):
     """ListView untuk manajemen tahun ajaran"""
     model = TahunAjaran
-    permission_required = ['academics.view_tahunajar']
+    required_permission = 'view'
+    model_name = 'tahunajar'
     full_template_name = 'academics/tahun_ajaran_list.html'
     partial_template_name = 'academics/partials/tahun_ajaran_table_body.html'
     context_object_name = 'tahun_ajaran_list'
@@ -61,10 +102,44 @@ class TahunAjaranListView(BaseListView):
         return qs.order_by('-is_active', '-tahun', 'semester')
 
 
-class JurusanListView(BaseListView):
+# CRUD Views untuk Tahun Ajaran (Admin only)
+class TahunAjaranCreateView(FullAccessMixin, BaseCreateView):
+    """CreateView for TahunAjaran - Admin only"""
+    model = TahunAjaran
+    form_class = TahunAjaranForm
+    success_url_name = 'academics:tahun_ajaran_list'
+
+
+class TahunAjaranUpdateView(FullAccessMixin, BaseUpdateView):
+    """UpdateView for TahunAjaran - Admin only"""  
+    model = TahunAjaran
+    form_class = TahunAjaranForm
+    success_url_name = 'academics:tahun_ajaran_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Tahun Ajaran berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class TahunAjaranDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for TahunAjaran - Admin only"""
+    model = TahunAjaran
+    template_name = 'academics/tahun_ajaran_confirm_delete.html'
+    success_url = reverse_lazy('academics:tahun_ajaran_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['academics/partials/tahun_ajaran_delete_modal.html']
+        return ['academics/tahun_ajaran_confirm_delete.html']
+
+
+class JurusanListView(AcademicViewOnlyMixin, BaseListView):
     """ListView untuk manajemen jurusan"""
     model = Jurusan
-    permission_required = ['academics.view_jurusan']
+    required_permission = 'view'
+    model_name = 'jurusan'
     full_template_name = 'academics/jurusan_list.html'
     partial_template_name = 'academics/partials/jurusan_table_body.html'
     context_object_name = 'jurusan_list'
@@ -73,10 +148,44 @@ class JurusanListView(BaseListView):
     table_body_id = 'jurusan-table-body'
 
 
-class MapelListView(BaseListView):
+# CRUD Views untuk Jurusan (Admin only)
+class JurusanCreateView(FullAccessMixin, BaseCreateView):
+    """CreateView for Jurusan - Admin only"""
+    model = Jurusan
+    form_class = JurusanForm
+    success_url_name = 'academics:jurusan_list'
+
+
+class JurusanUpdateView(FullAccessMixin, BaseUpdateView):
+    """UpdateView for Jurusan - Admin only"""  
+    model = Jurusan
+    form_class = JurusanForm
+    success_url_name = 'academics:jurusan_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Jurusan berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class JurusanDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Jurusan - Admin only"""
+    model = Jurusan
+    template_name = 'academics/jurusan_confirm_delete.html'
+    success_url = reverse_lazy('academics:jurusan_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['academics/partials/jurusan_delete_modal.html']
+        return ['academics/jurusan_confirm_delete.html']
+
+
+class MapelListView(AcademicViewOnlyMixin, BaseListView):
     """ListView untuk manajemen mata pelajaran"""
     model = Mapel
-    permission_required = ['academics.view_mapel']
+    required_permission = 'view'
+    model_name = 'mapel'
     full_template_name = 'academics/mapel_list.html'
     partial_template_name = 'academics/partials/mapel_table_body.html'
     context_object_name = 'mapel_list'
@@ -85,13 +194,44 @@ class MapelListView(BaseListView):
     table_body_id = 'mapel-table-body'
 
 
-from .models import Kelas, TahunAjaran, Jurusan, Mapel, Jadwal, KelasSiswa
+# CRUD Views untuk Mapel (Admin only)
+class MapelCreateView(FullAccessMixin, BaseCreateView):
+    """CreateView for Mapel - Admin only"""
+    model = Mapel
+    form_class = MapelForm
+    success_url_name = 'academics:mapel_list'
 
 
-class JadwalListView(BaseListView):
+class MapelUpdateView(FullAccessMixin, BaseUpdateView):
+    """UpdateView for Mapel - Admin only"""  
+    model = Mapel
+    form_class = MapelForm
+    success_url_name = 'academics:mapel_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Mata Pelajaran berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class MapelDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Mapel - Admin only"""
+    model = Mapel
+    template_name = 'academics/mapel_confirm_delete.html'
+    success_url = reverse_lazy('academics:mapel_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['academics/partials/mapel_delete_modal.html']
+        return ['academics/mapel_confirm_delete.html']
+
+
+class JadwalListView(AcademicViewOnlyMixin, BaseListView):
     """ListView untuk melihat jadwal pelajaran"""
     model = Jadwal
-    permission_required = ['academics.view_jadwal']
+    required_permission = 'view'
+    model_name = 'jadwal'
     full_template_name = 'academics/jadwal_list.html'
     partial_template_name = 'academics/partials/jadwal_table_body.html'
     context_object_name = 'jadwal_list'
@@ -122,5 +262,38 @@ class JadwalListView(BaseListView):
                 return qs.none()
         
         return qs.order_by('hari', 'jam_mulai')
+
+
+# CRUD Views untuk Jadwal (Admin only)
+class JadwalCreateView(FullAccessMixin, BaseCreateView):
+    """CreateView for Jadwal - Admin only"""
+    model = Jadwal
+    form_class = JadwalForm
+    success_url_name = 'academics:jadwal_list'
+
+
+class JadwalUpdateView(FullAccessMixin, BaseUpdateView):
+    """UpdateView for Jadwal - Admin only"""  
+    model = Jadwal
+    form_class = JadwalForm
+    success_url_name = 'academics:jadwal_list'
+    
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Jadwal berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class JadwalDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
+    """DeleteView for Jadwal - Admin only"""
+    model = Jadwal
+    template_name = 'academics/jadwal_confirm_delete.html'
+    success_url = reverse_lazy('academics:jadwal_list')
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['academics/partials/jadwal_delete_modal.html']
+        return ['academics/jadwal_confirm_delete.html']
 
 # HTMX search functionality now handled by BaseListView
