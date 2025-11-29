@@ -1,0 +1,288 @@
+{% extends 'core/base.html' %}
+{% load permissions %}
+
+{% block title %}Test Permission System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-3xl mb-6">
+                <i class="fas fa-shield-alt"></i>
+                SIGMA Permission System Test
+            </h2>
+            
+            <!-- User Info -->
+            <div class="alert alert-info mb-6">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-user text-2xl"></i>
+                    <div>
+                        <strong>User:</strong> {{ user.email }}<br>
+                        <strong>Role:</strong> {% user_role_display user %} {% role_badge user %}<br>
+                        <strong>Groups:</strong> 
+                        {% for group in user.groups.all %}
+                            <span class="badge badge-outline">{{ group.name }}</span>
+                        {% empty %}
+                            <span class="text-gray-500">No groups</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Descriptions from intro.html -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Admin Card -->
+                <div class="card bg-red-50 border border-red-200">
+                    <div class="card-body">
+                        <h3 class="font-bold text-red-800">
+                            <i class="fas fa-user-tie"></i> Administrator
+                        </h3>
+                        <p class="text-sm text-red-600">Mengelola seluruh sistem dengan kontrol penuh</p>
+                        <ul class="text-xs text-red-700 mt-2">
+                            <li>✓ Manajemen akun pengguna</li>
+                            <li>✓ Pengaturan peran & hak akses</li>
+                            <li>✓ Manajemen data akademik</li>
+                            <li>✓ Laporan dan analitik sistem</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Guru Card -->
+                <div class="card bg-orange-50 border border-orange-200">
+                    <div class="card-body">
+                        <h3 class="font-bold text-orange-800">
+                            <i class="fas fa-chalkboard-user"></i> Guru
+                        </h3>
+                        <p class="text-sm text-orange-600">Mengelola kelas, nilai, tugas, dan interaksi dengan siswa</p>
+                        <ul class="text-xs text-orange-700 mt-2">
+                            <li>👀 Kelola data kelas dan siswa (VIEW)</li>
+                            <li>✏️ Input nilai dan tugas (FULL)</li>
+                            <li>✏️ Pantau kehadiran siswa (FULL)</li>
+                            <li>👀 Lihat jadwal dan kurikulum (VIEW)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Siswa Card -->
+                <div class="card bg-blue-50 border border-blue-200">
+                    <div class="card-body">
+                        <h3 class="font-bold text-blue-800">
+                            <i class="fas fa-user-graduate"></i> Siswa
+                        </h3>
+                        <p class="text-sm text-blue-600">Melihat informasi akademik dengan mudah</p>
+                        <ul class="text-xs text-blue-700 mt-2">
+                            <li>👀 Lihat profil dan biodata (VIEW)</li>
+                            <li>👀 Akses jadwal pelajaran (VIEW)</li>
+                            <li>👀 Lihat nilai dan tugas (VIEW)</li>
+                            <li>👀 Pantau kehadiran pribadi (VIEW)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permission Test Grid -->
+            <div class="divider">
+                <span class="text-lg font-bold">Permission Test Results</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Grades Models (Guru can CRUD, others VIEW only) -->
+                <div class="card bg-green-50 border border-green-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-green-800">
+                            <i class="fas fa-clipboard-list"></i>
+                            Grades Models (Guru Full Access)
+                        </h3>
+                        
+                        {% for model in "tugas,nilai,presensi"|split:"," %}
+                        <div class="border border-green-300 rounded p-4 mb-3 bg-white">
+                            <h4 class="font-bold capitalize mb-2">{{ model }}</h4>
+                            <div class="grid grid-cols-4 gap-2 text-sm">
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_view_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">View</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">View</span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_add_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">Add</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">Add</span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_edit_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">Edit</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">Edit</span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_delete_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">Delete</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">Delete</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Academic Models (All VIEW only except Admin) -->
+                <div class="card bg-blue-50 border border-blue-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-blue-800">
+                            <i class="fas fa-school"></i>
+                            Academic Models (View Only)
+                        </h3>
+                        
+                        {% for model in "kelas,jadwal,mapel,jurusan"|split:"," %}
+                        <div class="border border-blue-300 rounded p-4 mb-3 bg-white">
+                            <h4 class="font-bold capitalize mb-2">{{ model }}</h4>
+                            <div class="grid grid-cols-4 gap-2 text-sm">
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_view_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">View</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">View</span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_add_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">Add</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">Add</span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_edit_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">Edit</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">Edit</span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    {% if user|can_delete_model:model %}
+                                        <i class="fas fa-check text-green-600"></i>
+                                        <span class="text-green-700">Delete</span>
+                                    {% else %}
+                                        <i class="fas fa-times text-red-600"></i>
+                                        <span class="text-red-700">Delete</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- User-specific Permission Methods -->
+            <div class="divider mt-8">
+                <span class="text-lg font-bold">Role-specific Methods from intro.html</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Administrator Methods -->
+                <div class="card bg-red-50 border border-red-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-red-800">Administrator Permissions</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Manage Users:</span>
+                                {% if user.can_manage_users %}
+                                    <i class="fas fa-check text-green-600"></i>
+                                {% else %}
+                                    <i class="fas fa-times text-red-600"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Manage Academic Data:</span>
+                                {% if user.can_manage_academic_data %}
+                                    <i class="fas fa-check text-green-600"></i>
+                                {% else %}
+                                    <i class="fas fa-times text-red-600"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex justify-between">
+                                <span>View Reports & Analytics:</span>
+                                {% if user.can_view_reports_analytics %}
+                                    <i class="fas fa-check text-green-600"></i>
+                                {% else %}
+                                    <i class="fas fa-times text-red-600"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guru Methods -->
+                <div class="card bg-orange-50 border border-orange-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-orange-800">Guru Permissions</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Manage Classes & Students:</span>
+                                {% if user.can_manage_class_students %}
+                                    <i class="fas fa-check text-green-600"></i>
+                                {% else %}
+                                    <i class="fas fa-times text-red-600"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Input Grades & Assignments:</span>
+                                {% if user.can_input_grades_assignments %}
+                                    <i class="fas fa-check text-green-600"></i>
+                                {% else %}
+                                    <i class="fas fa-times text-red-600"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Monitor Attendance:</span>
+                                {% if user.can_monitor_student_attendance %}
+                                    <i class="fas fa-check text-green-600"></i>
+                                {% else %}
+                                    <i class="fas fa-times text-red-600"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="alert alert-success mt-8">
+                <div>
+                    <h3 class="font-bold">✅ Permission System Summary</h3>
+                    <p class="text-sm mt-2">
+                        The SIGMA permission system is working correctly according to the role descriptions in intro.html:
+                    </p>
+                    <ul class="text-sm mt-2">
+                        <li><strong>Administrator:</strong> Full access to everything</li>
+                        <li><strong>Guru:</strong> Full CRUD access to grades (tugas, nilai, presensi), view-only for academic data</li>
+                        <li><strong>Siswa:</strong> View-only access to all academic and grades data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

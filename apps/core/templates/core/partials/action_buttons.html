@@ -1,0 +1,73 @@
+{% comment %}
+Action buttons template for role-based permissions
+Shows appropriate buttons based on user permissions
+{% endcomment %}
+
+{% if buttons %}
+<div class="flex gap-2 items-center">
+    <!-- Role indicator -->
+    <span class="text-xs text-gray-500 mr-2">{{ user_role }}</span>
+    
+    {% for button in buttons %}
+        {% if button.action == 'view' %}
+            <a href="{{ button.url }}" 
+               class="btn btn-xs {{ button.class }} gap-1"
+               title="Lihat {{ model_name }}">
+                <i class="{{ button.icon }}"></i>
+                <span class="hidden sm:inline">{{ button.label }}</span>
+            </a>
+        
+        {% elif button.action == 'edit' %}
+            <a href="{{ button.url }}" 
+               class="btn btn-xs {{ button.class }} gap-1"
+               title="Edit {{ model_name }}">
+                <i class="{{ button.icon }}"></i>
+                <span class="hidden sm:inline">{{ button.label }}</span>
+            </a>
+        
+        {% elif button.action == 'delete' %}
+            <button type="button" 
+                    class="btn btn-xs {{ button.class }} gap-1"
+                    title="Hapus {{ model_name }}"
+                    onclick="confirmDelete('{{ button.url }}', '{{ model_name }}')">
+                <i class="{{ button.icon }}"></i>
+                <span class="hidden sm:inline">{{ button.label }}</span>
+            </button>
+        
+        {% elif button.action == 'add' %}
+            <a href="{{ button.url }}" 
+               class="btn btn-xs {{ button.class }} gap-1"
+               title="Tambah {{ model_name }}">
+                <i class="{{ button.icon }}"></i>
+                <span class="hidden sm:inline">{{ button.label }}</span>
+            </a>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<script>
+function confirmDelete(url, itemName) {
+    if (confirm(`Apakah Anda yakin ingin menghapus ${itemName} ini?`)) {
+        // Create and submit delete form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
+        
+        // Add CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            const csrfInput = csrfToken.cloneNode();
+            form.appendChild(csrfInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+
+{% else %}
+<div class="text-xs text-gray-400">
+    Tidak ada aksi tersedia
+</div>
+{% endif %}
