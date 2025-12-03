@@ -7,6 +7,8 @@ app_name = 'users'
 urlpatterns = [
     # URL untuk otentikasi Django (login, logout, dll.)
     path('auth/', include('django.contrib.auth.urls')),
+    path('password-change/', views.CustomPasswordChangeView.as_view(), name='password_change'),
+    path('profile/settings/', views.ProfileUpdateView.as_view(), name='profile_settings'),
     # CRUD untuk Akun
     path('akun/', views.AkunListView.as_view(), name='akun_list'),
     path('akun/add/', views.AkunCreateView.as_view(), name='akun_add'),
@@ -23,6 +25,7 @@ urlpatterns = [
     ),
     # Siswa Management - Full CRUD for Admin
     path('siswa/', views.SiswaListView.as_view(), name='siswa_list'),
+    path('siswa/<int:pk>/', views.SiswaDetailView.as_view(), name='siswa_detail'),
     path('siswa/add/', views.SiswaCreateView.as_view(), name='siswa_add'),
     path('siswa/<int:pk>/', views.SiswaDetailView.as_view(), name='siswa_detail'),
     path('siswa/<int:pk>/edit/', views.SiswaUpdateView.as_view(), name='siswa_edit'),
@@ -30,6 +33,7 @@ urlpatterns = [
     
     # Guru Management - Full CRUD for Admin
     path('guru/', views.GuruListView.as_view(), name='guru_list'),
+    path('guru/<int:pk>/', views.GuruDetailView.as_view(), name='guru_detail'),
     path('guru/add/', views.GuruCreateView.as_view(), name='guru_add'),
     path('guru/<int:pk>/', views.GuruDetailView.as_view(), name='guru_detail'),
     path('guru/<int:pk>/edit/', views.GuruUpdateView.as_view(), name='guru_edit'),

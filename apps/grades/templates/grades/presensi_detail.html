@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    Detail Presensi: {{ presensi.siswa.get_full_name }}
+{% endblock title %}
+
+{% block content %}
+<div class="card w-full max-w-2xl bg-base-100 shadow-xl mx-auto">
+    <div class="card-body">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="card-title text-2xl">Detail Presensi</h2>
+            {% if presensi.status == 'Hadir' %}
+                <div class="badge badge-lg badge-success">Hadir</div>
+            {% elif presensi.status == 'Izin' %}
+                <div class="badge badge-lg badge-warning">Izin</div>
+            {% elif presensi.status == 'Sakit' %}
+                <div class="badge badge-lg badge-info">Sakit</div>
+            {% else %}
+                <div class="badge badge-lg badge-error">Alpa</div>
+            {% endif %}
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <tbody>
+                    <tr>
+                        <th class="w-1/3">Siswa</th>
+                        <td>{{ presensi.siswa.get_full_name }} ({{ presensi.siswa.nis }})</td>
+                    </tr>
+                    <tr>
+                        <th>Tanggal</th>
+                        <td>{{ presensi.tanggal|date:"d F Y" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mata Pelajaran</th>
+                        <td>{{ presensi.jadwal.mapel.nama }}</td>
+                    </tr>
+                    <tr>
+                        <th>Kelas</th>
+                        <td>{{ presensi.jadwal.kelas.nama }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status Kehadiran</th>
+                        <td>{{ presensi.get_status_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>Keterangan</th>
+                        <td>{{ presensi.keterangan|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Guru Pencatat</th>
+                        <td>{{ presensi.jadwal.guru.get_full_name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-actions justify-end mt-8 pt-4 border-t">
+            {% load permissions %}
+            {% if user|can_edit_model:"presensi" %}
+                <a href="{% url 'grades:presensi_edit' pk=presensi.pk %}" class="btn btn-warning">
+                    <i class="fa-solid fa-edit mr-2"></i>Edit
+                </a>
+            {% endif %}
+            
+            {% if user|can_delete_model:"presensi" %}
+                <a href="{% url 'grades:presensi_delete' pk=presensi.pk %}" class="btn btn-error">
+                    <i class="fa-solid fa-trash mr-2"></i>Hapus
+                </a>
+            {% endif %}
+            
+            <a href="{% url 'grades:presensi_list' %}" class="btn btn-ghost">Kembali ke Daftar</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

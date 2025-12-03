@@ -52,6 +52,19 @@ class KelasListView(AcademicViewOnlyMixin, BaseListView):
         return qs.order_by('nama')
 
 
+class KelasDetailView(AcademicViewOnlyMixin, DetailView):
+    """DetailView for Kelas"""
+    model = Kelas
+    template_name = 'academics/kelas_detail.html'
+    context_object_name = 'kelas'
+    required_permission = 'view'
+
+    def get_queryset(self):
+        return Kelas.objects.select_related('jurusan', 'wali_kelas', 'tahun_ajaran').annotate(
+            jumlah_siswa=Count('kelassiswa')
+        )
+
+
 # CRUD Views untuk Kelas (Admin only)
 class KelasCreateView(FullAccessMixin, BaseCreateView):
     """CreateView for Kelas - Admin only"""
@@ -102,6 +115,14 @@ class TahunAjaranListView(AcademicViewOnlyMixin, BaseListView):
         return qs.order_by('-is_active', '-tahun', 'semester')
 
 
+class TahunAjaranDetailView(AcademicViewOnlyMixin, DetailView):
+    """DetailView for TahunAjaran"""
+    model = TahunAjaran
+    template_name = 'academics/tahun_ajaran_detail.html'
+    context_object_name = 'tahun_ajaran'
+    required_permission = 'view'
+
+
 # CRUD Views untuk Tahun Ajaran (Admin only)
 class TahunAjaranCreateView(FullAccessMixin, BaseCreateView):
     """CreateView for TahunAjaran - Admin only"""
@@ -146,6 +167,14 @@ class JurusanListView(AcademicViewOnlyMixin, BaseListView):
     success_url_name = 'academics:jurusan_list'
     search_fields = ['nama', 'deskripsi']
     table_body_id = 'jurusan-table-body'
+
+
+class JurusanDetailView(AcademicViewOnlyMixin, DetailView):
+    """DetailView for Jurusan"""
+    model = Jurusan
+    template_name = 'academics/jurusan_detail.html'
+    context_object_name = 'jurusan'
+    required_permission = 'view'
 
 
 # CRUD Views untuk Jurusan (Admin only)
@@ -203,6 +232,14 @@ class MapelListView(AcademicViewOnlyMixin, BaseListView):
     success_url_name = 'academics:mapel_list'
     search_fields = ['nama']
     table_body_id = 'mapel-table-body'
+
+
+class MapelDetailView(AcademicViewOnlyMixin, DetailView):
+    """DetailView for Mapel"""
+    model = Mapel
+    template_name = 'academics/mapel_detail.html'
+    context_object_name = 'mapel'
+    required_permission = 'view'
 
 
 # CRUD Views untuk Mapel (Admin only)
@@ -301,6 +338,17 @@ class JadwalListView(AcademicViewOnlyMixin, BaseListView):
                 return qs.none()
         
         return qs.order_by('hari', 'jam_mulai')
+
+
+class JadwalDetailView(AcademicViewOnlyMixin, DetailView):
+    """DetailView for Jadwal"""
+    model = Jadwal
+    template_name = 'academics/jadwal_detail.html'
+    context_object_name = 'jadwal'
+    required_permission = 'view'
+
+    def get_queryset(self):
+        return Jadwal.objects.select_related('kelas', 'mapel', 'guru', 'kelas__tahun_ajaran')
 
 
 # CRUD Views untuk Jadwal (Admin only)

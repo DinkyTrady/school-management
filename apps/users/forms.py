@@ -263,3 +263,59 @@ class GuruForm(ModelForm):
             
         self.fields['akun'].queryset = guru_akuns
         self.fields['alamat'].required = False
+
+
+class SiswaProfileForm(ModelForm):
+    """Form untuk update profil Siswa (User self-service)"""
+    class Meta:
+        model = Siswa
+        fields = ['first_name', 'last_name', 'gender', 'nomor_handphone', 'alamat', 'tanggal_lahir']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'input input-bordered w-full'}),
+            'last_name': forms.TextInput(attrs={'class': 'input input-bordered w-full'}),
+            'gender': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'nomor_handphone': forms.TextInput(attrs={'class': 'input input-bordered w-full'}),
+            'alamat': forms.Textarea(attrs={'class': 'textarea textarea-bordered w-full', 'rows': 3}),
+            'tanggal_lahir': forms.DateInput(attrs={'class': 'input input-bordered w-full', 'type': 'date'}),
+        }
+        labels = {
+            'first_name': 'Nama Depan',
+            'last_name': 'Nama Belakang',
+            'gender': 'Jenis Kelamin',
+            'nomor_handphone': 'Nomor Handphone',
+            'alamat': 'Alamat',
+            'tanggal_lahir': 'Tanggal Lahir'
+        }
+
+
+class GuruProfileForm(ModelForm):
+    """Form untuk update profil Guru (User self-service)"""
+    class Meta:
+        model = Guru
+        fields = ['first_name', 'last_name', 'gender', 'nomor_handphone', 'alamat', 'tanggal_lahir']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'input input-bordered w-full'}),
+            'last_name': forms.TextInput(attrs={'class': 'input input-bordered w-full'}),
+            'gender': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'nomor_handphone': forms.TextInput(attrs={'class': 'input input-bordered w-full'}),
+            'alamat': forms.Textarea(attrs={'class': 'textarea textarea-bordered w-full', 'rows': 3}),
+            'tanggal_lahir': forms.DateInput(attrs={'class': 'input input-bordered w-full', 'type': 'date'}),
+        }
+        labels = {
+            'first_name': 'Nama Depan',
+            'last_name': 'Nama Belakang',
+            'gender': 'Jenis Kelamin',
+            'nomor_handphone': 'Nomor Handphone',
+            'alamat': 'Alamat',
+            'tanggal_lahir': 'Tanggal Lahir'
+        }
+
+
+class SelfAkunChangeForm(ModelForm):
+    """Form untuk update akun sendiri (email only) jika tidak punya profil khusus"""
+    class Meta:
+        model = Akun
+        fields = ['email']
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'input input-bordered w-full'}),
+        }

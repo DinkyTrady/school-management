@@ -44,6 +44,8 @@
 
 {% elif is_guru %}
     {% include "./guru_dashboard.html" %}
+{% elif user.is_siswa %}
+    {% include "core/siswa_dashboard.html" %}
 {% else %}
     <!-- Tampilan untuk Peran Lain -->
     <div class="hero min-h-[60vh] bg-white rounded-3xl shadow-lg border border-emerald-100">

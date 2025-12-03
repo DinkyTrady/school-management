@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    Detail Kelas: {{ kelas.nama }}
+{% endblock title %}
+
+{% block content %}
+<div class="card w-full max-w-3xl bg-base-100 shadow-xl mx-auto">
+    <div class="card-body">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="card-title text-2xl">Detail Kelas</h2>
+            <div class="badge badge-lg badge-primary">{{ kelas.nama }}</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-semibold mb-3 border-b pb-2">Informasi Kelas</h3>
+                <table class="table w-full">
+                    <tbody>
+                        <tr>
+                            <th class="w-1/3">Nama Kelas</th>
+                            <td>{{ kelas.nama }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tingkat</th>
+                            <td>{{ kelas.tingkat }}</td>
+                        </tr>
+                        <tr>
+                            <th>Jurusan</th>
+                            <td>{{ kelas.jurusan.nama }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tahun Ajaran</th>
+                            <td>{{ kelas.tahun_ajaran.tahun }} ({{ kelas.tahun_ajaran.semester }})</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold mb-3 border-b pb-2">Wali Kelas & Siswa</h3>
+                <table class="table w-full">
+                    <tbody>
+                        <tr>
+                            <th class="w-1/3">Wali Kelas</th>
+                            <td>{{ kelas.wali_kelas.get_full_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Jumlah Siswa</th>
+                            <td>{{ kelas.jumlah_siswa }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-actions justify-end mt-8 pt-4 border-t">
+            {% load permissions %}
+            {% if user|can_edit_model:"kelas" %}
+                <a href="{% url 'academics:kelas_edit' pk=kelas.pk %}" class="btn btn-warning">
+                    <i class="fa-solid fa-edit mr-2"></i>Edit
+                </a>
+            {% endif %}
+            
+            {% if user|can_delete_model:"kelas" %}
+                <a href="{% url 'academics:kelas_delete' pk=kelas.pk %}" class="btn btn-error">
+                    <i class="fa-solid fa-trash mr-2"></i>Hapus
+                </a>
+            {% endif %}
+            
+            <a href="{% url 'academics:kelas_list' %}" class="btn btn-ghost">Kembali ke Daftar</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

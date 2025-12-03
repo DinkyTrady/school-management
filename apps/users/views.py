@@ -1,27 +1,30 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Permission
+from django.contrib.auth.views import PasswordChangeView
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.views.generic import (
-    CreateView,
     DeleteView,
     DetailView,
-    ListView,
     UpdateView,
 )
 
 from apps.core.views import BaseCreateView, BaseListView, BaseUpdateView
 from apps.core.mixins import UserManagementMixin, ViewOnlyMixin
 
-from .forms import AkunChangeForm, AkunCreationForm, SiswaForm, GuruForm
+from .forms import (
+    AkunChangeForm,
+    AkunCreationForm,
+    SiswaForm,
+    GuruForm,
+    SiswaProfileForm,
+    GuruProfileForm,
+    SelfAkunChangeForm,
+)
 from .models import Akun as AkunType, Peran, Siswa, Guru
-
-from django.views.generic import DetailView # Pastikan DetailView terimport
-from apps.core.mixins import ViewOnlyMixin  # Pastikan Mixin ini terimport
-
 
 Akun: AkunType = get_user_model()
 
@@ -169,6 +172,16 @@ class GuruListView(ViewOnlyMixin, BaseListView):
         return qs.select_related('akun').order_by('first_name', 'last_name')
 
 
+class SiswaDetailView(UserManagementMixin, LoginRequiredMixin, DetailView):
+    """DetailView for Siswa - All authenticated users can view"""
+    model = Siswa
+    template_name = 'users/siswa_detail.html'
+    context_object_name = 'siswa'
+
+    def get_queryset(self):
+        return Siswa.objects.select_related('akun').all()
+
+
 # CRUD Views untuk Siswa (Admin only)
 class SiswaCreateView(UserManagementMixin, BaseCreateView):
     """CreateView for Siswa - Admin only"""
@@ -203,6 +216,16 @@ class SiswaDeleteView(UserManagementMixin, LoginRequiredMixin, DeleteView):
 
 
 # CRUD Views untuk Guru (Admin only)
+class GuruDetailView(UserManagementMixin, LoginRequiredMixin, DetailView):
+    """DetailView for Guru - All authenticated users can view"""
+    model = Guru
+    template_name = 'users/guru_detail.html'
+    context_object_name = 'guru'
+
+    def get_queryset(self):
+        return Guru.objects.select_related('akun').all()
+
+
 class GuruCreateView(UserManagementMixin, BaseCreateView):
     """CreateView for Guru - Admin only"""
     model = Guru
@@ -235,21 +258,43 @@ class GuruDeleteView(UserManagementMixin, LoginRequiredMixin, DeleteView):
         return ['users/guru_confirm_delete.html']
 
 
-class SiswaDetailView(ViewOnlyMixin, DetailView):
-    model = Siswa
-    template_name = 'users/siswa_detail.html'
-    context_object_name = 'siswa'
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'users/password_change.html'
+    success_url = reverse_lazy('core:dashboard')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Ubah Password'
+        return context
+    
+    def form_valid(self, form):
+        # Add a success message if you have a message framework set up, 
+        # or pass it to the template via session or URL params if needed.
+        # For now, just redirect.
+        return super().form_valid(form)
 
-    def get_queryset(self):
-        return Siswa.objects.select_related('akun').all()
 
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'users/profile_update.html'
+    success_url = reverse_lazy('core:dashboard')
 
-class GuruDetailView(ViewOnlyMixin, DetailView):
-    """View untuk melihat detail profil guru"""
-    model = Guru
-    template_name = 'users/guru_detail.html'
-    context_object_name = 'guru'
+    def get_object(self):
+        user = self.request.user
+        if hasattr(user, 'siswa_profile'):
+            return user.siswa_profile
+        elif hasattr(user, 'guru_profile'):
+            return user.guru_profile
+        return user
 
-    def get_queryset(self):
-        # Optimasi: ambil data akun sekaligus
-        return Guru.objects.select_related('akun').all()
+    def get_form_class(self):
+        user = self.request.user
+        if hasattr(user, 'siswa_profile'):
+            return SiswaProfileForm
+        elif hasattr(user, 'guru_profile'):
+            return GuruProfileForm
+        return SelfAkunChangeForm # Fallback for admin/staff without profile
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Pengaturan Akun'
+        return context
