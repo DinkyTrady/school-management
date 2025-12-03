@@ -1,46 +1,41 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}
     Manajemen Akun
 {% endblock title %}
 
 {% block content %}
-<div class="card bg-base-100 shadow-xl">
+<div class="card bg-base-100 shadow-xl" x-data="{ showModal: false, deleteUrl: '', deleteName: '' }">
     <div class="card-body">
         <div class="flex justify-between items-center mb-4">
             <h2 class="card-title text-2xl">Daftar Akun Pengguna</h2>
             {% load permissions %}
             {% if user|can_add_model:"akun" %}
-            <a href="{% url 'users:akun_add' %}" class="btn btn-primary">
+            <a href="{% url 'users:akun_add' %}" class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 text-white">
                 <i class="fas fa-plus"></i> Tambah Akun Baru
             </a>
             {% endif %}
-            
-            <!-- Role indicator -->
-            <div class="text-sm text-gray-500">
-                <i class="fas fa-user"></i>
-                {% role_badge user %}
-            </div>
         </div>
 
         <div class="mb-4">
             <input type="text" name="q" placeholder="Cari berdasarkan email..."
-                   class="input input-bordered w-full"
+                   class="input input-bordered w-full focus:border-emerald-500 focus:ring-emerald-500"
                    hx-get="{% url 'users:akun_list' %}"
                    hx-trigger="keyup changed delay:500ms"
                    hx-target="#akun-table-body"
                    hx-swap="innerHTML">
         </div>
 
-        <div class="">
+        <div class="overflow-x-auto">
             <table class="table w-full">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
-                        <th></th>
+                        <th>No</th>
                         <th>Email</th>
                         <th>Peran</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="akun-table-body">
@@ -49,11 +44,33 @@
             </table>
         </div>
 
-        <div id="pagination-container">
+        <div id="pagination-container" class="mt-4">
         {% if is_paginated %}
           {% include "core/partials/_paginate.html" %}
         {% endif %}
         </div>
     </div>
+
+    <dialog class="modal" :class="{ 'modal-open': showModal }">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-red-600">Konfirmasi Hapus Akun</h3>
+            <p class="py-4">
+                Apakah Anda yakin ingin menghapus akun <span class="font-bold" x-text="deleteName"></span>?
+                <br>
+                <span class="text-sm text-gray-500 italic">Tindakan ini tidak dapat dibatalkan.</span>
+            </p>
+            <div class="modal-action">
+                <button class="btn btn-ghost" @click="showModal = false">Batal</button>
+                
+                <form method="post" :action="deleteUrl">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-error text-white bg-red-600 hover:bg-red-700">Ya, Hapus</button>
+                </form>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button @click="showModal = false">close</button>
+        </form>
+    </dialog>
 </div>
 {% endblock content %}
