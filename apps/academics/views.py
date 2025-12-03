@@ -1,6 +1,6 @@
 # apps/academics/views.py
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DeleteView
+from django.views.generic import DeleteView, DetailView
 from django.urls import reverse_lazy
 from django.template.response import TemplateResponse
 from django.db.models import Count
@@ -181,6 +181,17 @@ class JurusanDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
         return ['academics/jurusan_confirm_delete.html']
 
 
+class JurusanDetailView(AcademicViewOnlyMixin, DetailView):
+    """View untuk melihat detail jurusan"""
+    model = Jurusan
+    template_name = 'academics/jurusan_detail.html'
+    context_object_name = 'jurusan'
+
+    def get_queryset(self):
+        # Optimasi: Hitung jumlah kelas yang ada di jurusan ini
+        return Jurusan.objects.annotate(total_kelas=Count('kelas'))
+
+
 class MapelListView(AcademicViewOnlyMixin, BaseListView):
     """ListView untuk manajemen mata pelajaran"""
     model = Mapel
@@ -225,6 +236,34 @@ class MapelDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
         if self.request.htmx:
             return ['academics/partials/mapel_delete_modal.html']
         return ['academics/mapel_confirm_delete.html']
+
+
+class MapelDetailView(AcademicViewOnlyMixin, DetailView):
+    """View untuk detail mata pelajaran"""
+    model = Mapel
+    template_name = 'academics/mapel_detail.html'
+    context_object_name = 'mapel'
+
+
+class MapelUpdateView(FullAccessMixin, BaseUpdateView):
+    """UpdateView for Mapel - Admin only"""
+    model = Mapel
+    fields = ['nama', 'kode', 'sks']
+    success_url_name = 'academics:mapel_list'
+    template_name = 'core/base_crud_form.html'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context['success_message'] = "Mata pelajaran berhasil diperbarui."
+        return TemplateResponse(self.request, self.get_template_names(), context)
+
+
+class MapelDeleteView(FullAccessMixin, DeleteView):
+    """View untuk hapus mata pelajaran"""
+    model = Mapel
+    success_url = reverse_lazy('academics:mapel_list')
+    template_name = 'academics/mapel_confirm_delete.html'
 
 
 class JadwalListView(AcademicViewOnlyMixin, BaseListView):
@@ -297,3 +336,11 @@ class JadwalDeleteView(FullAccessMixin, LoginRequiredMixin, DeleteView):
         return ['academics/jadwal_confirm_delete.html']
 
 # HTMX search functionality now handled by BaseListView
+
+
+class TahunAjaranDetailView(AcademicViewOnlyMixin, DetailView):
+    """View untuk melihat detail tahun ajaran"""
+    model = TahunAjaran
+    template_name = 'academics/tahun_ajaran_detail.html'
+    context_object_name = 'tahun_ajaran'
+
