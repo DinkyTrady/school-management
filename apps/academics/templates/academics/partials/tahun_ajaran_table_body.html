@@ -27,9 +27,11 @@
     <td>
         {% load permissions %}
         <div class="flex space-x-1">
-            <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+            <a href="{% url 'academics:tahun_ajaran_detail' pk=tahun_ajaran.pk %}" 
+               class="btn btn-sm btn-ghost btn-square text-gray-500 hover:bg-gray-100" 
+               title="Lihat Detail">
                 <i class="fa-solid fa-eye"></i>
-            </button>
+            </a>
             {% if user|can_edit_model:"tahunajar" %}
             <a href="{% url 'academics:tahun_ajaran_edit' tahun_ajaran.pk %}"
                class="btn btn-sm btn-warning btn-square" title="Edit">
