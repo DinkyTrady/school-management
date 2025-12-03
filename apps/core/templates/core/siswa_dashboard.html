@@ -1,0 +1,229 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Kolom Kiri: Informasi Kelas & Tugas -->
+    <div class="lg:col-span-1 space-y-8">
+        <!-- Kartu Informasi Kelas -->
+        <div class="card bg-base-100 shadow-xl border border-emerald-100">
+            <div class="card-body">
+                <h2 class="card-title text-emerald-700 mb-4">
+                    <i class="fa-solid fa-school mr-2"></i> Kelas Saya
+                </h2>
+                {% if kelas_siswa %}
+                    <div class="text-center py-4">
+                        <div class="text-4xl font-bold text-gray-800 mb-2">{{ kelas_siswa.nama }}</div>
+                        <div class="badge badge-primary badge-lg mb-4">{{ kelas_siswa.jurusan.nama }}</div>
+                        
+                        <div class="flex items-center justify-center gap-3 mt-4 p-3 bg-emerald-50 rounded-xl">
+                            <div class="avatar placeholder">
+                                <div class="bg-emerald-200 text-emerald-700 rounded-full w-10">
+                                    <span class="text-lg"><i class="fa-solid fa-chalkboard-user"></i></span>
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-xs text-gray-500">Wali Kelas</div>
+                                <div class="font-semibold text-gray-700">{{ kelas_siswa.wali_kelas.get_full_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Anda belum terdaftar di kelas aktif manapun.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Kartu Kehadiran -->
+        <div class="card bg-base-100 shadow-xl border border-emerald-100">
+            <div class="card-body">
+                <h2 class="card-title text-emerald-700 mb-4">
+                    <i class="fa-solid fa-user-check mr-2"></i> Kehadiran
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-green-50 p-3 rounded-xl text-center border border-green-100">
+                        <div class="text-2xl font-bold text-green-600">{{ attendance_data.Hadir }}</div>
+                        <div class="text-xs text-green-700">Hadir</div>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl text-center border border-blue-100">
+                        <div class="text-2xl font-bold text-blue-600">{{ attendance_data.Sakit }}</div>
+                        <div class="text-xs text-blue-700">Sakit</div>
+                    </div>
+                    <div class="bg-yellow-50 p-3 rounded-xl text-center border border-yellow-100">
+                        <div class="text-2xl font-bold text-yellow-600">{{ attendance_data.Izin }}</div>
+                        <div class="text-xs text-yellow-700">Izin</div>
+                    </div>
+                    <div class="bg-red-50 p-3 rounded-xl text-center border border-red-100">
+                        <div class="text-2xl font-bold text-red-600">{{ attendance_data.Alpha }}</div>
+                        <div class="text-xs text-red-700">Alpha</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kartu Tugas Terbaru -->
+        <div class="card bg-base-100 shadow-xl border border-emerald-100">
+            <div class="card-body">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="card-title text-emerald-700">
+                        <i class="fa-solid fa-list-check mr-2"></i> Tugas Terbaru
+                    </h2>
+                    <a href="{% url 'grades:tugas_list' %}" class="text-xs text-emerald-600 hover:underline">Lihat Semua</a>
+                </div>
+
+                {% if tugas_list %}
+                    <div class="space-y-4">
+                        {% for tugas in tugas_list %}
+                        <div class="p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="badge badge-outline badge-sm">{{ tugas.jadwal.mapel.nama }}</div>
+                                <div class="text-xs text-error font-semibold">
+                                    <i class="fa-regular fa-clock mr-1"></i> {{ tugas.tenggat|time:"H:i" }}
+                                </div>
+                            </div>
+                            <h3 class="font-bold text-gray-800 mb-1 line-clamp-1">{{ tugas.nama }}</h3>
+                            <p class="text-xs text-gray-500 mb-3">Tenggat: {{ tugas.tenggat|date:"d M Y" }}</p>
+                            <a href="{% url 'grades:tugas_detail' pk=tugas.pk %}" class="btn btn-sm btn-block btn-outline btn-primary">
+                                Lihat Detail
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fa-solid fa-clipboard-check text-4xl mb-3 opacity-30"></i>
+                        <p>Tidak ada tugas yang perlu dikerjakan saat ini.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Kolom Kanan: Jadwal Pelajaran & Grafik Nilai -->
+    <div class="lg:col-span-2 space-y-8">
+        <!-- Grafik Nilai -->
+        <div class="card bg-base-100 shadow-xl border border-emerald-100">
+            <div class="card-body">
+                <h2 class="card-title text-emerald-700 mb-4">
+                    <i class="fa-solid fa-chart-bar mr-2"></i> Rata-rata Nilai per Mata Pelajaran
+                </h2>
+                <div class="h-64 w-full">
+                    <canvas id="gradesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jadwal Pelajaran -->
+        <div class="card bg-base-100 shadow-xl border border-emerald-100">
+            <div class="card-body">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="card-title text-emerald-700 text-2xl">
+                        <i class="fa-solid fa-calendar-days mr-2"></i> Jadwal Pelajaran Minggu Ini
+                    </h2>
+                    <a href="{% url 'academics:jadwal_list' %}" class="btn btn-sm btn-ghost">Lihat Lengkap</a>
+                </div>
+
+                {% if jadwal_list %}
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra w-full">
+                            <thead>
+                                <tr class="bg-emerald-50 text-emerald-700">
+                                    <th>Hari</th>
+                                    <th>Waktu</th>
+                                    <th>Mata Pelajaran</th>
+                                    <th>Guru</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% regroup jadwal_list by hari as jadwal_per_hari %}
+                                {% for hari in jadwal_per_hari %}
+                                    {% for jadwal in hari.list %}
+                                    <tr class="hover">
+                                        {% if forloop.first %}
+                                            <td rowspan="{{ hari.list|length }}" class="font-bold align-top bg-white border-r border-gray-100">
+                                                <div class="badge badge-lg {% if jadwal.hari == 'Senin' %}badge-primary{% elif jadwal.hari == 'Selasa' %}badge-secondary{% elif jadwal.hari == 'Rabu' %}badge-accent{% elif jadwal.hari == 'Kamis' %}badge-info{% elif jadwal.hari == "Jum'at" %}badge-success{% else %}badge-warning{% endif %} text-white border-0">
+                                                    {{ jadwal.hari }}
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                        <td class="font-mono text-sm">{{ jadwal.jam_mulai|time:"H:i" }} - {{ jadwal.jam_selesai|time:"H:i" }}</td>
+                                        <td>
+                                            <div class="font-bold">{{ jadwal.mapel.nama }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="flex items-center gap-2">
+                                                <div class="avatar placeholder">
+                                                    <div class="bg-neutral-focus text-neutral-content rounded-full w-6 h-6">
+                                                        <span class="text-xs">{{ jadwal.guru.first_name|slice:":1" }}</span>
+                                                    </div>
+                                                </div>
+                                                <span class="text-sm">{{ jadwal.guru.get_full_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'academics:jadwal_detail' pk=jadwal.pk %}" class="btn btn-ghost btn-xs btn-square" title="Detail">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="flex flex-col items-center justify-center h-64 text-gray-500">
+                        <i class="fa-solid fa-calendar-xmark text-6xl mb-4 opacity-30"></i>
+                        <p class="text-lg">Belum ada jadwal pelajaran yang tersedia.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('gradesChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ chart_labels|safe }},
+                    datasets: [{
+                        label: 'Rata-rata Nilai',
+                        data: {{ chart_data|safe }},
+                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>

@@ -16,9 +16,9 @@
     <!-- Use our new permission system -->
     <div class="flex space-x-1 items-center">
       <!-- View button (always available) -->
-      <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+      <a href="{% url 'grades:tugas_detail' pk=tugas.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
         <i class="fa-solid fa-eye"></i>
-      </button>
+      </a>
       
       <!-- Edit button (Guru and Admin only for tugas) -->
       {% if user|can_edit_model:"tugas" %}

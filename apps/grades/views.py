@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import DeleteView
+from django.views.generic import DeleteView, DetailView
 from django.urls import reverse_lazy
 from django.template.response import TemplateResponse
 
@@ -47,6 +47,20 @@ class TugasListView(TugasPermissionMixin, BaseListView):
         return qs
 
 
+class TugasDetailView(TugasPermissionMixin, DetailView):
+    """DetailView for Tugas"""
+    model = Tugas
+    template_name = 'grades/tugas_detail.html'
+    context_object_name = 'tugas'
+    required_permission = 'view'
+
+    def get_queryset(self):
+        return Tugas.objects.select_related(
+            'jadwal', 'jadwal__kelas', 'jadwal__mapel', 'jadwal__guru',
+            'jadwal__kelas__tahun_ajaran'
+        )
+
+
 class NilaiListView(NilaiPermissionMixin, BaseListView):
     """ListView untuk melihat nilai siswa - Role-based access from intro.html"""
     model = Nilai
@@ -70,6 +84,20 @@ class NilaiListView(NilaiPermissionMixin, BaseListView):
         return qs.filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal_penilaian')
 
 
+class NilaiDetailView(NilaiPermissionMixin, DetailView):
+    """DetailView for Nilai"""
+    model = Nilai
+    template_name = 'grades/nilai_detail.html'
+    context_object_name = 'nilai'
+    required_permission = 'view'
+
+    def get_queryset(self):
+        return Nilai.objects.select_related(
+            'siswa', 'siswa__akun', 'jadwal', 'jadwal__kelas', 'jadwal__mapel',
+            'jadwal__guru', 'tugas', 'jadwal__kelas__tahun_ajaran'
+        )
+
+
 class PresensiListView(PresensiPermissionMixin, BaseListView):
     """ListView untuk melihat presensi siswa - Role-based access from intro.html"""
     model = Presensi
@@ -91,6 +119,20 @@ class PresensiListView(PresensiPermissionMixin, BaseListView):
             'jadwal__guru', 'jadwal__kelas__tahun_ajaran'
         )
         return qs.filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal')
+
+
+class PresensiDetailView(PresensiPermissionMixin, DetailView):
+    """DetailView for Presensi"""
+    model = Presensi
+    template_name = 'grades/presensi_detail.html'
+    context_object_name = 'presensi'
+    required_permission = 'view'
+
+    def get_queryset(self):
+        return Presensi.objects.select_related(
+            'siswa', 'siswa__akun', 'jadwal', 'jadwal__kelas', 'jadwal__mapel',
+            'jadwal__guru', 'jadwal__kelas__tahun_ajaran'
+        )
 
 
 # CRUD Views for Guru to manage grades data (based on intro.html permissions)

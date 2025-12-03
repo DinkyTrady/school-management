@@ -19,9 +19,9 @@
     <td>
         {% load permissions %}
         <div class="flex space-x-1">
-            <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+            <a href="{% url 'academics:jurusan_detail' pk=jurusan.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
                 <i class="fa-solid fa-eye"></i>
-            </button>
+            </a>
             {% if user|can_edit_model:"jurusan" %}
             <a href="{% url 'academics:jurusan_edit' jurusan.pk %}"
                class="btn btn-sm btn-warning btn-square" title="Edit">

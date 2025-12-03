@@ -1,0 +1,105 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    Detail Guru: {{ guru.get_full_name }}
+{% endblock title %}
+
+{% block content %}
+<div class="card w-full max-w-3xl bg-base-100 shadow-xl mx-auto">
+    <div class="card-body">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="card-title text-2xl">Detail Guru</h2>
+            <div class="badge badge-lg badge-secondary">{{ guru.nip }}</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Personal Information -->
+            <div>
+                <h3 class="text-lg font-semibold mb-3 border-b pb-2">Informasi Pribadi</h3>
+                <table class="table w-full">
+                    <tbody>
+                        <tr>
+                            <th class="w-1/3">Nama Lengkap</th>
+                            <td>{{ guru.get_full_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Jabatan</th>
+                            <td><span class="badge badge-outline">{{ guru.jabatan }}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Jenis Kelamin</th>
+                            <td>
+                                {% if guru.gender == 'L' %}
+                                    <span class="badge badge-info"><i class="fa-solid fa-mars mr-1"></i>Laki-laki</span>
+                                {% else %}
+                                    <span class="badge badge-error"><i class="fa-solid fa-venus mr-1"></i>Perempuan</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Lahir</th>
+                            <td>{{ guru.tanggal_lahir|date:"d F Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Alamat</th>
+                            <td>{{ guru.alamat }}</td>
+                        </tr>
+                        <tr>
+                            <th>No. Handphone</th>
+                            <td>{{ guru.nomor_handphone }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Account Information -->
+            <div>
+                <h3 class="text-lg font-semibold mb-3 border-b pb-2">Informasi Akun</h3>
+                <table class="table w-full">
+                    <tbody>
+                        <tr>
+                            <th class="w-1/3">Email</th>
+                            <td>{{ guru.akun.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status Akun</th>
+                            <td>
+                                {% if guru.akun.is_active %}
+                                    <span class="badge badge-success">Aktif</span>
+                                {% else %}
+                                    <span class="badge badge-error">Tidak Aktif</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Terakhir Login</th>
+                            <td>{{ guru.akun.last_login|default:"Belum pernah" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Bergabung</th>
+                            <td>{{ guru.akun.date_joined|date:"d F Y" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-actions justify-end mt-8 pt-4 border-t">
+            {% load permissions %}
+            {% if user|can_edit_model:"guru" %}
+                <a href="{% url 'users:guru_edit' pk=guru.pk %}" class="btn btn-warning">
+                    <i class="fa-solid fa-edit mr-2"></i>Edit
+                </a>
+            {% endif %}
+            
+            {% if user|can_delete_model:"guru" %}
+                <a href="{% url 'users:guru_delete' pk=guru.pk %}" class="btn btn-error">
+                    <i class="fa-solid fa-trash mr-2"></i>Hapus
+                </a>
+            {% endif %}
+            
+            <a href="{% url 'users:guru_list' %}" class="btn btn-ghost">Kembali ke Daftar</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

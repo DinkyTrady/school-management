@@ -26,7 +26,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </label>
                 </div>
-                <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent text-2xl transition-all duration-300 hover:scale-105">SIGMA</a>
+                <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 flex items-center gap-3 transition-all duration-300 hover:scale-105">
+                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</span>
+                </a>
                 <div class="flex-none flex items-center gap-4">
                     {% if user.is_authenticated %}
                     <!-- Welcome Message -->
@@ -70,11 +75,11 @@
                             <li class="px-2 pb-2 text-xs text-base-content/70">{{ user.email }}</li>
                             <div class="divider my-0"></div>
                             <li>
-                                <a href="#">
+                                <a href="{% url 'users:profile_settings' %}">
                                     <i class="fa-solid fa-user-cog w-4"></i> Setting Akun
                                 </a>
                             </li>
-                            <li><a href="#"><i class="fa-solid fa-key w-4"></i> Ubah Password</a></li>
+                            <li><a href="{% url 'users:password_change' %}"><i class="fa-solid fa-key w-4"></i> Ubah Password</a></li>
                             <div class="divider my-0"></div>
                             <li><button onclick="logout_modal.showModal()" class="text-error"><i class="fa-solid fa-right-from-bracket w-4"></i> Logout</button></li>
                         </ul>
@@ -97,8 +102,13 @@
             <div class="w-80 min-h-full bg-white flex flex-col shadow-xl border-r border-emerald-100">
                 <!-- Sidebar content here -->
                 <div class="p-6 border-b border-emerald-100">
-                    <h2 class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</h2>
-                    <p class="text-xs text-gray-500 mt-1">School Information & Management</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-graduation-cap text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">School Information & Management</p>
                 </div>
                 <ul class="menu px-3 py-4 gap-2 flex-1 overflow-y-auto w-full">
                     {% include 'core/partials/_nav_links.html' %}

@@ -50,9 +50,9 @@
         <!-- Use our new permission system -->
         <div class="flex space-x-1 items-center">
             <!-- View button (always available) -->
-            <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+            <a href="{% url 'users:siswa_detail' pk=siswa.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
                 <i class="fa-solid fa-eye"></i>
-            </button>
+            </a>
             
             <!-- Edit button (Admin only for user data) -->
             {% if user|can_edit_model:"siswa" %}

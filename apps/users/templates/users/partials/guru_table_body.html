@@ -26,7 +26,9 @@
   </td>
   <td>
     <div class="flex space-x-1">
-      <button class="btn btn-sm btn-ghost btn-square" title="Detail"><i class="fa-solid fa-eye"></i></button>
+      <a href="{% url 'users:guru_detail' pk=guru.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
+        <i class="fa-solid fa-eye"></i>
+      </a>
       {% load permissions %}
       {% if user|can_edit_model:"guru" %}
       <a href="{% url 'users:guru_edit' guru.pk %}" class="btn btn-sm btn-warning btn-square" title="Edit">

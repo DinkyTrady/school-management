@@ -11,9 +11,9 @@
   <td>
     {% load permissions %}
     <div class="flex space-x-1">
-      <button class="btn btn-sm btn-ghost btn-square" title="Detail">
+      <a href="{% url 'academics:jadwal_detail' pk=jadwal.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
         <i class="fa-solid fa-eye"></i>
-      </button>
+      </a>
       {% if user|can_edit_model:"jadwal" %}
       <a href="{% url 'academics:jadwal_edit' jadwal.pk %}" class="btn btn-sm btn-warning btn-square" title="Edit">
         <i class="fa-solid fa-edit"></i>
