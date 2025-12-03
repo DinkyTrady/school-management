@@ -8,19 +8,12 @@
         {% endif %}
     </th>
     <td>
-        <div class="flex items-center space-x-3">
-            <div class="avatar placeholder">
-                <div class="bg-neutral text-neutral-content rounded-full w-8">
-                    <span class="text-xs font-bold">{{ akun.email|slice:":1"|upper }}</span>
-                </div>
-            </div>
             <div>
                 <div class="font-bold">{{ akun.email }}</div>
                 {% if akun.first_name or akun.last_name %}
                     <div class="text-sm opacity-50">{{ akun.first_name }} {{ akun.last_name }}</div>
                 {% endif %}
             </div>
-        </div>
     </td>
     <td>
         {% if akun.peran.nama == 'Admin' %}

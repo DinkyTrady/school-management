@@ -3,13 +3,13 @@
 {% block title %}Manajemen Jadwal{% endblock title %}
 
 {% block content %}
-<div class="card bg-base-100 shadow-xl">
+<div class="card bg-base-100 shadow-xl" x-data="{ showModal: false, deleteUrl: '', deleteName: '' }">
   <div class="card-body">
     <div class="flex justify-between items-center mb-4">
       <h2 class="card-title text-2xl">Daftar Jadwal Pelajaran</h2>
       {% load permissions %}
       {% if user|can_add_model:"jadwal" %}
-      <a href="{% url 'academics:jadwal_add' %}" class="btn btn-primary">
+      <a href="{% url 'academics:jadwal_add' %}" class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 text-white">
         <i class="fas fa-plus"></i> Tambah Jadwal Baru
       </a>
       {% endif %}
@@ -23,7 +23,7 @@
 
     <div class="mb-4">
       <input type="text" name="q" placeholder="Cari kelas / mapel / guru..."
-             class="input input-bordered w-full"
+             class="input input-bordered w-full focus:border-emerald-500 focus:ring-emerald-500"
              hx-get="{% url 'academics:jadwal_list' %}"
              hx-trigger="keyup changed delay:500ms"
              hx-target="#jadwal-table-body"
@@ -32,7 +32,7 @@
 
     <div class="overflow-x-auto">
       <table class="table w-full">
-        <thead>
+        <thead class="bg-gray-50">
           <tr>
             <th></th>
             <th>Hari & Waktu</th>
@@ -54,5 +54,26 @@
       {% endif %}
     </div>
   </div>
+
+  <dialog class="modal" :class="{ 'modal-open': showModal }">
+      <div class="modal-box">
+          <h3 class="font-bold text-lg text-red-600">Konfirmasi Hapus Jadwal</h3>
+          <p class="py-4">
+              Apakah Anda yakin ingin menghapus jadwal <span class="font-bold" x-text="deleteName"></span>?
+              <br>
+              <span class="text-sm text-gray-500">Tindakan ini tidak dapat dibatalkan.</span>
+          </p>
+          <div class="modal-action">
+              <button class="btn btn-ghost" @click="showModal = false">Batal</button>
+              <form method="post" :action="deleteUrl">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-error text-white bg-red-600 hover:bg-red-700">Ya, Hapus</button>
+              </form>
+          </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+          <button @click="showModal = false">close</button>
+      </form>
+  </dialog>
 </div>
 {% endblock content %}

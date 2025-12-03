@@ -2,17 +2,10 @@
 <tr>
   <th>{{ forloop.counter }}</th>
   <td>
-    <div class="flex items-center space-x-3">
-      <div class="avatar placeholder">
-        <div class="bg-secondary text-secondary-content rounded-full w-8">
-          <span class="text-xs"><i class="fa-solid fa-chalkboard-user"></i></span>
-        </div>
-      </div>
       <div>
         <div class="font-bold">{{ guru.get_full_name }}</div>
         <div class="text-xs opacity-70">{{ guru.nomor_handphone }}</div>
       </div>
-    </div>
   </td>
   <td><span class="badge badge-outline">{{ guru.nip }}</span></td>
   <td><span class="badge badge-info badge-outline">{{ guru.jabatan }}</span></td>
@@ -33,16 +26,15 @@
       </a>
       {% load permissions %}
       {% if user|can_edit_model:"guru" %}
-      <a href="{% url 'users:guru_edit' guru.pk %}" class="btn btn-sm btn-warning btn-square" title="Edit">
+      <a href="{% url 'users:guru_edit' guru.pk %}" class="btn btn-sm btn-ghost btn-square text-blue-500 hover:bg-blue-50" title="Edit">
         <i class="fa-solid fa-edit"></i>
       </a>
       {% endif %}
       {% if user|can_delete_model:"guru" %}
-      <button class="btn btn-sm btn-error btn-square" title="Hapus"
-              hx-delete="{% url 'users:guru_delete' guru.pk %}"
-              hx-confirm="Apakah Anda yakin ingin menghapus guru '{{ guru.get_full_name }}'?"
-              hx-target="closest tr"
-              hx-swap="outerHTML">
+      <button type="button"
+              @click="showModal = true; deleteUrl = '{% url 'users:guru_delete' pk=guru.pk %}'; deleteName = '{{ guru.get_full_name }}'"
+              class="btn btn-sm btn-ghost btn-square text-red-500 hover:bg-red-50" 
+              title="Hapus">
         <i class="fa-solid fa-trash"></i>
       </button>
       {% endif %}

@@ -2,23 +2,16 @@
 <tr>
     <th>{{ forloop.counter }}</th>
     <td>
-        <div class="flex items-center space-x-3">
-            <div class="avatar placeholder">
-                <div class="bg-secondary text-secondary-content rounded-full w-8">
-                    <span class="text-xs"><i class="fa-solid fa-book"></i></span>
-                </div>
-            </div>
             <div>
                 <div class="font-bold">{{ mapel.nama }}</div>
                 <div class="text-sm opacity-50">Mata Pelajaran</div>
             </div>
-        </div>
     </td>
     <td>
         {% load permissions %}
         
         <!-- Use our new permission system -->
-        <div class="flex space-x-1 items-center">
+        <div class="flex space-x-1 items-center justify-center">
                 <a href="{% url 'academics:mapel_detail' pk=mapel.pk %}" 
                    class="btn btn-sm btn-ghost btn-square text-gray-500 hover:bg-gray-100" 
                    title="Lihat Detail">

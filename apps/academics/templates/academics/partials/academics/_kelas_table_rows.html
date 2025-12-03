@@ -17,11 +17,6 @@
     <td>
         {% if kelas.wali_kelas %}
             <div class="flex items-center space-x-3">
-                <div class="avatar placeholder">
-                    <div class="bg-neutral text-neutral-content rounded-full w-8">
-                        <span class="text-xs"><i class="fa-solid fa-user"></i></span>
-                    </div>
-                </div>
                 <div>
                     <div class="font-bold">{{ kelas.wali_kelas.get_full_name }}</div>
                     <div class="text-sm opacity-50">{{ kelas.wali_kelas.email|default:"" }}</div>
@@ -58,18 +53,17 @@
             <!-- Edit button (Admin only for academic data) -->
             {% if user|can_edit_model:"kelas" %}
             <a href="{% url 'academics:kelas_edit' kelas.pk %}" 
-               class="btn btn-sm btn-warning btn-square" title="Edit">
+               class="btn btn-sm btn-ghost btn-square text-blue-500 hover:bg-blue-50" title="Edit">
                 <i class="fa-solid fa-edit"></i>
             </a>
             {% endif %}
             
             <!-- Delete button (Admin only for academic data) -->
             {% if user|can_delete_model:"kelas" %}
-            <button class="btn btn-sm btn-error btn-square" title="Hapus" 
-                    hx-delete="{% url 'academics:kelas_delete' kelas.pk %}"
-                    hx-confirm="Apakah Anda yakin ingin menghapus kelas '{{ kelas.nama }}'?"
-                    hx-target="closest tr"
-                    hx-swap="outerHTML">
+            <button type="button"
+                    @click="showModal = true; deleteUrl = '{% url 'academics:kelas_delete' pk=kelas.pk %}'; deleteName = '{{ kelas.nama }}'"
+                    class="btn btn-sm btn-ghost btn-square text-red-500 hover:bg-red-50" 
+                    title="Hapus">
                 <i class="fa-solid fa-trash"></i>
             </button>
             {% endif %}

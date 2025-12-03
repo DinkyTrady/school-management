@@ -2,16 +2,9 @@
 <tr>
     <th>{{ forloop.counter }}</th>
     <td>
-        <div class="flex items-center space-x-3">
-            <div class="avatar placeholder">
-                <div class="bg-accent text-accent-content rounded-full w-8">
-                    <span class="text-xs"><i class="fa-solid fa-graduation-cap"></i></span>
-                </div>
-            </div>
             <div>
                 <div class="font-bold">{{ jurusan.nama }}</div>
             </div>
-        </div>
     </td>
     <td>
         <div class="text-sm opacity-75">{{ jurusan.deskripsi|default:"Tidak ada deskripsi"|truncatewords:10 }}</div>

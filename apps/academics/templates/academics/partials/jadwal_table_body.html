@@ -15,16 +15,15 @@
         <i class="fa-solid fa-eye"></i>
       </a>
       {% if user|can_edit_model:"jadwal" %}
-      <a href="{% url 'academics:jadwal_edit' jadwal.pk %}" class="btn btn-sm btn-warning btn-square" title="Edit">
+      <a href="{% url 'academics:jadwal_edit' jadwal.pk %}" class="btn btn-sm btn-ghost btn-square text-blue-500 hover:bg-blue-50" title="Edit">
         <i class="fa-solid fa-edit"></i>
       </a>
       {% endif %}
       {% if user|can_delete_model:"jadwal" %}
-      <button class="btn btn-sm btn-error btn-square" title="Hapus"
-              hx-delete="{% url 'academics:jadwal_delete' jadwal.pk %}"
-              hx-confirm="Apakah Anda yakin ingin menghapus jadwal '{{ jadwal.kelas.nama }} - {{ jadwal.mapel.nama }}'?"
-              hx-target="closest tr"
-              hx-swap="outerHTML">
+      <button type="button"
+              @click="showModal = true; deleteUrl = '{% url 'academics:jadwal_delete' pk=jadwal.pk %}'; deleteName = '{{ jadwal.kelas.nama }} - {{ jadwal.mapel.nama }}'"
+              class="btn btn-sm btn-ghost btn-square text-red-500 hover:bg-red-50" 
+              title="Hapus">
         <i class="fa-solid fa-trash"></i>
       </button>
       {% endif %}

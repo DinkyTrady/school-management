@@ -19,7 +19,7 @@
 
         <div class="mb-4">
             <input type="text" name="q" placeholder="Cari mata pelajaran..."
-                   class="input input-bordered w-full focus:border-emerald-500"
+                   class="input input-bordered w-full focus:border-emerald-500 focus:ring-emerald-500"
                    hx-get="{% url 'academics:mapel_list' %}"
                    hx-trigger="keyup changed delay:500ms"
                    hx-target="#mapel-table-body"
@@ -31,9 +31,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="w-16">No</th>
-                        <th>Kode</th>
                         <th>Nama Mata Pelajaran</th>
-                        <th>SKS</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
