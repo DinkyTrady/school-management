@@ -24,12 +24,14 @@ urlpatterns = [
     # Siswa Management - Full CRUD for Admin
     path('siswa/', views.SiswaListView.as_view(), name='siswa_list'),
     path('siswa/add/', views.SiswaCreateView.as_view(), name='siswa_add'),
+    path('siswa/<int:pk>/', views.SiswaDetailView.as_view(), name='siswa_detail'),
     path('siswa/<int:pk>/edit/', views.SiswaUpdateView.as_view(), name='siswa_edit'),
     path('siswa/<int:pk>/delete/', views.SiswaDeleteView.as_view(), name='siswa_delete'),
     
     # Guru Management - Full CRUD for Admin
     path('guru/', views.GuruListView.as_view(), name='guru_list'),
     path('guru/add/', views.GuruCreateView.as_view(), name='guru_add'),
+    path('guru/<int:pk>/', views.GuruDetailView.as_view(), name='guru_detail'),
     path('guru/<int:pk>/edit/', views.GuruUpdateView.as_view(), name='guru_edit'),
     path('guru/<int:pk>/delete/', views.GuruDeleteView.as_view(), name='guru_delete'),
 ]
