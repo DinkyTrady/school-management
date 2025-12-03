@@ -19,6 +19,10 @@ from apps.core.mixins import UserManagementMixin, ViewOnlyMixin
 from .forms import AkunChangeForm, AkunCreationForm, SiswaForm, GuruForm
 from .models import Akun as AkunType, Peran, Siswa, Guru
 
+from django.views.generic import DetailView # Pastikan DetailView terimport
+from apps.core.mixins import ViewOnlyMixin  # Pastikan Mixin ini terimport
+
+
 Akun: AkunType = get_user_model()
 
 
@@ -229,3 +233,23 @@ class GuruDeleteView(UserManagementMixin, LoginRequiredMixin, DeleteView):
         if self.request.htmx:
             return ['users/partials/guru_delete_modal.html']
         return ['users/guru_confirm_delete.html']
+
+
+class SiswaDetailView(ViewOnlyMixin, DetailView):
+    model = Siswa
+    template_name = 'users/siswa_detail.html'
+    context_object_name = 'siswa'
+
+    def get_queryset(self):
+        return Siswa.objects.select_related('akun').all()
+
+
+class GuruDetailView(ViewOnlyMixin, DetailView):
+    """View untuk melihat detail profil guru"""
+    model = Guru
+    template_name = 'users/guru_detail.html'
+    context_object_name = 'guru'
+
+    def get_queryset(self):
+        # Optimasi: ambil data akun sekaligus
+        return Guru.objects.select_related('akun').all()

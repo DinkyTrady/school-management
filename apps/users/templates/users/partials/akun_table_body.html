@@ -1,11 +1,17 @@
 {% for akun in akun_list %}
 <tr>
-    <th>{{ forloop.counter }}</th>
+    <th>
+        {% if page_obj %}
+            {{ page_obj.start_index|add:forloop.counter0 }}
+        {% else %}
+            {{ forloop.counter }}
+        {% endif %}
+    </th>
     <td>
         <div class="flex items-center space-x-3">
             <div class="avatar placeholder">
                 <div class="bg-neutral text-neutral-content rounded-full w-8">
-                    <span class="text-xs"><i class="fa-solid fa-user"></i></span>
+                    <span class="text-xs font-bold">{{ akun.email|slice:":1"|upper }}</span>
                 </div>
             </div>
             <div>
@@ -17,40 +23,53 @@
         </div>
     </td>
     <td>
-        {% if akun.peran %}
-            <span class="badge badge-primary">
-                <i class="fa-solid fa-user-tag mr-1"></i>{{ akun.peran.nama }}
+        {% if akun.peran.nama == 'Admin' %}
+            <span class="badge badge-error text-white gap-2 border-none">
+                <i class="fa-solid fa-user-shield"></i> {{ akun.peran.nama }}
+            </span>
+        {% elif akun.peran.nama == 'Guru' %}
+            <span class="badge badge-success text-white gap-2 border-none">
+                <i class="fa-solid fa-chalkboard-user"></i> {{ akun.peran.nama }}
+            </span>
+        {% elif akun.peran.nama == 'Siswa' %}
+            <span class="badge badge-info text-white gap-2 border-none">
+                <i class="fa-solid fa-user-graduate"></i> {{ akun.peran.nama }}
             </span>
         {% else %}
-            <span class="badge badge-ghost">
-                <i class="fa-solid fa-user-slash mr-1"></i>Belum ditentukan
+            <span class="badge badge-ghost gap-2">
+                <i class="fa-solid fa-user"></i> {{ akun.peran.nama|default:"Belum ditentukan" }}
             </span>
         {% endif %}
     </td>
     <td>
         {% if akun.is_active %}
-            <span class="badge badge-success">
-                <i class="fa-solid fa-check mr-1"></i>Aktif
+            <span class="badge badge-accent text-white gap-1 border-none bg-teal-500">
+                <i class="fa-solid fa-check"></i> Aktif
             </span>
         {% else %}
-            <span class="badge badge-error">
-                <i class="fa-solid fa-times mr-1"></i>Tidak Aktif
+            <span class="badge badge-ghost gap-1">
+                <i class="fa-solid fa-xmark"></i> Non-Aktif
             </span>
         {% endif %}
     </td>
     <td>
         {% load permissions %}
         <div class="flex space-x-1">
-            <a href="{% url 'users:akun_detail' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
+            <a href="{% url 'users:akun_detail' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square text-gray-500" title="Detail">
                 <i class="fa-solid fa-eye"></i>
             </a>
+            
             {% if user|can_edit_model:"akun" %}
-            <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square" title="Edit">
+            <a href="{% url 'users:akun_edit' pk=akun.pk %}" class="btn btn-sm btn-ghost btn-square text-blue-500" title="Edit">
                 <i class="fa-solid fa-edit"></i>
             </a>
             {% endif %}
+            
             {% if user|can_delete_model:"akun" %}
-            <button hx-get="{% url 'users:akun_delete' pk=akun.pk %}" hx-target="body" hx-swap="beforeend" class="btn btn-sm btn-ghost btn-square text-error" title="Hapus">
+            <button type="button"
+                    @click="showModal = true; deleteUrl = '{% url 'users:akun_delete' pk=akun.pk %}'; deleteName = '{{ akun.email }}'"
+                    class="btn btn-sm btn-ghost btn-square text-red-500 hover:bg-red-50" 
+                    title="Hapus">
                 <i class="fa-solid fa-trash"></i>
             </button>
             {% endif %}
@@ -60,13 +79,13 @@
 {% empty %}
 <tr>
     <td colspan="5" class="text-center py-8">
-        <div class="text-gray-500">
-            <i class="fa-solid fa-users text-6xl mb-4 opacity-30"></i>
-            <div class="text-lg font-medium">Belum ada akun yang terdaftar</div>
-            <div class="text-sm">Tambah akun baru untuk memulai</div>
+        <div class="text-gray-500 flex flex-col items-center justify-center">
+            <div class="bg-gray-100 p-4 rounded-full mb-3">
+                <i class="fa-solid fa-users-slash text-4xl text-gray-400"></i>
+            </div>
+            <div class="text-lg font-medium text-gray-600">Belum ada akun ditemukan</div>
+            <div class="text-sm text-gray-400">Silakan tambah akun baru atau ubah pencarian.</div>
         </div>
     </td>
 </tr>
 {% endfor %}
-
-{{ pagination|safe }}

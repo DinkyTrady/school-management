@@ -36,7 +36,8 @@
             {% include 'core/partials/_card_anchor.html' with card_url=card_akun_url icon='fa-solid fa-users' title='Manajemen Akun' description='Kelola data pengguna dan staf' %}
             {% include 'core/partials/_card_anchor.html' with card_url=card_peran_url icon='fa-solid fa-user-shield' title='Manajemen Peran' description='Atur hak akses untuk setiap pengguna' %}
             {% include 'core/partials/_card_anchor.html' with card_url=card_kelas_url icon='fa-solid fa-chalkboard' title='Manajemen Akademik' description='Kelola kelas dan mata pelajaran' %}
-            {% include 'core/partials/_card_anchor.html' with card_url='#' icon='fa-solid fa-book' title='Manajemen Nilai' description='Input dan rekapitulasi nilai siswa' %}
+            {% url 'grades:nilai_list' as nilai_list_url %}
+            {% include 'core/partials/_card_anchor.html' with card_url=nilai_list_url icon='fa-solid fa-book' title='Manajemen Nilai' description='Input dan rekapitulasi nilai siswa' %}
         </div>
       </div>
     </div>

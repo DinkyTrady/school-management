@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Detail Mapel: {{ mapel.nama }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-6">
+        <a href="{% url 'academics:mapel_list' %}" class="btn btn-ghost gap-2 pl-0 hover:bg-transparent hover:text-emerald-600">
+            <i class="fa-solid fa-arrow-left"></i> Kembali
+        </a>
+    </div>
+
+    <div class="card bg-white shadow-xl border border-emerald-100">
+        <div class="card-body">
+            <div class="flex items-start gap-6">
+                <div class="w-20 h-20 bg-teal-100 rounded-2xl flex items-center justify-center text-teal-600">
+                    <i class="fa-solid fa-book-open text-4xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold text-gray-800">{{ mapel.nama }}</h2>
+                    <div class="flex gap-2 mt-2">
+                        <span class="badge badge-lg badge-outline gap-1">
+                            <i class="fa-solid fa-barcode text-xs"></i> {{ mapel.kode|default:"-" }}
+                        </span>
+                        <span class="badge badge-lg badge-secondary gap-1 text-white">
+                            <i class="fa-solid fa-clock text-xs"></i> {{ mapel.sks|default:"0" }} SKS
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="flex justify-end gap-2">
+                <a href="{% url 'academics:mapel_edit' pk=mapel.pk %}" class="btn btn-warning text-white">
+                    <i class="fa-solid fa-edit"></i> Edit Mapel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

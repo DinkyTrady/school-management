@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Detail Tahun Ajaran: {{ tahun_ajaran.tahun }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-6 flex justify-between items-center">
+        <a href="{% url 'academics:tahun_ajaran_list' %}" class="btn btn-ghost gap-2 pl-0 hover:bg-transparent hover:text-emerald-600">
+            <i class="fa-solid fa-arrow-left"></i> Kembali
+        </a>
+        <h1 class="text-2xl font-bold text-gray-800">Detail Tahun Ajaran</h1>
+    </div>
+
+    <div class="card bg-white shadow-xl border border-emerald-100">
+        <div class="card-body">
+            
+            <div class="flex items-center justify-between border-b pb-4 mb-4 border-gray-100">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                        <i class="fa-solid fa-calendar-days text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">{{ tahun_ajaran.tahun }}</h2>
+                        <span class="text-gray-500 text-sm">Semester {{ tahun_ajaran.semester }}</span>
+                    </div>
+                </div>
+                
+                {% if tahun_ajaran.is_active %}
+                    <span class="badge badge-success text-white gap-2 p-3">
+                        <i class="fa-solid fa-check-circle"></i> Aktif
+                    </span>
+                {% else %}
+                    <span class="badge badge-ghost gap-2 p-3">
+                        <i class="fa-solid fa-circle-pause"></i> Tidak Aktif
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Tanggal Mulai</span>
+                    <div class="font-medium text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-play text-emerald-500"></i>
+                        {{ tahun_ajaran.tanggal_mulai|date:"d F Y" }}
+                    </div>
+                </div>
+                
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Tanggal Selesai</span>
+                    <div class="font-medium text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-flag-checkered text-red-500"></i>
+                        {{ tahun_ajaran.tanggal_selesai|date:"d F Y" }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-actions justify-end mt-8">
+                <a href="{% url 'academics:tahun_ajaran_edit' pk=tahun_ajaran.pk %}" class="btn bg-emerald-500 hover:bg-emerald-600 text-white border-0">
+                    <i class="fa-solid fa-edit"></i> Edit Data
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

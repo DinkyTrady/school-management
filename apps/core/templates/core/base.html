@@ -19,17 +19,22 @@
     <div class="drawer lg:drawer-open">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col">
-            <!-- Navbar -->
             <div class="w-full navbar sticky top-0 z-30 bg-white/90 backdrop-blur-md shadow-sm border-b border-emerald-100">
                 <div class="flex-none lg:hidden">
                     <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost text-emerald-600 hover:bg-emerald-50">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </label>
                 </div>
-                <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent text-2xl transition-all duration-300 hover:scale-105">SIGMA</a>
-                <div class="flex-none flex items-center gap-4">
+                
+                <a href="{% url 'core:dashboard' %}" class="flex-1 px-2 mx-2 flex items-center gap-3 lg:hidden">
+                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</span>
+                </a>
+
+                <div class="flex-none flex items-center gap-4 ml-auto">
                     {% if user.is_authenticated %}
-                    <!-- Welcome Message -->
                     <div class="hidden md:flex flex-col items-end">
                         <span class="text-xs text-base-content/70">Selamat Datang,</span>
                         <span class="font-semibold text-sm">
@@ -42,7 +47,6 @@
                             {% endif %}
                         </span>
                     </div>
-                    <!-- Dropdown Profil Pengguna -->
                     <div class="dropdown dropdown-end">
                         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover:bg-emerald-50">
                             <div class="w-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-md">
@@ -82,7 +86,6 @@
                     {% endif %}
                 </div>
             </div>
-            <!-- Page content here -->
             <main class="min-h-screen">
                 <div class="p-6 md:p-10 max-w-7xl mx-auto">
                   <div id="main-content">
@@ -95,10 +98,13 @@
         <div class="drawer-side z-40">
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
             <div class="w-80 min-h-full bg-white flex flex-col shadow-xl border-r border-emerald-100">
-                <!-- Sidebar content here -->
                 <div class="p-6 border-b border-emerald-100">
-                    <h2 class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</h2>
-                    <p class="text-xs text-gray-500 mt-1">School Information & Management</p>
+                    <a href="{% url 'core:dashboard' %}" class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-graduation-cap text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</span>
+                    </a>
                 </div>
                 <ul class="menu px-3 py-4 gap-2 flex-1 overflow-y-auto w-full">
                     {% include 'core/partials/_nav_links.html' %}
@@ -117,12 +123,10 @@
 </html>
 
 {% if user.is_authenticated %}
-<!-- Form Logout Tersembunyi -->
 <form id="logout-form" method="post" action="{% url 'users:logout' %}" class="hidden">
     {% csrf_token %}
 </form>
 
-<!-- Modal Konfirmasi Logout -->
 <dialog id="logout_modal" class="modal">
   <div class="modal-box w-11/12 max-w-md bg-white rounded-2xl shadow-2xl border border-emerald-100">
     <div class="flex items-start gap-4">

@@ -5,19 +5,21 @@
 {% endblock title %}
 
 {% block content %}
-<div class="card bg-base-100 shadow-xl">
+<div class="card bg-base-100 shadow-xl" x-data="{ showModal: false, deleteUrl: '', deleteName: '' }">
     <div class="card-body">
         <div class="flex justify-between items-center mb-4">
             <h2 class="card-title text-2xl">Daftar Peran Pengguna</h2>
             {% load permissions %}
             {% if user|can_add_model:"peran" %}
-            <a href="{% url 'users:peran_add' %}" class="btn btn-primary">Tambah Peran Baru</a>
+            <a href="{% url 'users:peran_add' %}" class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 text-white">
+                <i class="fas fa-plus"></i> Tambah Peran Baru
+            </a>
             {% endif %}
         </div>
 
         <div class="mb-4">
             <input type="text" name="q" placeholder="Cari berdasarkan nama peran..."
-                   class="input input-bordered w-full"
+                   class="input input-bordered w-full focus:border-emerald-500 focus:ring-emerald-500"
                    hx-get="{% url 'users:peran_list' %}"
                    hx-trigger="keyup changed delay:500ms"
                    hx-target="#peran-table-body"
@@ -26,19 +28,56 @@
 
         <div class="overflow-x-auto">
             <table class="table w-full">
-                <!-- head -->
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
-                        <th></th>
+                        <th class="w-16">No</th>
                         <th>Nama Peran</th>
-                        <th>Aksi</th>
+                        <th>Jumlah Pengguna</th>
+                        <th class="text-center w-32">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="peran-table-body">
-                    {% include 'users/partials/peran_table_body.html' %}
+                  {% include "users/partials/peran_table_body.html" %}
                 </tbody>
             </table>
         </div>
+
+        <div id="pagination-container" class="mt-4">
+        {% if is_paginated %}
+          {% include "core/partials/_paginate.html" %}
+        {% endif %}
+        </div>
     </div>
+
+    <dialog class="modal" :class="{ 'modal-open': showModal }">
+        <div class="modal-box">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-red-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800">Konfirmasi Hapus Peran</h3>
+                    <p class="py-2 text-gray-600">
+                        Apakah Anda yakin ingin menghapus peran <span class="font-bold text-gray-900" x-text="deleteName"></span>?
+                    </p>
+                    <p class="text-sm text-red-500 italic">
+                        Peringatan: Pengguna yang memiliki peran ini mungkin akan kehilangan akses.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-action">
+                <button class="btn btn-ghost" @click="showModal = false">Batal</button>
+                
+                <form method="post" :action="deleteUrl">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-error text-white bg-red-600 hover:bg-red-700">Ya, Hapus</button>
+                </form>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button @click="showModal = false">close</button>
+        </form>
+    </dialog>
 </div>
 {% endblock content %}
