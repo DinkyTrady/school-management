@@ -95,10 +95,13 @@
                 </div>
             </main>
         </div>
+        
         <div class="drawer-side z-40">
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
-            <div class="w-80 min-h-full bg-white flex flex-col shadow-xl border-r border-emerald-100">
-                <div class="p-6 border-b border-emerald-100">
+            
+            <div class="w-80 h-screen bg-white flex flex-col shadow-xl border-r border-emerald-100">
+                
+                <div class="p-6 border-b border-emerald-100 flex-none bg-white z-10">
                     <a href="{% url 'core:dashboard' %}" class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
                             <i class="fas fa-graduation-cap text-white text-lg"></i>
@@ -106,11 +109,13 @@
                         <span class="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SIGMA</span>
                     </a>
                 </div>
+
                 <ul class="menu px-3 py-4 gap-2 flex-1 overflow-y-auto w-full">
                     {% include 'core/partials/_nav_links.html' %}
                 </ul>
+
                 {% if user.is_authenticated %}
-                <div class="p-4 border-t border-emerald-100">
+                <div class="p-4 border-t border-emerald-100 flex-none bg-white z-10">
                     <button onclick="logout_modal.showModal()" class="btn bg-gradient-to-r from-red-500 to-red-600 text-white border-0 hover:from-red-600 hover:to-red-700 btn-block shadow-md">
                         <i class="fa-solid fa-right-from-bracket"></i> Logout
                     </button>
