@@ -5,27 +5,21 @@
 {% endblock title %}
 
 {% block content %}
-<div class="card bg-base-100 shadow-xl">
+<div class="card bg-base-100 shadow-xl" x-data="{ showModal: false, deleteUrl: '', deleteName: '' }">
     <div class="card-body">
         <div class="flex justify-between items-center mb-4">
             <h2 class="card-title text-2xl">Daftar Mata Pelajaran</h2>
             {% load permissions %}
             {% if user|can_add_model:"mapel" %}
-            <a href="{% url 'academics:mapel_add' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Tambah Mata Pelajaran Baru
+            <a href="{% url 'academics:mapel_add' %}" class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 text-white">
+                <i class="fas fa-plus"></i> Tambah Mapel
             </a>
             {% endif %}
-            
-            <!-- Role indicator -->
-            <div class="text-sm text-gray-500">
-                <i class="fas fa-user"></i>
-                {% role_badge user %}
-            </div>
         </div>
 
         <div class="mb-4">
-            <input type="text" name="q" placeholder="Cari berdasarkan nama mata pelajaran..."
-                   class="input input-bordered w-full"
+            <input type="text" name="q" placeholder="Cari mata pelajaran..."
+                   class="input input-bordered w-full focus:border-emerald-500"
                    hx-get="{% url 'academics:mapel_list' %}"
                    hx-trigger="keyup changed delay:500ms"
                    hx-target="#mapel-table-body"
@@ -34,11 +28,13 @@
 
         <div class="overflow-x-auto">
             <table class="table w-full">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
-                        <th></th>
+                        <th class="w-16">No</th>
+                        <th>Kode</th>
                         <th>Nama Mata Pelajaran</th>
-                        <th>Aksi</th>
+                        <th>SKS</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="mapel-table-body">
@@ -46,12 +42,33 @@
                 </tbody>
             </table>
         </div>
-
-        <div id="pagination-container">
-        {% if is_paginated %}
-          {% include "core/partials/_paginate.html" %}
-        {% endif %}
+        
+        <div class="mt-4">
+            {% if is_paginated %}
+                {% include "core/partials/_paginate.html" %}
+            {% endif %}
         </div>
     </div>
+
+    <dialog class="modal" :class="{ 'modal-open': showModal }">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-red-600">Konfirmasi Hapus Mapel</h3>
+            <p class="py-4">
+                Apakah Anda yakin ingin menghapus mata pelajaran <span class="font-bold" x-text="deleteName"></span>?
+                <br>
+                <span class="text-sm text-gray-500">Jadwal yang menggunakan mapel ini akan terpengaruh.</span>
+            </p>
+            <div class="modal-action">
+                <button class="btn btn-ghost" @click="showModal = false">Batal</button>
+                <form method="post" :action="deleteUrl">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-error text-white bg-red-600 hover:bg-red-700">Ya, Hapus</button>
+                </form>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button @click="showModal = false">close</button>
+        </form>
+    </dialog>
 </div>
 {% endblock content %}
