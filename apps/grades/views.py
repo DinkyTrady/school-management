@@ -77,11 +77,29 @@ class NilaiListView(NilaiPermissionMixin, BaseListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        user = self.request.user
+        
         qs = qs.select_related(
             'siswa', 'siswa__akun', 'jadwal', 'jadwal__kelas', 'jadwal__mapel',
             'jadwal__guru', 'tugas', 'jadwal__kelas__tahun_ajaran'
-        )
-        return qs.filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal_penilaian')
+        ).filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal_penilaian')
+
+        if user.is_siswa:
+            try:
+                siswa_profile = user.siswa_profile
+                kelas_siswa = KelasSiswa.objects.filter(
+                    siswa=siswa_profile,
+                    tahun_ajaran__is_active=True
+                ).select_related('kelas').first()
+
+                if kelas_siswa:
+                    # Siswa hanya melihat nilai mereka sendiri
+                    return qs.filter(siswa=siswa_profile)
+                return qs.none() 
+            except AttributeError:
+                return qs.none()
+
+        return qs
 
 
 class NilaiDetailView(NilaiPermissionMixin, DetailView):
@@ -114,11 +132,29 @@ class PresensiListView(PresensiPermissionMixin, BaseListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        user = self.request.user
+        
         qs = qs.select_related(
             'siswa', 'siswa__akun', 'jadwal', 'jadwal__kelas', 'jadwal__mapel',
             'jadwal__guru', 'jadwal__kelas__tahun_ajaran'
-        )
-        return qs.filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal')
+        ).filter(jadwal__kelas__tahun_ajaran__is_active=True).order_by('-tanggal')
+
+        if user.is_siswa:
+            try:
+                siswa_profile = user.siswa_profile
+                kelas_siswa = KelasSiswa.objects.filter(
+                    siswa=siswa_profile,
+                    tahun_ajaran__is_active=True
+                ).select_related('kelas').first()
+
+                if kelas_siswa:
+                    # Siswa hanya melihat presensi mereka sendiri
+                    return qs.filter(siswa=siswa_profile)
+                return qs.none() 
+            except AttributeError:
+                return qs.none()
+
+        return qs
 
 
 class PresensiDetailView(PresensiPermissionMixin, DetailView):

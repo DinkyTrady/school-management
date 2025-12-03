@@ -1,5 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q, Case, When, Value, IntegerField, Count, Avg
+from django.template.response import TemplateResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -90,10 +91,28 @@ class BaseDetailView(BaseCrudMixin, DetailView):
 class BaseCreateView(BaseCrudMixin, CreateView):
     full_template_name = 'core/partials/_generic_form.html'
     partial_template_name = 'core/partials/_form_content.html'
+    success_message = "Data berhasil ditambahkan."
+
+    def form_valid(self, form):
+        self.object = form.save()
+        if self.request.htmx:
+            context = self.get_context_data(form=form)
+            context['success_message'] = self.success_message
+            return TemplateResponse(self.request, self.get_template_names(), context)
+        return super().form_valid(form)
 
 class BaseUpdateView(BaseCrudMixin, UpdateView):
     full_template_name = 'core/partials/_generic_form.html'
     partial_template_name = 'core/partials/_form_content.html'
+    success_message = "Data berhasil diperbarui."
+
+    def form_valid(self, form):
+        self.object = form.save()
+        if self.request.htmx:
+            context = self.get_context_data(form=form)
+            context['success_message'] = self.success_message
+            return TemplateResponse(self.request, self.get_template_names(), context)
+        return super().form_valid(form)
 
 class BaseDeleteView(BaseCrudMixin, DeleteView):
     full_template_name = 'core/partials/_generic_form.html'
