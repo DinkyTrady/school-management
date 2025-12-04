@@ -73,14 +73,23 @@ class Command(BaseCommand):
         tahun_ajaran_data = [("2024/2025", "Ganjil"), ("2024/2025", "Genap")]
         tahun_ajaran_map = {}
         for tahun, semester in tahun_ajaran_data:
+            is_active = (tahun == "2024/2025" and semester == "Ganjil")
             ta, created = TahunAjaran.objects.get_or_create(
                 tahun=tahun,
                 semester=semester,
                 defaults={
                     "tanggal_mulai": datetime.date(2024, 7, 1) if semester == "Ganjil" else datetime.date(2025, 1, 1),
                     "tanggal_selesai": datetime.date(2024, 12, 31) if semester == "Ganjil" else datetime.date(2025, 6, 30),
+                    "is_active": is_active,
                 },
             )
+            # Ensure active status is correct if object already exists
+            if not created and is_active and not ta.is_active:
+                # Deactivate others if we are activating this one
+                TahunAjaran.objects.filter(is_active=True).update(is_active=False)
+                ta.is_active = True
+                ta.save()
+                
             key = f"{tahun}-{semester}"
             tahun_ajaran_map[key] = ta
             self._log_creation(created, "Tahun Ajaran", key)
@@ -232,7 +241,8 @@ class Command(BaseCommand):
         
         # Ambil kelas pertama yang tersedia untuk diisi siswa
         target_kelas = list(kelas_map.values())[0]
-        target_ta = list(tahun_ajaran_map.values())[0]
+        # Gunakan tahun ajaran dari kelas tersebut
+        target_ta = target_kelas.tahun_ajaran
 
         for siswa in siswa_map.values():
             _, created = KelasSiswa.objects.get_or_create(  # Langsung create objek KelasSiswa
