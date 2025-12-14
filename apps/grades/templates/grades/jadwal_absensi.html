@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Absensi - {{ jadwal.mapel.nama }}{% endblock title %}
+
+{% block content %}
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="flex justify-between items-center mb-4">
+        <div>
+            <h2 class="card-title text-2xl">Absensi Kelas</h2>
+            <p class="text-gray-500">{{ jadwal.mapel.nama }} - {{ jadwal.kelas.nama }}</p>
+            <p class="text-sm text-gray-400">{{ jadwal.hari }}, {{ today|date:"d F Y" }}</p>
+        </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="overflow-x-auto">
+        <table class="table w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="w-12">No</th>
+              <th>Nama Siswa</th>
+              <th class="text-center w-20">Hadir</th>
+              <th class="text-center w-20">Alpha</th>
+              <th class="text-center w-20">Sakit</th>
+              <th class="text-center w-20">Izin</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in student_data %}
+            <tr x-data="{ status: '{{ item.presensi.status|default:'Hadir' }}' }" class="hover">
+              <td>{{ forloop.counter }}</td>
+              <td class="font-medium">{{ item.siswa.get_full_name }}</td>
+              <td class="text-center">
+                <input type="radio" name="status_{{ item.siswa.pk }}" value="Hadir" class="radio radio-sm radio-success" x-model="status">
+              </td>
+              <td class="text-center">
+                <input type="radio" name="status_{{ item.siswa.pk }}" value="Alpha" class="radio radio-sm radio-error" x-model="status">
+              </td>
+              <td class="text-center">
+                <input type="radio" name="status_{{ item.siswa.pk }}" value="Sakit" class="radio radio-sm radio-warning" x-model="status">
+              </td>
+              <td class="text-center">
+                <input type="radio" name="status_{{ item.siswa.pk }}" value="Izin" class="radio radio-sm radio-info" x-model="status">
+              </td>
+              <td>
+                <input type="text" name="keterangan_{{ item.siswa.pk }}" 
+                       class="input input-bordered input-sm w-full" 
+                       :disabled="!['Sakit', 'Izin'].includes(status)"
+                       :class="{ 'input-disabled': !['Sakit', 'Izin'].includes(status) }"
+                       value="{{ item.presensi.keterangan|default:'' }}"
+                       placeholder="Keterangan...">
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center py-4">Tidak ada siswa di kelas ini.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="card-actions justify-end mt-6">
+        <a href="{% url 'academics:jadwal_list' %}" class="btn btn-ghost">Batal</a>
+        <button type="submit" class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 text-white">
+            <i class="fas fa-save mr-2"></i> Simpan Absensi
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}

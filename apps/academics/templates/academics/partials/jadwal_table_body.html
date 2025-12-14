@@ -14,6 +14,11 @@
       <a href="{% url 'academics:jadwal_detail' pk=jadwal.pk %}" class="btn btn-sm btn-ghost btn-square" title="Detail">
         <i class="fa-solid fa-eye"></i>
       </a>
+      {% if user.is_guru %}
+      <a href="{% url 'grades:jadwal_absensi' jadwal_id=jadwal.pk %}" class="btn btn-sm btn-ghost btn-square text-emerald-600 hover:bg-emerald-50" title="Absensi">
+        <i class="fa-solid fa-clipboard-user"></i>
+      </a>
+      {% endif %}
       {% if user|can_edit_model:"jadwal" %}
       <a href="{% url 'academics:jadwal_edit' jadwal.pk %}" class="btn btn-sm btn-ghost btn-square text-blue-500 hover:bg-blue-50" title="Edit">
         <i class="fa-solid fa-edit"></i>

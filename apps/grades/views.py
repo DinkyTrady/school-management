@@ -1,9 +1,13 @@
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
+from django.contrib import messages
+from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import DeleteView, DetailView
 from django.urls import reverse_lazy
 from django.template.response import TemplateResponse
 
-from apps.academics.models import KelasSiswa
+from apps.academics.models import KelasSiswa, Jadwal
 from apps.core.views import BaseListView, BaseCreateView, BaseUpdateView
 from apps.core.mixins import TugasPermissionMixin, NilaiPermissionMixin, PresensiPermissionMixin
 from .models import Tugas, Nilai, Presensi
@@ -291,3 +295,73 @@ class PresensiDeleteView(PresensiPermissionMixin, LoginRequiredMixin, DeleteView
             self.request.user.is_authenticated and 
             self.request.user.can_edit_delete_model('presensi')
         )
+
+
+class JadwalAbsensiView(LoginRequiredMixin, View):
+    template_name = 'grades/jadwal_absensi.html'
+
+    def get(self, request, jadwal_id):
+        if not request.user.is_guru and not request.user.is_admin:
+             messages.error(request, "Anda tidak memiliki izin untuk mengakses halaman ini.")
+             return redirect('academics:jadwal_list')
+        
+        jadwal = get_object_or_404(Jadwal, pk=jadwal_id)
+        # Get students in the class
+        students = KelasSiswa.objects.filter(
+            kelas=jadwal.kelas,
+            tahun_ajaran=jadwal.kelas.tahun_ajaran
+        ).select_related('siswa', 'siswa__akun').order_by('siswa__first_name')
+        
+        # Check if attendance already exists for today
+        today = timezone.now().date()
+        existing_presensi = {
+            p.siswa_id: p 
+            for p in Presensi.objects.filter(jadwal=jadwal, tanggal=today)
+        }
+        
+        student_data = []
+        for ks in students:
+            presensi = existing_presensi.get(ks.siswa.pk)
+            student_data.append({
+                'siswa': ks.siswa,
+                'presensi': presensi
+            })
+            
+        context = {
+            'jadwal': jadwal,
+            'student_data': student_data,
+            'today': today
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, jadwal_id):
+        if not request.user.is_guru and not request.user.is_admin:
+             messages.error(request, "Anda tidak memiliki izin untuk melakukan aksi ini.")
+             return redirect('academics:jadwal_list')
+
+        jadwal = get_object_or_404(Jadwal, pk=jadwal_id)
+        today = timezone.now().date()
+        
+        students = KelasSiswa.objects.filter(
+            kelas=jadwal.kelas,
+            tahun_ajaran=jadwal.kelas.tahun_ajaran
+        )
+        
+        for ks in students:
+            siswa_id = ks.siswa.pk
+            status = request.POST.get(f'status_{siswa_id}')
+            keterangan = request.POST.get(f'keterangan_{siswa_id}')
+            
+            if status:
+                Presensi.objects.update_or_create(
+                    siswa=ks.siswa,
+                    jadwal=jadwal,
+                    tanggal=today,
+                    defaults={
+                        'status': status,
+                        'keterangan': keterangan
+                    }
+                )
+        
+        messages.success(request, 'Presensi berhasil disimpan.')
+        return redirect('academics:jadwal_list')
