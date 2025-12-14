@@ -25,4 +25,7 @@ urlpatterns = [
     path('presensi/add/', views.PresensiCreateView.as_view(), name='presensi_add'),
     path('presensi/<int:pk>/edit/', views.PresensiUpdateView.as_view(), name='presensi_edit'),
     path('presensi/<int:pk>/delete/', views.PresensiDeleteView.as_view(), name='presensi_delete'),
+    
+    # Bulk Absensi from Jadwal
+    path('jadwal/<int:jadwal_id>/absensi/', views.JadwalAbsensiView.as_view(), name='jadwal_absensi'),
 ]
